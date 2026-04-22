@@ -4,8 +4,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 // ========== AUTH ==========
@@ -142,7 +143,7 @@ model StandarPelayanan {
 model DasbordGrafik {
   id        String   @id @default(cuid())
   judul     String
-  tipe      String   // bar, pie, line, etc
+  tipe      String
   data      Json
   deskripsi String?
   aktif     Boolean  @default(true)
@@ -177,7 +178,7 @@ model PakaianDinas {
   judul     String
   gambar    String
   deskripsi String?
-  jenis     String   // Senin, Selasa, dll
+  jenis     String
   urutan    Int      @default(0)
   aktif     Boolean  @default(true)
   createdAt DateTime @default(now())
@@ -223,19 +224,19 @@ model Berita {
 }
 
 model Kegiatan {
-  id          String   @id @default(cuid())
-  judul       String
-  slug        String   @unique
-  konten      String   @db.Text
-  ringkasan   String?
-  gambar      String?
-  tanggalMulai DateTime
+  id             String    @id @default(cuid())
+  judul          String
+  slug           String    @unique
+  konten         String    @db.Text
+  ringkasan      String?
+  gambar         String?
+  tanggalMulai   DateTime
   tanggalSelesai DateTime?
-  lokasi      String?
-  penyelenggara String?
-  publish     Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  lokasi         String?
+  penyelenggara  String?
+  publish        Boolean   @default(false)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 }
 
 // ========== GALERI ==========
@@ -276,7 +277,7 @@ model InformasiKontak {
   nama      String
   nilai     String
   ikon      String?
-  tipe      String   // alamat, telepon, email, jam_kerja
+  tipe      String
   urutan    Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -284,17 +285,17 @@ model InformasiKontak {
 
 // ========== PERATURAN ==========
 model Peraturan {
-  id          String        @id @default(cuid())
-  nomor       String
-  judul       String
-  tahun       Int
-  tentang     String        @db.Text
-  file        String?
-  tipe        TipePeraturan
-  subTipe     String?       // untuk peraturan gubernur: kelembagaan, reformasi, tata laksana
-  aktif       Boolean       @default(true)
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  id        String        @id @default(cuid())
+  nomor     String
+  judul     String
+  tahun     Int
+  tentang   String        @db.Text
+  file      String?
+  tipe      TipePeraturan
+  subTipe   String?
+  aktif     Boolean       @default(true)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
 }
 
 enum TipePeraturan {
@@ -334,38 +335,38 @@ enum KategoriPPID {
 }
 
 model PermohonanInformasi {
-  id           String   @id @default(cuid())
-  namaPemohon  String
-  nik          String?
-  alamat       String?
-  telepon      String?
-  email        String?
-  pekerjaan    String?
-  informasiDiminta String @db.Text
-  tujuanPenggunaan String @db.Text
+  id               String           @id @default(cuid())
+  namaPemohon      String
+  nik              String?
+  alamat           String?
+  telepon          String?
+  email            String?
+  pekerjaan        String?
+  informasiDiminta String           @db.Text
+  tujuanPenggunaan String           @db.Text
   caraPenyampaian  String
-  status       StatusPermohonan @default(PENDING)
-  nomorRegister String? @unique
-  keterangan   String?  @db.Text
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  status           StatusPermohonan @default(PENDING)
+  nomorRegister    String?          @unique
+  keterangan       String?          @db.Text
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
 }
 
 // ========== WBS ==========
 model Pengaduan {
-  id           String   @id @default(cuid())
-  nomorTiket   String   @unique
-  nama         String
-  nip          String
-  unitKerja    String
-  kategori     String
-  subjek       String
-  uraian       String   @db.Text
-  buktiFile    String?
-  status       StatusPengaduan @default(BARU)
-  tanggapan    String?  @db.Text
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id         String          @id @default(cuid())
+  nomorTiket String          @unique
+  nama       String
+  nip        String
+  unitKerja  String
+  kategori   String
+  subjek     String
+  uraian     String          @db.Text
+  buktiFile  String?
+  status     StatusPengaduan @default(BARU)
+  tanggapan  String?         @db.Text
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
 }
 
 enum StatusPengaduan {
