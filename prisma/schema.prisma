@@ -1,0 +1,387 @@
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ========== AUTH ==========
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(ADMIN)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  SUPERADMIN
+  ADMIN
+  EDITOR
+}
+
+// ========== BERANDA ==========
+model SliderBeranda {
+  id        String   @id @default(cuid())
+  judul     String
+  deskripsi String?
+  gambar    String
+  urutan    Int      @default(0)
+  aktif     Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model StatistikBeranda {
+  id        String   @id @default(cuid())
+  label     String
+  nilai     String
+  ikon      String?
+  urutan    Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ========== PROFIL ==========
+model SekapurSirih {
+  id        String   @id @default(cuid())
+  judul     String
+  konten    String   @db.Text
+  foto      String?
+  jabatan   String?
+  nama      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model StrukturOrganisasi {
+  id        String   @id @default(cuid())
+  gambar    String
+  deskripsi String?
+  aktif     Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model TugasPokokFungsi {
+  id        String   @id @default(cuid())
+  judul     String
+  konten    String   @db.Text
+  urutan    Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Bagian {
+  id        String      @id @default(cuid())
+  nama      String
+  slug      BagianSlug  @unique
+  deskripsi String?     @db.Text
+  konten    String?     @db.Text
+  urutan    Int         @default(0)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+enum BagianSlug {
+  KELEMBAGAAN_ANALISIS_JABATAN
+  REFORMASI_BIROKRASI_AKUNTABILITAS
+  TATA_LAKSANA
+}
+
+// ========== INFORMASI INTERNAL ==========
+model DokumenSAKIP {
+  id        String   @id @default(cuid())
+  judul     String
+  tahun     Int
+  file      String
+  kategori  String?
+  aktif     Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model NilaiSKM {
+  id          String   @id @default(cuid())
+  tahun       Int
+  semester    Int
+  nilai       Float
+  predikat    String
+  keterangan  String?  @db.Text
+  file        String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model MaklumatPelayanan {
+  id        String   @id @default(cuid())
+  konten    String   @db.Text
+  gambar    String?
+  aktif     Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model StandarPelayanan {
+  id        String   @id @default(cuid())
+  judul     String
+  deskripsi String?  @db.Text
+  file      String?
+  urutan    Int      @default(0)
+  aktif     Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ========== INFORMASI EKSTERNAL ==========
+model DasbordGrafik {
+  id        String   @id @default(cuid())
+  judul     String
+  tipe      String   // bar, pie, line, etc
+  data      Json
+  deskripsi String?
+  aktif     Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PenyederhanaanBirokrasi {
+  id        String   @id @default(cuid())
+  judul     String
+  konten    String   @db.Text
+  file      String?
+  urutan    Int      @default(0)
+  aktif     Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PedomanZonaIntegritas {
+  id        String   @id @default(cuid())
+  judul     String
+  konten    String   @db.Text
+  file      String?
+  gambar    String?
+  aktif     Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PakaianDinas {
+  id        String   @id @default(cuid())
+  judul     String
+  gambar    String
+  deskripsi String?
+  jenis     String   // Senin, Selasa, dll
+  urutan    Int      @default(0)
+  aktif     Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PermintaanDataTPPASN {
+  id           String   @id @default(cuid())
+  namaPemohon  String
+  nip          String?
+  instansi     String
+  keperluan    String   @db.Text
+  tanggal      DateTime
+  status       StatusPermohonan @default(PENDING)
+  keterangan   String?  @db.Text
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+enum StatusPermohonan {
+  PENDING
+  DIPROSES
+  SELESAI
+  DITOLAK
+}
+
+// ========== BERITA & KEGIATAN ==========
+model Berita {
+  id        String   @id @default(cuid())
+  judul     String
+  slug      String   @unique
+  konten    String   @db.Text
+  ringkasan String?
+  gambar    String?
+  kategori  String?
+  tags      String[]
+  penulis   String?
+  views     Int      @default(0)
+  publish   Boolean  @default(false)
+  publishAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Kegiatan {
+  id          String   @id @default(cuid())
+  judul       String
+  slug        String   @unique
+  konten      String   @db.Text
+  ringkasan   String?
+  gambar      String?
+  tanggalMulai DateTime
+  tanggalSelesai DateTime?
+  lokasi      String?
+  penyelenggara String?
+  publish     Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ========== GALERI ==========
+model Galeri {
+  id        String      @id @default(cuid())
+  judul     String
+  deskripsi String?
+  tipe      TipeGaleri  @default(FOTO)
+  url       String
+  thumbnail String?
+  tags      String[]
+  urutan    Int         @default(0)
+  aktif     Boolean     @default(true)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+enum TipeGaleri {
+  FOTO
+  VIDEO
+}
+
+// ========== KONTAK ==========
+model Kontak {
+  id        String   @id @default(cuid())
+  nama      String
+  email     String
+  telepon   String?
+  subjek    String
+  pesan     String   @db.Text
+  dibaca    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model InformasiKontak {
+  id        String   @id @default(cuid())
+  nama      String
+  nilai     String
+  ikon      String?
+  tipe      String   // alamat, telepon, email, jam_kerja
+  urutan    Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ========== PERATURAN ==========
+model Peraturan {
+  id          String        @id @default(cuid())
+  nomor       String
+  judul       String
+  tahun       Int
+  tentang     String        @db.Text
+  file        String?
+  tipe        TipePeraturan
+  subTipe     String?       // untuk peraturan gubernur: kelembagaan, reformasi, tata laksana
+  aktif       Boolean       @default(true)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+enum TipePeraturan {
+  UNDANG_UNDANG
+  PERATURAN_PEMERINTAH
+  PERATURAN_PRESIDEN
+  PERATURAN_KEMENDAGRI
+  PERATURAN_KEMENPANRB
+  PERATURAN_DAERAH
+  PERATURAN_GUBERNUR
+  KEPUTUSAN_GUBERNUR
+}
+
+// ========== PPID ==========
+model DokumenPPID {
+  id        String       @id @default(cuid())
+  judul     String
+  deskripsi String?      @db.Text
+  file      String?
+  kategori  KategoriPPID
+  tahun     Int?
+  aktif     Boolean      @default(true)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+}
+
+enum KategoriPPID {
+  REGULASI
+  TUGAS_FUNGSI
+  STRUKTUR_ORGANISASI
+  MAKLUMAT
+  DOKUMEN_ANGGARAN
+  PROSEDUR_BENCANA
+  SK_DIKECUALIKAN
+  SK_DAFTAR_INFORMASI
+  DAFTAR_INFORMASI
+}
+
+model PermohonanInformasi {
+  id           String   @id @default(cuid())
+  namaPemohon  String
+  nik          String?
+  alamat       String?
+  telepon      String?
+  email        String?
+  pekerjaan    String?
+  informasiDiminta String @db.Text
+  tujuanPenggunaan String @db.Text
+  caraPenyampaian  String
+  status       StatusPermohonan @default(PENDING)
+  nomorRegister String? @unique
+  keterangan   String?  @db.Text
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+// ========== WBS ==========
+model Pengaduan {
+  id           String   @id @default(cuid())
+  nomorTiket   String   @unique
+  nama         String
+  nip          String
+  unitKerja    String
+  kategori     String
+  subjek       String
+  uraian       String   @db.Text
+  buktiFile    String?
+  status       StatusPengaduan @default(BARU)
+  tanggapan    String?  @db.Text
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+enum StatusPengaduan {
+  BARU
+  DIVERIFIKASI
+  DIPROSES
+  SELESAI
+  DITUTUP
+}
+
+// ========== PENGATURAN SITUS ==========
+model SiteSettings {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String   @db.Text
+  label     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
