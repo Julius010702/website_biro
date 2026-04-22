@@ -1,6 +1,6 @@
 'use client'
-// app/(admin)/admin/ppid/permohonan/_PermohonanInformasiPage.tsx
-import { useEffect, useState, useTransition } from 'react'
+// app/components/(admin)/ppid/permohonan/_PermohonanInformasiPage.tsx
+import { useCallback, useEffect, useState, useTransition } from 'react'
 import {
   AdminCard, AdminCardHeader, AdminTable, AdminTr, AdminTd,
   BtnPrimary, BtnSecondary, FormField, Textarea, Select,
@@ -38,16 +38,16 @@ export default function PermohonanInformasiPage() {
   const [pending, start]      = useTransition()
   const { show, ToastEl }     = useToast()
 
-  // Edit state
-  const [editStatus, setEditStatus]     = useState<StatusPermohonan>('PENDING')
-  const [editKet, setEditKet]           = useState('')
-  const [editNomor, setEditNomor]       = useState('')
+  const [editStatus, setEditStatus] = useState<StatusPermohonan>('PENDING')
+  const [editKet, setEditKet]       = useState('')
+  const [editNomor, setEditNomor]   = useState('')
 
-  function load() {
+  const load = useCallback(() => {
     const qs = filterStatus ? `?status=${filterStatus}` : ''
     fetch(`/api/admin/ppid/permohonan${qs}`).then((r) => r.json()).then(setList)
-  }
-  useEffect(() => { load() }, [filterStatus])
+  }, [filterStatus])
+
+  useEffect(() => { load() }, [load])
 
   function openDetail(p: Permohonan) {
     setDetail(p)
@@ -146,12 +146,10 @@ export default function PermohonanInformasiPage() {
         </AdminTable>
       </AdminCard>
 
-      {/* Detail / edit panel */}
       {detail !== null && (
         <AdminCard>
           <AdminCardHeader title={`Kelola Permohonan — ${detail.namaPemohon}`} />
           <div className="p-5 grid sm:grid-cols-2 gap-5">
-            {/* Info pemohon */}
             <div className="flex flex-col gap-3">
               <p className="text-xs font-bold uppercase tracking-wider" style={{ color: '#94A3B8' }}>Data Pemohon</p>
               <InfoRow label="Nama"        value={detail.namaPemohon} />
@@ -160,7 +158,6 @@ export default function PermohonanInformasiPage() {
               <InfoRow label="Email"       value={detail.email} />
               <InfoRow label="Cara Kirim"  value={detail.caraPenyampaian} />
             </div>
-            {/* Info permohonan */}
             <div className="flex flex-col gap-3">
               <p className="text-xs font-bold uppercase tracking-wider" style={{ color: '#94A3B8' }}>Detail Permohonan</p>
               <div>
@@ -173,7 +170,6 @@ export default function PermohonanInformasiPage() {
               </div>
             </div>
 
-            {/* Tindakan */}
             <div className="sm:col-span-2 pt-4" style={{ borderTop: '1px solid #EEF3FC' }}>
               <p className="text-xs font-bold uppercase tracking-wider mb-4" style={{ color: '#94A3B8' }}>Tindak Lanjut</p>
               <div className="grid sm:grid-cols-2 gap-4">
