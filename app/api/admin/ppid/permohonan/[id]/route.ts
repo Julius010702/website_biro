@@ -4,11 +4,12 @@ import { prisma } from '@/lib/prisma'
 
 export async function GET(
   _req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const data = await prisma.permohonanInformasi.findUnique({
-      where: { id: params.id },
+      where: { id },
     })
     if (!data) return NextResponse.json({ error: 'Tidak ditemukan' }, { status: 404 })
     return NextResponse.json(data)

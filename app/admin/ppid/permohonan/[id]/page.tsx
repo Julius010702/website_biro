@@ -1,4 +1,5 @@
-// app/admin/ppid/permohonan/[id]/page.tsx
+'use client'
+// app/(admin)/admin/ppid/permohonan/[id]/page.tsx
 import { use } from 'react'
 import PermohonanDetailPage from './_PermohonanDetailPage'
 
