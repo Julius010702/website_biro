@@ -1,6 +1,8 @@
+// app/(main)/page.tsx
 import HeroSection from '@/components/sections/HeroSection'
 import BeritaSection from '@/components/sections/BeritaSection'
 import GaleriSection from '@/components/sections/GaleriSection'
+import SitusTerkaitSection from '@/components/sections/SitusTerkaitSection'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -13,6 +15,7 @@ export default function HomePage() {
     <>
       <HeroSection />
       <BeritaSection />
+      <SitusTerkaitSection />
       <GaleriSection />
     </>
   )
