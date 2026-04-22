@@ -1,5 +1,5 @@
 'use client'
-// app/(admin)/admin/ppid/permohonan/[id]/_PermohonanDetailPage.tsx
+// app/admin/ppid/permohonan/[id]/_PermohonanDetailPage.tsx
 import { useEffect, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import {
@@ -36,15 +36,15 @@ const STATUS_COLOR: Record<StatusPermohonan, { color: string; bg: string; label:
 }
 
 export default function PermohonanDetailPage({ id }: { id: string }) {
-  const router            = useRouter()
-  const [data, setData]   = useState<Permohonan | null>(null)
+  const router                = useRouter()
+  const [data, setData]       = useState<Permohonan | null>(null)
   const [loading, setLoading] = useState(true)
-  const [pending, start]  = useTransition()
-  const { show, ToastEl } = useToast()
+  const [pending, start]      = useTransition()
+  const { show, ToastEl }     = useToast()
 
-  const [editStatus,  setEditStatus]  = useState<StatusPermohonan>('PENDING')
-  const [editKet,     setEditKet]     = useState('')
-  const [editNomor,   setEditNomor]   = useState('')
+  const [editStatus, setEditStatus] = useState<StatusPermohonan>('PENDING')
+  const [editKet,    setEditKet]    = useState('')
+  const [editNomor,  setEditNomor]  = useState('')
 
   useEffect(() => {
     fetch(`/api/admin/ppid/permohonan/${id}`)
@@ -57,6 +57,7 @@ export default function PermohonanDetailPage({ id }: { id: string }) {
         setLoading(false)
       })
       .catch(() => { show('Gagal memuat data', 'error'); setLoading(false) })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
 
   function handleUpdate() {
