@@ -1,5 +1,6 @@
 // next.config.ts
 import type { NextConfig } from 'next'
+
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
@@ -10,5 +11,9 @@ const nextConfig: NextConfig = {
     ],
   },
   serverExternalPackages: ['@prisma/client'],
+  outputFileTracingIncludes: {
+    '**': ['./prisma/**/*'],
+  },
 }
+
 export default nextConfig
