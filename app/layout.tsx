@@ -1,4 +1,3 @@
-// app/layout.tsx
 import type { Metadata } from 'next'
 import './globals.css'
 
@@ -27,8 +26,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="id" data-scroll-behavior="smooth">
-      <body>
+    <html lang="id" style={{ overflowX: 'hidden', maxWidth: '100%' }}>
+      <body style={{ overflowX: 'hidden', maxWidth: '100%', width: '100%' }}>
         {children}
       </body>
     </html>

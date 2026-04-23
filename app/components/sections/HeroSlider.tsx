@@ -106,19 +106,27 @@ export default function HeroSlider({ stats, tagline }: HeroSliderProps) {
   const slide = slides[current]
 
   return (
-    <section className="relative overflow-hidden hero-section">
+    <section className="hero-section">
       {/* ── Slides ── */}
-      <div className="relative hero-inner">
+      <div className="hero-inner">
         {slides.map((s, i) => (
           <div
             key={s.id}
             className="absolute inset-0 transition-opacity duration-1000"
             style={{ opacity: i === current ? 1 : 0, zIndex: i === current ? 1 : 0 }}
           >
-            <div className="absolute inset-0" style={{ transform: i === current ? 'scale(1)' : 'scale(1.06)', transition: 'transform 8s ease' }}>
-              <Image src={s.gambar} alt={s.judul} fill priority={i === 0} sizes="100vw" className="object-cover" />
+            <div className="absolute inset-0" style={{
+              transform: i === current ? 'scale(1)' : 'scale(1.06)',
+              transition: 'transform 8s ease',
+            }}>
+              <Image
+                src={s.gambar} alt={s.judul} fill priority={i === 0}
+                sizes="100vw" className="object-cover"
+              />
             </div>
-            <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(10,35,66,0.92) 0%, rgba(13,71,161,0.68) 50%, rgba(0,0,0,0.30) 100%)' }} />
+            <div className="absolute inset-0" style={{
+              background: 'linear-gradient(135deg, rgba(10,35,66,0.92) 0%, rgba(13,71,161,0.68) 50%, rgba(0,0,0,0.30) 100%)',
+            }} />
           </div>
         ))}
 
@@ -136,7 +144,8 @@ export default function HeroSlider({ stats, tagline }: HeroSliderProps) {
         <div className="absolute top-0 right-0 pointer-events-none" style={{
           width: '400px', height: '400px', borderRadius: '50%',
           background: `radial-gradient(circle, ${slide.accent}18 0%, transparent 65%)`,
-          transform: 'translate(30%, -30%)', transition: 'background 0.8s ease', zIndex: 2,
+          transform: 'translate(30%, -30%)',
+          transition: 'background 0.8s ease', zIndex: 2,
         }} />
 
         {/* Vertical dot nav — desktop only */}
@@ -144,159 +153,255 @@ export default function HeroSlider({ stats, tagline }: HeroSliderProps) {
           {slides.map((_, i) => (
             <button key={i} onClick={() => goTo(i)} aria-label={`Slide ${i + 1}`}
               className="rounded-full transition-all duration-300 cursor-pointer"
-              style={{ width: '4px', height: i === current ? '32px' : '16px', backgroundColor: i === current ? slide.accent : 'rgba(255,255,255,0.28)', border: 'none', padding: 0 }} />
+              style={{
+                width: '4px', height: i === current ? '32px' : '16px',
+                backgroundColor: i === current ? slide.accent : 'rgba(255,255,255,0.28)',
+                border: 'none', padding: 0,
+              }} />
           ))}
         </div>
 
         {/* ── Main content ── */}
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full h-full flex items-center hero-content" style={{ zIndex: 5 }}>
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center w-full">
+        <div
+          className="relative w-full h-full flex items-center hero-content"
+          style={{ zIndex: 5 }}
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+            <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center w-full">
 
-            {/* LEFT — text */}
-            <div key={animKey} style={{ animation: 'heroFadeUp 0.65s cubic-bezier(0.16,1,0.3,1) forwards' }}>
-              {/* Badge */}
-              <div className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 mb-4 sm:mb-5"
-                style={{ background: 'rgba(255,255,255,0.08)', border: `1px solid ${slide.accent}55`, backdropFilter: 'blur(8px)' }}>
-                <Shield className="w-3 h-3 sm:w-3.5 sm:h-3.5" style={{ color: slide.accent }} />
-                <span className="text-[10px] sm:text-[11px] font-bold tracking-[0.18em] uppercase text-white">{slide.badge}</span>
-              </div>
+              {/* LEFT — text */}
+              <div key={animKey} style={{ animation: 'heroFadeUp 0.65s cubic-bezier(0.16,1,0.3,1) forwards' }}>
 
-              {/* Heading */}
-              <h1 className="font-bold text-white leading-tight mb-3"
-                style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.75rem, 5vw, 3.5rem)' }}>
-                {slide.judul}
-                <span className="block font-semibold mt-1"
-                  style={{ color: slide.accent, fontSize: 'clamp(0.95rem, 2.5vw, 1.75rem)', transition: 'color 0.6s ease' }}>
-                  {slide.subjudul}
-                </span>
-              </h1>
-
-              {/* Divider */}
-              <div className="flex items-center gap-2 mb-3 sm:mb-4">
-                <div className="h-0.5 rounded-full w-12" style={{ backgroundColor: slide.accent }} />
-                <div className="h-0.5 rounded-full w-4" style={{ backgroundColor: 'rgba(255,255,255,0.25)' }} />
-              </div>
-
-              {/* Tagline */}
-              <p className="text-sm sm:text-base font-semibold mb-1.5" style={{ color: 'rgba(255,255,255,0.85)' }}>{tagline}</p>
-
-              {/* Description — hidden on xs */}
-              <p className="hidden sm:block text-sm leading-relaxed mb-6 max-w-md" style={{ color: 'rgba(255,255,255,0.55)' }}>{slide.deskripsi}</p>
-
-              {/* CTAs */}
-              <div className="flex flex-wrap gap-2.5 mb-6 sm:mb-8">
-                <Link href={slide.href}
-                  className="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl font-bold text-sm transition-all hover:scale-105 active:scale-95"
-                  style={{ backgroundColor: slide.accent, color: '#0A2342', boxShadow: `0 4px 20px ${slide.accent}45`, transition: 'background 0.4s ease, transform 0.15s ease' }}>
-                  {slide.cta} <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
-                <Link href="/berita"
-                  className="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl font-semibold text-sm transition-all hover:scale-105 active:scale-95"
-                  style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', border: '1px solid rgba(255,255,255,0.2)', backdropFilter: 'blur(6px)' }}>
-                  Berita Terkini
-                </Link>
-              </div>
-
-              {/* Controls */}
-              <div className="flex items-center gap-2.5">
-                <button onClick={prev} aria-label="Slide sebelumnya"
-                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center transition-all hover:scale-105 active:scale-95 cursor-pointer"
-                  style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.18)', color: '#fff' }}>
-                  <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
-                </button>
-                <button onClick={next} aria-label="Slide berikutnya"
-                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center transition-all hover:scale-105 active:scale-95 cursor-pointer"
-                  style={{ backgroundColor: slide.accent, color: '#0A2342', border: 'none' }}>
-                  <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
-                </button>
-
-                {/* Dot indicators */}
-                <div className="flex items-center gap-1.5 ml-1">
-                  {slides.map((_, i) => (
-                    <button key={i} onClick={() => goTo(i)} aria-label={`Ke slide ${i + 1}`}
-                      className="rounded-full transition-all duration-300 cursor-pointer"
-                      style={{ width: i === current ? '18px' : '6px', height: '6px', backgroundColor: i === current ? slide.accent : 'rgba(255,255,255,0.3)', border: 'none', padding: 0 }} />
-                  ))}
+                {/* Badge */}
+                <div className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 mb-4 sm:mb-5"
+                  style={{
+                    background: 'rgba(255,255,255,0.08)',
+                    border: `1px solid ${slide.accent}55`,
+                    backdropFilter: 'blur(8px)',
+                  }}>
+                  <Shield className="w-3 h-3 sm:w-3.5 sm:h-3.5" style={{ color: slide.accent }} />
+                  <span className="text-[10px] sm:text-[11px] font-bold tracking-[0.18em] uppercase text-white">
+                    {slide.badge}
+                  </span>
                 </div>
 
-                <button onClick={() => setPaused((p) => !p)} aria-label={paused ? 'Putar' : 'Jeda'}
-                  className="w-7 h-7 rounded-lg flex items-center justify-center transition-all hover:scale-105 cursor-pointer"
-                  style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.6)' }}>
-                  {paused ? <Play className="w-3 h-3" /> : <Pause className="w-3 h-3" />}
-                </button>
+                {/* Heading */}
+                <h1
+                  className="font-bold text-white leading-tight mb-3"
+                  style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.75rem, 5vw, 3.5rem)' }}
+                >
+                  {slide.judul}
+                  <span
+                    className="block font-semibold mt-1"
+                    style={{
+                      color: slide.accent,
+                      fontSize: 'clamp(0.95rem, 2.5vw, 1.75rem)',
+                      transition: 'color 0.6s ease',
+                    }}
+                  >
+                    {slide.subjudul}
+                  </span>
+                </h1>
 
-                <span className="ml-auto text-[11px] font-bold tabular-nums" style={{ color: 'rgba(255,255,255,0.35)' }}>
-                  {String(current + 1).padStart(2, '0')} / {String(slides.length).padStart(2, '0')}
-                </span>
+                {/* Divider */}
+                <div className="flex items-center gap-2 mb-3 sm:mb-4">
+                  <div className="h-0.5 rounded-full w-12" style={{ backgroundColor: slide.accent }} />
+                  <div className="h-0.5 rounded-full w-4" style={{ backgroundColor: 'rgba(255,255,255,0.25)' }} />
+                </div>
+
+                {/* Tagline */}
+                <p className="text-sm sm:text-base font-semibold mb-1.5" style={{ color: 'rgba(255,255,255,0.85)' }}>
+                  {tagline}
+                </p>
+
+                {/* Description — hidden on xs */}
+                <p className="hidden sm:block text-sm leading-relaxed mb-6 max-w-md" style={{ color: 'rgba(255,255,255,0.55)' }}>
+                  {slide.deskripsi}
+                </p>
+
+                {/* CTAs */}
+                <div className="flex flex-wrap gap-2.5 mb-6 sm:mb-8">
+                  <Link
+                    href={slide.href}
+                    className="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl font-bold text-sm transition-all hover:scale-105 active:scale-95"
+                    style={{
+                      backgroundColor: slide.accent, color: '#0A2342',
+                      boxShadow: `0 4px 20px ${slide.accent}45`,
+                      transition: 'background 0.4s ease, transform 0.15s ease',
+                    }}
+                  >
+                    {slide.cta} <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                  <Link
+                    href="/berita"
+                    className="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl font-semibold text-sm transition-all hover:scale-105 active:scale-95"
+                    style={{
+                      background: 'rgba(255,255,255,0.1)', color: '#fff',
+                      border: '1px solid rgba(255,255,255,0.2)',
+                      backdropFilter: 'blur(6px)',
+                    }}
+                  >
+                    Berita Terkini
+                  </Link>
+                </div>
+
+                {/* Controls */}
+                <div className="flex items-center gap-2.5 flex-wrap">
+                  <button onClick={prev} aria-label="Slide sebelumnya"
+                    className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center transition-all hover:scale-105 active:scale-95 cursor-pointer"
+                    style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.18)', color: '#fff' }}>
+                    <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+                  </button>
+                  <button onClick={next} aria-label="Slide berikutnya"
+                    className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center transition-all hover:scale-105 active:scale-95 cursor-pointer"
+                    style={{ backgroundColor: slide.accent, color: '#0A2342', border: 'none' }}>
+                    <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                  </button>
+
+                  {/* Dot indicators */}
+                  <div className="flex items-center gap-1.5 ml-1">
+                    {slides.map((_, i) => (
+                      <button key={i} onClick={() => goTo(i)} aria-label={`Ke slide ${i + 1}`}
+                        className="rounded-full transition-all duration-300 cursor-pointer"
+                        style={{
+                          width: i === current ? '18px' : '6px', height: '6px',
+                          backgroundColor: i === current ? slide.accent : 'rgba(255,255,255,0.3)',
+                          border: 'none', padding: 0,
+                        }} />
+                    ))}
+                  </div>
+
+                  <button onClick={() => setPaused((p) => !p)} aria-label={paused ? 'Putar' : 'Jeda'}
+                    className="w-7 h-7 rounded-lg flex items-center justify-center transition-all hover:scale-105 cursor-pointer"
+                    style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.6)' }}>
+                    {paused ? <Play className="w-3 h-3" /> : <Pause className="w-3 h-3" />}
+                  </button>
+
+                  <span className="ml-auto text-[11px] font-bold tabular-nums" style={{ color: 'rgba(255,255,255,0.35)' }}>
+                    {String(current + 1).padStart(2, '0')} / {String(slides.length).padStart(2, '0')}
+                  </span>
+                </div>
               </div>
-            </div>
 
-            {/* RIGHT — Logo + Stats (hidden on mobile, shown on lg) */}
-            <div className="hidden lg:flex flex-col items-center gap-8">
-              {/* Emblem */}
-              <div className="relative" style={{
-                width: '180px', height: '180px', borderRadius: '50%',
-                background: 'rgba(255,255,255,0.07)', border: `2px solid ${slide.accent}35`,
-                boxShadow: `0 0 80px ${slide.accent}18, 0 20px 60px rgba(0,0,0,0.3)`,
-                backdropFilter: 'blur(8px)', transition: 'border-color 0.8s ease, box-shadow 0.8s ease',
-              }}>
-                <Image src="/images/logo-prov-ntt.png" alt="Logo Provinsi NTT" fill sizes="180px" className="object-contain p-5" priority />
-                <div className="absolute -inset-3 rounded-full" style={{ border: `1px dashed ${slide.accent}28`, animation: 'spinSlow 30s linear infinite' }} />
-              </div>
+              {/* RIGHT — Logo + Stats (desktop only) */}
+              <div className="hidden lg:flex flex-col items-center gap-8">
+                {/* Emblem */}
+                <div className="relative" style={{
+                  width: '180px', height: '180px', borderRadius: '50%',
+                  background: 'rgba(255,255,255,0.07)',
+                  border: `2px solid ${slide.accent}35`,
+                  boxShadow: `0 0 80px ${slide.accent}18, 0 20px 60px rgba(0,0,0,0.3)`,
+                  backdropFilter: 'blur(8px)',
+                  transition: 'border-color 0.8s ease, box-shadow 0.8s ease',
+                }}>
+                  <Image
+                    src="/images/logo-prov-ntt.png" alt="Logo Provinsi NTT"
+                    fill sizes="180px" className="object-contain p-5" priority
+                  />
+                  <div className="absolute -inset-3 rounded-full" style={{
+                    border: `1px dashed ${slide.accent}28`,
+                    animation: 'spinSlow 30s linear infinite',
+                  }} />
+                </div>
 
-              {/* Stats grid */}
-              {stats.length > 0 && (
-                <div className="grid grid-cols-2 gap-3 w-full max-w-xs">
-                  {stats.slice(0, 4).map((s) => (
-                    <div key={s.id} className="rounded-2xl p-4 text-center transition-transform hover:scale-105"
-                      style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)', backdropFilter: 'blur(8px)' }}>
-                      <div className="flex justify-center mb-1.5" style={{ color: slide.accent }}>
-                        {iconMap[s.ikon] ?? <Shield className="w-5 h-5" />}
+                {/* Stats grid desktop */}
+                {stats.length > 0 && (
+                  <div className="grid grid-cols-2 gap-3 w-full max-w-xs">
+                    {stats.slice(0, 4).map((s) => (
+                      <div key={s.id}
+                        className="rounded-2xl p-4 text-center transition-transform hover:scale-105"
+                        style={{
+                          background: 'rgba(255,255,255,0.08)',
+                          border: '1px solid rgba(255,255,255,0.12)',
+                          backdropFilter: 'blur(8px)',
+                        }}>
+                        <div className="flex justify-center mb-1.5" style={{ color: slide.accent }}>
+                          {iconMap[s.ikon] ?? <Shield className="w-5 h-5" />}
+                        </div>
+                        <div className="text-2xl font-bold text-white" style={{ fontFamily: 'var(--font-display)' }}>
+                          {s.nilai}
+                        </div>
+                        <div className="text-[11px] mt-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>
+                          {s.label}
+                        </div>
                       </div>
-                      <div className="text-2xl font-bold text-white" style={{ fontFamily: 'var(--font-display)' }}>{s.nilai}</div>
-                      <div className="text-[11px] mt-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>{s.label}</div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Stats mobile — 2x2 grid, lebih aman dari 4-col */}
+              {stats.length > 0 && (
+                <div className="lg:hidden grid grid-cols-2 gap-2 w-full">
+                  {stats.slice(0, 4).map((s) => (
+                    <div key={s.id}
+                      className="rounded-xl p-3 flex items-center gap-2.5"
+                      style={{
+                        background: 'rgba(255,255,255,0.08)',
+                        border: '1px solid rgba(255,255,255,0.12)',
+                        backdropFilter: 'blur(8px)',
+                      }}>
+                      <div className="shrink-0" style={{ color: slide.accent }}>
+                        {iconMap[s.ikon] ?? <Shield className="w-4 h-4" />}
+                      </div>
+                      <div className="min-w-0">
+                        <div className="text-sm font-bold text-white leading-none" style={{ fontFamily: 'var(--font-display)' }}>
+                          {s.nilai}
+                        </div>
+                        <div className="text-[10px] mt-0.5 leading-tight truncate" style={{ color: 'rgba(255,255,255,0.5)' }}>
+                          {s.label}
+                        </div>
+                      </div>
                     </div>
                   ))}
                 </div>
               )}
+
             </div>
-
-            {/* Stats mobile — compact row below controls on sm */}
-            {stats.length > 0 && (
-              <div className="lg:hidden grid grid-cols-4 gap-2 w-full">
-                {stats.slice(0, 4).map((s) => (
-                  <div key={s.id} className="rounded-xl p-2.5 text-center"
-                    style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)', backdropFilter: 'blur(8px)' }}>
-                    <div className="flex justify-center mb-1" style={{ color: slide.accent }}>
-                      {iconMap[s.ikon] ?? <Shield className="w-4 h-4" />}
-                    </div>
-                    <div className="text-sm font-bold text-white" style={{ fontFamily: 'var(--font-display)' }}>{s.nilai}</div>
-                    <div className="text-[9px] mt-0.5 leading-tight" style={{ color: 'rgba(255,255,255,0.45)' }}>{s.label}</div>
-                  </div>
-                ))}
-              </div>
-            )}
-
           </div>
         </div>
       </div>
 
       {/* Progress bar */}
       <div className="absolute bottom-0 left-0 right-0" style={{ height: '3px', backgroundColor: 'rgba(255,255,255,0.08)', zIndex: 10 }}>
-        <div style={{ height: '100%', width: `${progress}%`, backgroundColor: slide.accent, borderRadius: '0 2px 2px 0', transition: 'background-color 0.6s ease' }} />
+        <div style={{
+          height: '100%', width: `${progress}%`,
+          backgroundColor: slide.accent,
+          borderRadius: '0 2px 2px 0',
+          transition: 'background-color 0.6s ease',
+        }} />
       </div>
 
       <style>{`
-        .hero-section { min-height: 100svh; display: flex; flex-direction: column; }
-        .hero-inner   { position: relative; flex: 1; min-height: 100svh; }
-        .hero-content { padding-top: 5rem; padding-bottom: 4rem; min-height: 100svh; }
-
+        .hero-section {
+          position: relative;
+          overflow: hidden;
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          max-width: 100%;
+          min-height: 100svh;
+        }
+        .hero-inner {
+          position: relative;
+          flex: 1;
+          min-height: 100svh;
+          width: 100%;
+        }
+        .hero-content {
+          padding-top: 5rem;
+          padding-bottom: 4rem;
+          min-height: 100svh;
+        }
         @media (max-width: 639px) {
           .hero-section { min-height: calc(100svh - 4rem); }
           .hero-inner   { min-height: calc(100svh - 4rem); }
-          .hero-content { padding-top: 4rem; padding-bottom: 5rem; min-height: calc(100svh - 4rem); }
+          .hero-content {
+            padding-top: 3.5rem;
+            padding-bottom: 5rem;
+            min-height: calc(100svh - 4rem);
+          }
         }
-
         @keyframes heroFadeUp {
           from { opacity: 0; transform: translateY(24px); }
           to   { opacity: 1; transform: translateY(0); }

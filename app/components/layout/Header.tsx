@@ -1,5 +1,5 @@
 'use client'
-// components/sections/Header.tsx (atau components/Header.tsx)
+// components/sections/Header.tsx
 
 import { useState, useRef } from 'react'
 import Link from 'next/link'
@@ -24,7 +24,7 @@ const navIcons: Record<string, React.ReactNode> = {
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [activeMenu, setActiveMenu] = useState<string | null>(null)
-  const [activeSub, setActiveSub] = useState<string | null>(null)
+  const [activeSub, setActiveSub]   = useState<string | null>(null)
   const pathname = usePathname()
 
   const [prevPathname, setPrevPathname] = useState(pathname)
@@ -38,7 +38,7 @@ export default function Header() {
   return (
     <>
       {/* TOP BAR */}
-      <div className="header-topbar hidden md:flex items-center justify-between text-xs overflow-hidden">
+      <div className="header-topbar hidden md:flex items-center justify-between text-xs overflow-hidden w-full">
         <div className="flex items-center flex-1 min-w-0 overflow-hidden">
           <div className="header-ticker-label shrink-0 flex items-center gap-2 px-3 py-2 z-10">
             <span className="w-1.5 h-1.5 rounded-full bg-ntt-hgold-400 animate-pulse inline-block" />
@@ -81,14 +81,13 @@ export default function Header() {
       <div className="gold-accent-line hidden md:block" />
 
       {/* MAIN HEADER */}
-      <header className="header-main sticky top-0 z-50 isolate">
+      <header className="header-main sticky top-0 z-50 isolate w-full">
         <div className="absolute inset-0 pointer-events-none -z-10">
           <div className="absolute -top-10 -right-10 w-52 h-52 rounded-full bg-ntt-hgold-400/5 blur-2xl" />
           <div className="absolute bottom-0 left-1/3 w-72 h-16 bg-ntt-navy-400/10 blur-2xl" />
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 h-17.5 flex items-center justify-between gap-4">
-          {/* Logo — ✅ FIX: tambah sizes prop */}
+<div className="relative max-w-7xl mx-auto px-4 h-17.5 flex items-center justify-between gap-4">          {/* Logo */}
           <Link href="/" className="flex items-center gap-3 shrink-0 group">
             <div className="header-logo-icon relative w-12 h-12">
               <Image
@@ -116,14 +115,8 @@ export default function Header() {
                 <DesktopNavItem
                   item={item}
                   active={activeMenu === item.label}
-                  onHover={(label) => {
-                    setActiveMenu(label)
-                    setActiveSub(null)
-                  }}
-                  onLeave={() => {
-                    setActiveMenu(null)
-                    setActiveSub(null)
-                  }}
+                  onHover={(label) => { setActiveMenu(label); setActiveSub(null) }}
+                  onLeave={() => { setActiveMenu(null); setActiveSub(null) }}
                   activeSub={activeSub}
                   onSubHover={setActiveSub}
                   icon={navIcons[item.label]}
@@ -160,7 +153,10 @@ export default function Header() {
             className="absolute inset-0 bg-ntt-blue-900/80 backdrop-blur-sm"
             onClick={() => setMobileOpen(false)}
           />
-          <div className="absolute top-17.75 left-0 right-0 bottom-0 header-mobile-drawer overflow-y-auto">
+          <div
+            className="absolute left-0 right-0 bottom-0 header-mobile-drawer overflow-y-auto overflow-x-hidden"
+            style={{ top: '70px' }}
+          >
             <MobileNav items={mainNav} onClose={() => setMobileOpen(false)} />
           </div>
         </div>
@@ -171,13 +167,7 @@ export default function Header() {
 
 /* ─── DESKTOP NAV ITEM ─── */
 function DesktopNavItem({
-  item,
-  active,
-  onHover,
-  onLeave,
-  activeSub,
-  onSubHover,
-  icon,
+  item, active, onHover, onLeave, activeSub, onSubHover, icon,
 }: {
   item: NavItem
   active: boolean
@@ -187,8 +177,8 @@ function DesktopNavItem({
   onSubHover: (label: string) => void
   icon?: React.ReactNode
 }) {
-  const pathname = usePathname()
-  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const pathname    = usePathname()
+  const closeTimer  = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const isActive = item.href
     ? pathname === item.href
@@ -202,11 +192,9 @@ function DesktopNavItem({
     if (closeTimer.current) clearTimeout(closeTimer.current)
     if (item.children) onHover(item.label)
   }
-
   const handleLeave = () => {
     closeTimer.current = setTimeout(() => onLeave(), 300)
   }
-
   const handleDropdownEnter = () => {
     if (closeTimer.current) clearTimeout(closeTimer.current)
   }
@@ -215,19 +203,13 @@ function DesktopNavItem({
     <div className="relative" onMouseEnter={handleEnter} onMouseLeave={handleLeave}>
       {item.href && !item.children ? (
         item.external ? (
-          <a
-            href={item.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={cn('header-nav-link', isActive && 'active')}
-          >
-            {icon}
-            {item.label}
+          <a href={item.href} target="_blank" rel="noopener noreferrer"
+            className={cn('header-nav-link', isActive && 'active')}>
+            {icon}{item.label}
           </a>
         ) : (
           <Link href={item.href} className={cn('header-nav-link', isActive && 'active')}>
-            {icon}
-            {item.label}
+            {icon}{item.label}
           </Link>
         )
       ) : (
@@ -238,9 +220,7 @@ function DesktopNavItem({
           {icon}
           {item.label}
           {item.children && (
-            <ChevronDown
-              className={cn('w-3.5 h-3.5 transition-transform duration-200', active && 'rotate-180')}
-            />
+            <ChevronDown className={cn('w-3.5 h-3.5 transition-transform duration-200', active && 'rotate-180')} />
           )}
         </button>
       )}
@@ -253,12 +233,7 @@ function DesktopNavItem({
         >
           <div className="header-dropdown-section-label px-4 py-1.5">{item.label}</div>
           {item.children.map((child) => (
-            <SubItem
-              key={child.label}
-              child={child}
-              activeSub={activeSub}
-              onSubHover={onSubHover}
-            />
+            <SubItem key={child.label} child={child} activeSub={activeSub} onSubHover={onSubHover} />
           ))}
         </div>
       )}
@@ -268,9 +243,7 @@ function DesktopNavItem({
 
 /* ─── SUB ITEM ─── */
 function SubItem({
-  child,
-  activeSub,
-  onSubHover,
+  child, activeSub, onSubHover,
 }: {
   child: NavItem
   activeSub: string | null
@@ -282,11 +255,9 @@ function SubItem({
     if (subTimer.current) clearTimeout(subTimer.current)
     if (child.children) onSubHover(child.label)
   }
-
   const handleSubLeave = () => {
     subTimer.current = setTimeout(() => onSubHover(''), 300)
   }
-
   const handleSubDropdownEnter = () => {
     if (subTimer.current) clearTimeout(subTimer.current)
     onSubHover(child.label)
@@ -295,12 +266,7 @@ function SubItem({
   if (child.href && !child.children) {
     if (child.external) {
       return (
-        <a
-          href={child.href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="header-dropdown-link"
-        >
+        <a href={child.href} target="_blank" rel="noopener noreferrer" className="header-dropdown-link">
           <span>{child.label}</span>
         </a>
       )
@@ -314,20 +280,13 @@ function SubItem({
 
   return (
     <div className="relative" onMouseEnter={handleSubEnter} onMouseLeave={handleSubLeave}>
-      <button
-        className={cn(
-          'header-dropdown-link w-full',
-          activeSub === child.label && 'bg-white/5'
-        )}
-      >
+      <button className={cn('header-dropdown-link w-full', activeSub === child.label && 'bg-white/5')}>
         <span>{child.label}</span>
         {child.children && (
-          <ChevronRight
-            className={cn(
-              'w-3.5 h-3.5 shrink-0 ml-auto transition-transform duration-200',
-              activeSub === child.label && 'text-ntt-hgold-400'
-            )}
-          />
+          <ChevronRight className={cn(
+            'w-3.5 h-3.5 shrink-0 ml-auto transition-transform duration-200',
+            activeSub === child.label && 'text-ntt-hgold-400'
+          )} />
         )}
       </button>
 
@@ -338,26 +297,18 @@ function SubItem({
           onMouseLeave={handleSubLeave}
         >
           <div className="header-dropdown-section-label px-4 py-1.5">{child.label}</div>
-          {child.children.map((sub) => {
-            if (sub.external) {
-              return (
-                <a
-                  key={sub.label}
-                  href={sub.href ?? '#'}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="header-dropdown-link"
-                >
-                  <span>{sub.label}</span>
-                </a>
-              )
-            }
-            return (
+          {child.children.map((sub) =>
+            sub.external ? (
+              <a key={sub.label} href={sub.href ?? '#'} target="_blank" rel="noopener noreferrer"
+                className="header-dropdown-link">
+                <span>{sub.label}</span>
+              </a>
+            ) : (
               <Link key={sub.label} href={sub.href ?? '#'} className="header-dropdown-link">
                 <span>{sub.label}</span>
               </Link>
             )
-          })}
+          )}
         </div>
       )}
     </div>
@@ -374,7 +325,7 @@ function MobileNav({ items, onClose }: { items: NavItem[]; onClose: () => void }
     )
 
   return (
-    <div className="px-4 py-6 pb-24">
+    <div className="px-4 py-6 pb-24 w-full overflow-x-hidden">
       <div className="mb-5 px-3 py-3 rounded-xl bg-ntt-blue-800/60 border border-ntt-hgold-400/15 flex items-center gap-3">
         <div className="w-8 h-8 rounded-lg bg-linear-to-br from-ntt-hgold-400 to-ntt-gold-600 flex items-center justify-center text-ntt-blue-950 font-bold text-xs">
           BO
@@ -412,9 +363,7 @@ function MobileNav({ items, onClose }: { items: NavItem[]; onClose: () => void }
       </div>
 
       <div className="mt-4 px-3 py-3 rounded-xl bg-ntt-navy-800/40 border border-white/5">
-        <p className="text-ntt-navy-200/50 text-[10px] font-bold uppercase tracking-widest mb-2">
-          Kontak
-        </p>
+        <p className="text-ntt-navy-200/50 text-[10px] font-bold uppercase tracking-widest mb-2">Kontak</p>
         <div className="flex items-center gap-2 text-xs text-ntt-navy-200/70">
           <Phone className="w-3 h-3 text-ntt-hgold-400" />
           (0380) 831021
@@ -430,12 +379,7 @@ function MobileNav({ items, onClose }: { items: NavItem[]; onClose: () => void }
 
 /* ─── MOBILE NAV ITEM ─── */
 function MobileNavItem({
-  item,
-  expanded,
-  onToggle,
-  onClose,
-  level,
-  icon,
+  item, expanded, onToggle, onClose, level, icon,
 }: {
   item: NavItem
   expanded: string[]
@@ -450,24 +394,17 @@ function MobileNavItem({
   if (item.href && !item.children) {
     if (item.external) {
       return (
-        <a
-          href={item.href}
-          target="_blank"
-          rel="noopener noreferrer"
+        <a href={item.href} target="_blank" rel="noopener noreferrer"
           onClick={onClose}
-          className={cn('header-mobile-link flex items-center gap-2.5', pl)}
-        >
+          className={cn('header-mobile-link flex items-center gap-2.5', pl)}>
           {level === 0 && icon && <span className="text-ntt-hgold-400/70">{icon}</span>}
           {item.label}
         </a>
       )
     }
     return (
-      <Link
-        href={item.href}
-        onClick={onClose}
-        className={cn('header-mobile-link flex items-center gap-2.5', pl)}
-      >
+      <Link href={item.href} onClick={onClose}
+        className={cn('header-mobile-link flex items-center gap-2.5', pl)}>
         {level === 0 && icon && <span className="text-ntt-hgold-400/70">{icon}</span>}
         {item.label}
       </Link>
@@ -480,14 +417,12 @@ function MobileNavItem({
         onClick={() => onToggle(item.label)}
         className={cn('header-mobile-expand flex items-center gap-2.5', pl, isExpanded && 'open')}
       >
-        <span className="flex items-center gap-2.5 flex-1">
-          {level === 0 && icon && <span className="text-ntt-hgold-400/70">{icon}</span>}
-          {item.label}
+        <span className="flex items-center gap-2.5 flex-1 min-w-0">
+          {level === 0 && icon && <span className="text-ntt-hgold-400/70 shrink-0">{icon}</span>}
+          <span className="truncate">{item.label}</span>
         </span>
         {item.children && (
-          <ChevronDown
-            className={cn('w-4 h-4 mr-3 transition-transform duration-200', isExpanded && 'rotate-180')}
-          />
+          <ChevronDown className={cn('w-4 h-4 mr-3 shrink-0 transition-transform duration-200', isExpanded && 'rotate-180')} />
         )}
       </button>
       {isExpanded && item.children && (
