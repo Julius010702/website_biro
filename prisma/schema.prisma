@@ -4,9 +4,8 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 // ========== AUTH ==========
@@ -48,6 +47,18 @@ model StatistikBeranda {
   updatedAt DateTime @updatedAt
 }
 
+model SitusTerkait {
+  id        String   @id @default(cuid())
+  label     String
+  href      String
+  external  Boolean  @default(true)
+  thumbnail String[]
+  urutan    Int      @default(0)
+  aktif     Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 // ========== PROFIL ==========
 model SekapurSirih {
   id        String   @id @default(cuid())
@@ -79,14 +90,14 @@ model TugasPokokFungsi {
 }
 
 model Bagian {
-  id        String      @id @default(cuid())
+  id        String     @id @default(cuid())
   nama      String
-  slug      BagianSlug  @unique
-  deskripsi String?     @db.Text
-  konten    String?     @db.Text
-  urutan    Int         @default(0)
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  slug      BagianSlug @unique
+  deskripsi String?    @db.Text
+  konten    String?    @db.Text
+  urutan    Int        @default(0)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 }
 
 enum BagianSlug {
@@ -108,15 +119,15 @@ model DokumenSAKIP {
 }
 
 model NilaiSKM {
-  id          String   @id @default(cuid())
-  tahun       Int
-  semester    Int
-  nilai       Float
-  predikat    String
-  keterangan  String?  @db.Text
-  file        String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         String   @id @default(cuid())
+  tahun      Int
+  semester   Int
+  nilai      Float
+  predikat   String
+  keterangan String?  @db.Text
+  file       String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 model MaklumatPelayanan {
@@ -186,16 +197,16 @@ model PakaianDinas {
 }
 
 model PermintaanDataTPPASN {
-  id           String   @id @default(cuid())
-  namaPemohon  String
-  nip          String?
-  instansi     String
-  keperluan    String   @db.Text
-  tanggal      DateTime
-  status       StatusPermohonan @default(PENDING)
-  keterangan   String?  @db.Text
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id          String           @id @default(cuid())
+  namaPemohon String
+  nip         String?
+  instansi    String
+  keperluan   String           @db.Text
+  tanggal     DateTime
+  status      StatusPermohonan @default(PENDING)
+  keterangan  String?          @db.Text
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
 }
 
 enum StatusPermohonan {
@@ -207,20 +218,20 @@ enum StatusPermohonan {
 
 // ========== BERITA & KEGIATAN ==========
 model Berita {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   judul     String
-  slug      String   @unique
-  konten    String   @db.Text
+  slug      String    @unique
+  konten    String    @db.Text
   ringkasan String?
   gambar    String?
   kategori  String?
   tags      String[]
   penulis   String?
-  views     Int      @default(0)
-  publish   Boolean  @default(false)
+  views     Int       @default(0)
+  publish   Boolean   @default(false)
   publishAt DateTime?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 model Kegiatan {
@@ -241,17 +252,17 @@ model Kegiatan {
 
 // ========== GALERI ==========
 model Galeri {
-  id        String      @id @default(cuid())
+  id        String     @id @default(cuid())
   judul     String
   deskripsi String?
-  tipe      TipeGaleri  @default(FOTO)
+  tipe      TipeGaleri @default(FOTO)
   url       String
   thumbnail String?
   tags      String[]
-  urutan    Int         @default(0)
-  aktif     Boolean     @default(true)
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  urutan    Int        @default(0)
+  aktif     Boolean    @default(true)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 }
 
 enum TipeGaleri {

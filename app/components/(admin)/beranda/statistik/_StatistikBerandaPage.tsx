@@ -1,5 +1,4 @@
 'use client'
-// app/(admin)/admin/beranda/statistik/_StatistikBerandaPage.tsx
 import { useEffect, useState, useTransition } from 'react'
 import {
   AdminCard, AdminCardHeader, AdminTable, AdminTr, AdminTd,
@@ -7,13 +6,9 @@ import {
   FormField, Input, EmptyState, useToast,
 } from '@/components/admin/AdminUI'
 
-type Statistik = {
-  id: string
-  label: string
-  nilai: string
-  ikon: string | null
-  urutan: number
-}
+type Statistik = { id: string; label: string; nilai: string; ikon: string | null; urutan: number }
+
+const IKON_OPTIONS = ['Building2', 'MapPin', 'FileText', 'Shield', 'Users', 'Star', 'Globe', 'Award']
 
 export default function StatistikBerandaPage() {
   const [list, setList]   = useState<Statistik[]>([])
@@ -27,7 +22,8 @@ export default function StatistikBerandaPage() {
   useEffect(() => { load() }, [])
 
   function handleSave() {
-    if (!form?.label || !form?.nilai) return show('Label dan nilai wajib diisi', 'error')
+    if (!form?.label) return show('Label wajib diisi', 'error')
+    if (!form?.nilai) return show('Nilai wajib diisi', 'error')
     start(async () => {
       try {
         const method = form.id ? 'PUT' : 'POST'
@@ -43,37 +39,33 @@ export default function StatistikBerandaPage() {
   }
 
   async function handleDelete(id: string) {
-    await fetch(`/api/admin/beranda/statistik?id=${id}`, { method: 'DELETE' })
-    load()
+    await fetch(`/api/admin/beranda/statistik?id=${id}`, { method: 'DELETE' }); load()
   }
 
   return (
     <div className="flex flex-col gap-6">
       <ToastEl />
       <AdminCard>
-        <AdminCardHeader
-          title="Statistik Beranda"
-          action={<BtnAdd label="Tambah Statistik" onClick={() => setForm({ urutan: list.length + 1 })} />}
-        />
-        <AdminTable headers={['Urutan', 'Label', 'Nilai', 'Ikon', 'Aksi']}>
+        <AdminCardHeader title="Statistik Beranda"
+          action={<BtnAdd label="Tambah Statistik" onClick={() => setForm({ urutan: list.length + 1 })} />} />
+        <AdminTable headers={['Ikon', 'Label', 'Nilai', 'Urutan', 'Aksi']}>
           {list.length === 0
             ? <tr><td colSpan={5}><EmptyState label="Belum ada data statistik" /></td></tr>
             : list.map((d) => (
               <AdminTr key={d.id}>
                 <AdminTd>
-                  <span className="w-7 h-7 inline-flex items-center justify-center rounded-lg text-xs font-bold"
+                  <span className="w-8 h-8 inline-flex items-center justify-center rounded-lg text-sm"
                     style={{ background: '#EFF6FF', color: '#0D47A1' }}>
-                    {d.urutan}
+                    {d.ikon ?? '📊'}
                   </span>
                 </AdminTd>
+                <AdminTd><p className="font-semibold text-sm" style={{ color: '#0A2342' }}>{d.label}</p></AdminTd>
                 <AdminTd>
-                  <p className="font-semibold text-sm" style={{ color: '#0A2342' }}>{d.label}</p>
+                  <span className="font-bold text-lg" style={{ color: '#0D47A1' }}>{d.nilai}</span>
                 </AdminTd>
                 <AdminTd>
-                  <span className="text-lg font-black" style={{ color: '#0D47A1' }}>{d.nilai}</span>
-                </AdminTd>
-                <AdminTd>
-                  <span className="text-xs text-slate-500">{d.ikon ?? '-'}</span>
+                  <span className="w-7 h-7 inline-flex items-center justify-center rounded-lg text-xs font-bold"
+                    style={{ background: '#EFF6FF', color: '#0D47A1' }}>{d.urutan}</span>
                 </AdminTd>
                 <AdminTd>
                   <div className="flex gap-1.5">
@@ -88,35 +80,28 @@ export default function StatistikBerandaPage() {
 
       {form !== null && (
         <AdminCard>
-          <AdminCardHeader title={form.id ? 'Edit Statistik' : 'Tambah Statistik Beranda'} />
+          <AdminCardHeader title={form.id ? 'Edit Statistik' : 'Tambah Statistik'} />
           <div className="p-5 grid sm:grid-cols-2 gap-4">
             <FormField label="Label" required>
-              <Input
-                value={form.label ?? ''}
-                onChange={(e) => setForm({ ...form, label: e.target.value })}
-                placeholder="cth: Jumlah ASN"
-              />
+              <Input value={form.label ?? ''} onChange={(e) => setForm({ ...form, label: e.target.value })}
+                placeholder="cth: Jumlah ASN" />
             </FormField>
             <FormField label="Nilai" required>
-              <Input
-                value={form.nilai ?? ''}
-                onChange={(e) => setForm({ ...form, nilai: e.target.value })}
-                placeholder="cth: 1.200+"
-              />
+              <Input value={form.nilai ?? ''} onChange={(e) => setForm({ ...form, nilai: e.target.value })}
+                placeholder="cth: 1.234 atau 98%" />
             </FormField>
-            <FormField label="Ikon (nama Lucide)">
-              <Input
+            <FormField label="Ikon" hint="Pilih nama ikon Lucide">
+              <select
                 value={form.ikon ?? ''}
                 onChange={(e) => setForm({ ...form, ikon: e.target.value })}
-                placeholder="cth: Users, FileText, Building2"
-              />
+                className="w-full rounded-lg border px-3 py-2 text-sm"
+                style={{ borderColor: '#E2E8F0', color: '#0A2342' }}>
+                <option value="">-- Pilih Ikon --</option>
+                {IKON_OPTIONS.map((o) => <option key={o} value={o}>{o}</option>)}
+              </select>
             </FormField>
             <FormField label="Urutan">
-              <Input
-                type="number"
-                value={form.urutan ?? ''}
-                onChange={(e) => setForm({ ...form, urutan: Number(e.target.value) })}
-              />
+              <Input type="number" value={form.urutan ?? ''} onChange={(e) => setForm({ ...form, urutan: Number(e.target.value) })} />
             </FormField>
           </div>
           <div className="flex justify-end gap-2 px-5 py-3" style={{ borderTop: '1px solid #EEF3FC' }}>

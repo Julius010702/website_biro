@@ -5,39 +5,44 @@ import {
   FormField, Input, Textarea, StatusBadge, useToast,
 } from '@/components/admin/AdminUI'
 import { upsertStrukturOrganisasi } from '@/actions/admin'
+import { useUploadThing } from '@/lib/uploadthing-client'
 import Image from 'next/image'
 
 type Struktur = { id: string; gambar: string; deskripsi: string | null; aktif: boolean }
 
-async function uploadImage(file: File): Promise<string> {
-  const fd = new FormData(); fd.append('file', file); fd.append('folder', 'profil')
-  const res = await fetch('/api/upload', { method: 'POST', body: fd })
-  if (!res.ok) { const { error } = await res.json(); throw new Error(error ?? 'Upload gagal') }
-  return (await res.json()).url
-}
-
 export default function StrukturOrganisasiPage() {
-  const [data, setData]     = useState<Partial<Struktur>>({ aktif: true })
-  const [busy, setBusy]     = useState(false)
+  const [data, setData] = useState<Partial<Struktur>>({ aktif: true })
+  const [busy, setBusy] = useState(false)
   const [imgErr, setImgErr] = useState('')
-  const [pending, start]    = useTransition()
-  const { show, ToastEl }   = useToast()
+  const [pending, start] = useTransition()
+  const { show, ToastEl } = useToast()
+
+  const { startUpload } = useUploadThing('profileUploader', {
+    onClientUploadComplete: (res) => {
+      if (res?.[0]?.ufsUrl) {
+        setData((p) => ({ ...p, gambar: res[0].ufsUrl }))
+      }
+      setBusy(false)
+    },
+    onUploadError: (e) => {
+      setImgErr(e.message ?? 'Gagal upload')
+      setBusy(false)
+    },
+  })
 
   useEffect(() => {
-    fetch('/api/admin/struktur-organisasi').then((r) => r.json()).then((d) => { if (d) setData(d) })
+    fetch('/api/admin/struktur-organisasi')
+      .then((r) => r.json())
+      .then((d) => { if (d) setData(d) })
   }, [])
 
-  async function handleUpload(file: File) {
-    setImgErr(''); setBusy(true)
-    try {
-      setData((p) => ({ ...p, gambar: '' }))
-      const url = await uploadImage(file)
-      setData((p) => ({ ...p, gambar: url }))
-    } catch (e: unknown) {
-      setImgErr(e instanceof Error ? e.message : 'Gagal')
-    } finally {
-      setBusy(false)
-    }
+  async function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setImgErr('')
+    setBusy(true)
+    await startUpload([file])
+    e.target.value = ''
   }
 
   function handleSave() {
@@ -45,11 +50,15 @@ export default function StrukturOrganisasiPage() {
     start(async () => {
       try {
         await upsertStrukturOrganisasi({
-          id: data.id, gambar: data.gambar!,
-          deskripsi: data.deskripsi ?? undefined, aktif: data.aktif ?? true,
+          id: data.id,
+          gambar: data.gambar!,
+          deskripsi: data.deskripsi ?? undefined,
+          aktif: data.aktif ?? true,
         })
         show('Struktur Organisasi disimpan')
-      } catch { show('Terjadi kesalahan', 'error') }
+      } catch {
+        show('Terjadi kesalahan', 'error')
+      }
     })
   }
 
@@ -60,33 +69,72 @@ export default function StrukturOrganisasiPage() {
         <AdminCardHeader title="Struktur Organisasi" />
         <div className="p-5 flex flex-col gap-4">
 
+          {/* Preview gambar */}
           {data.gambar && (
-            <div className="relative w-full rounded-xl overflow-hidden border" style={{ borderColor: '#E5E7EB', aspectRatio: '16/7' }}>
-              <Image src={data.gambar} alt="Struktur Organisasi" fill className="object-contain bg-gray-50" sizes="800px" />
+            <div
+              className="relative w-full rounded-xl overflow-hidden border"
+              style={{ borderColor: '#E5E7EB', aspectRatio: '16/7' }}
+            >
+              <Image
+                src={data.gambar}
+                alt="Struktur Organisasi"
+                fill
+                className="object-contain bg-gray-50"
+                sizes="800px"
+              />
+              <button
+                type="button"
+                onClick={() => setData((p) => ({ ...p, gambar: '' }))}
+                className="absolute top-2 right-2 w-6 h-6 rounded-full text-white text-xs font-bold flex items-center justify-center"
+                style={{ background: 'rgba(0,0,0,0.55)' }}
+              >✕</button>
             </div>
           )}
 
-          <FormField label="Gambar Struktur" required hint="Upload JPG/PNG/WebP maks 2MB">
+          <FormField label="Gambar Struktur" required hint="Upload JPG/PNG/WebP maks 4MB">
             <div className="flex gap-2">
-              <Input value={data.gambar ?? ''} onChange={(e) => setData({ ...data, gambar: e.target.value })}
-                placeholder="https://... atau upload file" className="flex-1" />
-              <label className="shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold border cursor-pointer"
-                style={{ background: busy ? '#F3F4F6' : '#EFF6FF', color: busy ? '#9CA3AF' : '#1565C0', borderColor: busy ? '#E5E7EB' : '#BFDBFE' }}>
-                {busy ? '⏳…' : '📁 Upload'}
-                <input type="file" accept="image/*" className="hidden"
-                  onChange={(e) => { const f = e.target.files?.[0]; if (f) handleUpload(f) }} />
+              <Input
+                value={data.gambar ?? ''}
+                onChange={(e) => setData({ ...data, gambar: e.target.value })}
+                placeholder="https://... atau upload file"
+                className="flex-1"
+              />
+              <label
+                className="shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold border cursor-pointer"
+                style={{
+                  background: busy ? '#F3F4F6' : '#EFF6FF',
+                  color: busy ? '#9CA3AF' : '#1565C0',
+                  borderColor: busy ? '#E5E7EB' : '#BFDBFE',
+                  pointerEvents: busy ? 'none' : 'auto',
+                }}
+              >
+                {busy ? '⏳ Mengupload...' : '📁 Upload'}
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  className="hidden"
+                  onChange={handleUpload}
+                  disabled={busy}
+                />
               </label>
             </div>
             {imgErr && <p className="text-xs mt-1" style={{ color: '#DC2626' }}>{imgErr}</p>}
           </FormField>
 
           <FormField label="Deskripsi">
-            <Textarea value={data.deskripsi ?? ''} onChange={(e) => setData({ ...data, deskripsi: e.target.value })} />
+            <Textarea
+              value={data.deskripsi ?? ''}
+              onChange={(e) => setData({ ...data, deskripsi: e.target.value })}
+            />
           </FormField>
 
           <div className="flex items-center gap-2">
-            <input type="checkbox" id="aktif-struktur" checked={data.aktif ?? true}
-              onChange={(e) => setData({ ...data, aktif: e.target.checked })} />
+            <input
+              type="checkbox"
+              id="aktif-struktur"
+              checked={data.aktif ?? true}
+              onChange={(e) => setData({ ...data, aktif: e.target.checked })}
+            />
             <label htmlFor="aktif-struktur" className="text-xs font-semibold" style={{ color: '#374151' }}>
               Tampilkan di website
             </label>

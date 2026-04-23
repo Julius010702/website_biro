@@ -1,6 +1,7 @@
 'use client'
-// app/(admin)/admin/galeri/_GaleriPage.tsx
-import { useEffect, useRef, useState, useTransition } from 'react'
+import { useEffect, useState, useTransition } from 'react'
+import { useUploadThing } from '@/lib/uploadthing-client'
+
 import {
   AdminCard, AdminCardHeader, AdminTable, AdminTr, AdminTd,
   BtnAdd, BtnEdit, BtnDelete, BtnPrimary, BtnSecondary,
@@ -15,20 +16,6 @@ type Galeri = {
   urutan: number; aktif: boolean; tags: string[]
 }
 
-// ── Upload helper ──────────────────────────────────────────────────────────────
-async function uploadImage(file: File, folder: 'galeri' | 'thumbnail'): Promise<string> {
-  const fd = new FormData()
-  fd.append('file', file)
-  fd.append('folder', folder)          // dikirim ke API agar disimpan di subfolder yg benar
-  const res = await fetch('/api/upload', { method: 'POST', body: fd })
-  if (!res.ok) {
-    const { error } = await res.json()
-    throw new Error(error ?? 'Upload gagal')
-  }
-  const { url } = await res.json()
-  return url
-}
-
 // ── Komponen tombol upload ─────────────────────────────────────────────────────
 function ImageUploadField({
   label, value, onChange, hint,
@@ -38,23 +25,27 @@ function ImageUploadField({
   onChange: (url: string) => void
   hint?: string
 }) {
-  const inputRef  = useRef<HTMLInputElement>(null)
   const [busy, setBusy] = useState(false)
-  const [err,  setErr]  = useState('')
+  const [err, setErr] = useState('')
+
+  const { startUpload } = useUploadThing('profileUploader', {
+    onClientUploadComplete: (res) => {
+      if (res?.[0]?.ufsUrl) onChange(res[0].ufsUrl)
+      setBusy(false)
+    },
+    onUploadError: (e) => {
+      setErr(e.message ?? 'Upload gagal')
+      setBusy(false)
+    },
+  })
 
   async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
-    setErr(''); setBusy(true)
-    try {
-      const url = await uploadImage(file, label === 'URL Thumbnail' ? 'thumbnail' : 'galeri')
-      onChange(url)
-    } catch (ex: unknown) {
-      setErr(ex instanceof Error ? ex.message : 'Upload gagal')
-    } finally {
-      setBusy(false)
-      if (inputRef.current) inputRef.current.value = ''
-    }
+    setErr('')
+    setBusy(true)
+    await startUpload([file])
+    e.target.value = ''
   }
 
   return (
@@ -67,47 +58,37 @@ function ImageUploadField({
             placeholder="https://... atau upload file"
             className="flex-1"
           />
-          <button
-            type="button"
-            onClick={() => inputRef.current?.click()}
-            disabled={busy}
-            className="shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors"
+          <label
+            className="shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold border cursor-pointer"
             style={{
               background: busy ? '#F3F4F6' : '#EFF6FF',
               color: busy ? '#9CA3AF' : '#1565C0',
               borderColor: busy ? '#E5E7EB' : '#BFDBFE',
-              cursor: busy ? 'not-allowed' : 'pointer',
+              pointerEvents: busy ? 'none' : 'auto',
             }}
           >
             {busy ? '⏳ Upload…' : '📁 Upload'}
-          </button>
-          <input
-            ref={inputRef}
-            type="file"
-            accept="image/jpeg,image/png,image/webp"
-            className="hidden"
-            onChange={handleFile}
-          />
+            <input
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              className="hidden"
+              onChange={handleFile}
+              disabled={busy}
+            />
+          </label>
         </div>
 
-        {err && (
-          <p className="text-xs" style={{ color: '#DC2626' }}>{err}</p>
-        )}
+        {err && <p className="text-xs" style={{ color: '#DC2626' }}>{err}</p>}
 
-        {/* Preview jika ada URL */}
         {value && (
           <div className="relative w-full h-36 rounded-xl overflow-hidden border" style={{ borderColor: '#E5E7EB' }}>
-            <Image src={value} alt="preview" fill className="object-cover" sizes="400px"
-              onError={() => {/* biarkan broken image terlihat */}} />
+            <Image src={value} alt="preview" fill className="object-cover" sizes="400px" />
             <button
               type="button"
               onClick={() => onChange('')}
               className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full text-white text-xs font-bold flex items-center justify-center"
               style={{ background: 'rgba(0,0,0,0.55)' }}
-              title="Hapus gambar"
-            >
-              ✕
-            </button>
+            >✕</button>
           </div>
         )}
       </div>
@@ -117,9 +98,9 @@ function ImageUploadField({
 
 // ── Halaman utama ──────────────────────────────────────────────────────────────
 export default function GaleriPage() {
-  const [list, setList]   = useState<Galeri[]>([])
-  const [form, setForm]   = useState<Partial<Galeri> | null>(null)
-  const [pending, start]  = useTransition()
+  const [list, setList] = useState<Galeri[]>([])
+  const [form, setForm] = useState<Partial<Galeri> | null>(null)
+  const [pending, start] = useTransition()
   const { show, ToastEl } = useToast()
 
   function load() {
@@ -208,13 +189,11 @@ export default function GaleriPage() {
           <AdminCardHeader title={form.id ? 'Edit Galeri' : 'Tambah Galeri'} />
           <div className="p-5 grid sm:grid-cols-2 gap-4">
 
-            {/* Judul */}
             <FormField label="Judul" required>
               <Input value={form.judul ?? ''}
                 onChange={(e) => setForm({ ...form, judul: e.target.value })} />
             </FormField>
 
-            {/* Tipe */}
             <FormField label="Tipe">
               <Select value={form.tipe ?? 'FOTO'}
                 onChange={(e) => setForm({ ...form, tipe: e.target.value as 'FOTO' | 'VIDEO' })}>
@@ -223,7 +202,6 @@ export default function GaleriPage() {
               </Select>
             </FormField>
 
-            {/* URL Media — dengan upload (hanya FOTO) */}
             {form.tipe === 'VIDEO' ? (
               <FormField label="URL Video" required hint="Link YouTube / Vimeo">
                 <Input value={form.url ?? ''}
@@ -235,11 +213,10 @@ export default function GaleriPage() {
                 label="URL Media"
                 value={form.url ?? ''}
                 onChange={(url) => setForm({ ...form, url })}
-                hint="Upload JPG/PNG/WebP maks 2MB, atau isi URL langsung"
+                hint="Upload JPG/PNG/WebP maks 4MB, atau isi URL langsung"
               />
             )}
 
-            {/* Thumbnail */}
             <ImageUploadField
               label="URL Thumbnail"
               value={form.thumbnail ?? ''}
@@ -247,13 +224,11 @@ export default function GaleriPage() {
               hint="Opsional — thumbnail untuk video atau override foto"
             />
 
-            {/* Urutan */}
             <FormField label="Urutan">
               <Input type="number" value={form.urutan ?? 0}
                 onChange={(e) => setForm({ ...form, urutan: Number(e.target.value) })} />
             </FormField>
 
-            {/* Tags */}
             <FormField label="Tags" hint="Pisahkan koma">
               <Input
                 value={(form.tags ?? []).join(', ')}
@@ -262,7 +237,6 @@ export default function GaleriPage() {
               />
             </FormField>
 
-            {/* Deskripsi */}
             <div className="sm:col-span-2">
               <FormField label="Deskripsi">
                 <Textarea value={form.deskripsi ?? ''}
@@ -270,7 +244,6 @@ export default function GaleriPage() {
               </FormField>
             </div>
 
-            {/* Aktif */}
             <div className="sm:col-span-2 flex items-center gap-2">
               <input type="checkbox" id="aktif-galeri"
                 checked={form.aktif ?? true}
