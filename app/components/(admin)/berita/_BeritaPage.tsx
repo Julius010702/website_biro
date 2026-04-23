@@ -60,8 +60,8 @@ function ImageUploader({ value, onChange }: { value: string; onChange: (url: str
 
   useEffect(() => { setImgError(false) }, [value])
 
-const { startUpload, isUploading } = useUploadThing('imageUploader', {
-      onClientUploadComplete: (res) => {
+  const { startUpload, isUploading } = useUploadThing('imageUploader', {
+    onClientUploadComplete: (res) => {
       const url = res?.[0]?.ufsUrl ?? res?.[0]?.url
       if (url) {
         onChange(url)
