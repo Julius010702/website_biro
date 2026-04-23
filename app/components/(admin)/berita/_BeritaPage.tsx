@@ -27,13 +27,22 @@ export default function BeritaPage() {
   const [pending, start]    = useTransition()
   const { show, ToastEl }   = useToast()
 
+  // ✅ Fix: ambil .data dari response karena API return { data: [], total: ... }
   function load() {
-    fetch('/api/admin/berita').then((r) => r.json()).then((d) => setList(d))
+    fetch('/api/admin/berita')
+      .then((r) => r.json())
+      .then((d) => setList(Array.isArray(d) ? d : (d?.data ?? [])))
+      .catch(() => setList([]))
   }
 
   useEffect(() => {
     let cancelled = false
-    fetch('/api/admin/berita').then((r) => r.json()).then((d) => { if (!cancelled) setList(d) })
+    fetch('/api/admin/berita')
+      .then((r) => r.json())
+      .then((d) => {
+        if (!cancelled) setList(Array.isArray(d) ? d : (d?.data ?? []))
+      })
+      .catch(() => { if (!cancelled) setList([]) })
     return () => { cancelled = true }
   }, [])
 
