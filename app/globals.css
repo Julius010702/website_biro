@@ -16,7 +16,7 @@
   --color-ntt-blue-900: #061E45;
   --color-ntt-blue-950: #030F2A;
 
-  /* ── NTT Navy (khusus header dark) ── */
+  /* ── NTT Navy ── */
   --color-ntt-navy-950: #030B1A;
   --color-ntt-navy-900: #071428;
   --color-ntt-navy-800: #0D2045;
@@ -41,7 +41,7 @@
   --color-ntt-gold-800: #7A5F00;
   --color-ntt-gold-900: #5C4600;
 
-  /* ── NTT Header Gold (warm/rich untuk header navbar) ── */
+  /* ── NTT Header Gold ── */
   --color-ntt-hgold-400: #D4A017;
   --color-ntt-hgold-300: #E8BE45;
   --color-ntt-hgold-200: #F5D978;
@@ -68,14 +68,25 @@
    BASE
 ───────────────────────────────────────────────────── */
 @layer base {
-  html { scroll-behavior: smooth; }
+  html {
+    scroll-behavior: smooth;
+    width: 100%;
+    overflow-x: hidden;
+  }
   body {
     font-family: 'Source Sans 3', sans-serif;
     background-color: #F8F5EE;
     color: #1a1a2e;
     -webkit-font-smoothing: antialiased;
+    width: 100%;
+    overflow-x: hidden;
   }
   h1, h2, h3 { font-family: 'Playfair Display', serif; }
+
+  /* Reset semua elemen agar tidak overflow */
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
 }
 
 /* ─────────────────────────────────────────────────────
@@ -145,26 +156,37 @@
   ::-webkit-scrollbar-track { background: #f1f1f1; }
   ::-webkit-scrollbar-thumb { background: #1B5FA8; border-radius: 3px; }
 
-  /* ═══════════════════════════════════════════════
-     HEADER TICKER
-  ═══════════════════════════════════════════════ */
+  /* ═══════════════════════════════════════════════════════════
+     HEADER TICKER — FULL WIDTH FIX
+  ═══════════════════════════════════════════════════════════ */
+
+  /* Label "BIRO" di kiri ticker */
   .header-ticker-label {
     background-color: var(--color-ntt-hgold-400);
     border-right: 1px solid rgba(212, 160, 23, 0.3);
+    /* flex-shrink: 0 agar label tidak menyusut */
+    flex-shrink: 0;
   }
   .header-ticker-label .header-topbar-text {
     color: var(--color-ntt-blue-900) !important;
   }
+
+  /* Track ticker: flex-1 + min-width:0 agar mengisi sisa lebar */
   .header-ticker-track {
+    flex: 1;
+    min-width: 0;               /* ← KRITIS: cegah overflow keluar container */
+    overflow: hidden;
     mask-image: linear-gradient(to right, transparent 0%, black 4%, black 88%, transparent 100%);
     -webkit-mask-image: linear-gradient(to right, transparent 0%, black 4%, black 88%, transparent 100%);
   }
+
   .header-ticker-inner {
     display: flex;
     width: max-content;
     animation: ticker-scroll 38s linear infinite;
   }
   .header-ticker-inner:hover { animation-play-state: paused; }
+
   .header-ticker-text {
     white-space: nowrap;
     color: rgba(180, 215, 250, 0.78);
@@ -180,21 +202,41 @@
     vertical-align: middle;
   }
 
-  /* ═══════════════════════════════════════════════
-     HEADER COMPONENTS
-  ═══════════════════════════════════════════════ */
+  /* ═══════════════════════════════════════════════════════════
+     HEADER TOPBAR — FULL WIDTH FIX
+     Hapus semua max-w-* dari wrapper topbar
+  ═══════════════════════════════════════════════════════════ */
 
-  /* Top bar */
   .header-topbar {
+    /* Full width — tidak boleh ada max-width di sini */
+    width: 100%;
     background-color: var(--color-ntt-blue-900);
     border-bottom: 2px solid var(--color-ntt-hgold-400);
   }
+
+  /* Wrapper inner topbar — FULL WIDTH tanpa max-w */
+  .header-topbar-inner {
+    width: 100%;                /* ← KUNCI: bukan max-w-7xl */
+    display: flex;
+    align-items: center;
+    /* Padding kiri-kanan minimal, biarkan lebar mengikuti viewport */
+    padding-left: 0;            /* label ticker mulai dari tepi kiri */
+    padding-right: 1rem;        /* sedikit padding kanan untuk meta info */
+    height: 32px;
+    gap: 0;
+  }
+
   .header-topbar-text    { color: var(--color-ntt-hgold-300); }
   .header-topbar-meta    { color: rgba(180, 215, 250, 0.7); }
   .header-topbar-divider { color: rgba(255, 255, 255, 0.2); }
 
-  /* Main header */
+  /* ═══════════════════════════════════════════════════════════
+     HEADER MAIN — FULL WIDTH FIX
+  ═══════════════════════════════════════════════════════════ */
+
   .header-main {
+    /* Full width */
+    width: 100%;
     background: linear-gradient(
       135deg,
       var(--color-ntt-blue-900) 0%,
@@ -207,7 +249,53 @@
     position: relative;
   }
 
-  /* Logo icon */
+  /* ═══════════════════════════════════════════════════════════
+     HEADER NAV INNER — FULL WIDTH FIX
+     Ini wrapper di dalam header-main yang menampung
+     logo + nav links + tombol login
+     Hapus max-w-7xl mx-auto dari class ini di TSX Anda
+  ═══════════════════════════════════════════════════════════ */
+
+  .header-nav-container {
+    /* FULL WIDTH — bukan max-w-7xl */
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.625rem 1.25rem;  /* py-2.5 px-5 */
+    gap: 0.75rem;
+  }
+
+  /* Logo area — tidak boleh menyusut */
+  .header-logo-area {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    flex-shrink: 0;
+  }
+
+  /* Nav links area — mengisi ruang tengah */
+  .header-nav-links-area {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    flex: 1;                    /* ← mengisi sisa ruang di tengah */
+    justify-content: center;    /* ← tetap di tengah */
+    min-width: 0;
+  }
+
+  /* Right area (badge + login) — tidak boleh menyusut */
+  .header-nav-right-area {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     LOGO
+  ═══════════════════════════════════════════════════════════ */
+
   .header-logo-icon {
     background: linear-gradient(135deg, var(--color-ntt-hgold-400), var(--color-ntt-gold-600));
     box-shadow:
@@ -215,13 +303,13 @@
       0 0 0 2px rgba(212,160,23,0.15);
     @apply w-12 h-12 rounded-xl flex items-center justify-center text-2xl
            transition-all duration-300;
+    flex-shrink: 0;
   }
   .header-logo-icon:hover {
     box-shadow: 0 6px 24px rgba(212,160,23,0.6);
     transform: translateY(-2px) rotate(-3deg);
   }
 
-  /* Logo text */
   .header-logo-title {
     font-family: 'Playfair Display', serif;
     color: var(--color-ntt-hgold-300);
@@ -232,11 +320,14 @@
     @apply text-[10px] font-semibold tracking-[0.18em] uppercase mt-0.5;
   }
 
-  /* Desktop nav link */
+  /* ═══════════════════════════════════════════════════════════
+     NAV LINKS
+  ═══════════════════════════════════════════════════════════ */
+
   .header-nav-link {
     color: rgba(180, 215, 250, 0.85);
     @apply flex items-center gap-1 px-3 py-2 rounded-lg text-[13px] font-semibold
-           transition-all duration-200 tracking-wide;
+           transition-all duration-200 tracking-wide whitespace-nowrap;
   }
   .header-nav-link:hover,
   .header-nav-link.active {
@@ -244,23 +335,22 @@
     background-color: rgba(212, 160, 23, 0.12);
   }
 
-  /* ═══════════════════════════════════════════════
-     DROPDOWN — FIX: bridge invisible agar mouse
-     tidak "jatuh" ke gap antara button dan panel
-  ═══════════════════════════════════════════════ */
+  /* ═══════════════════════════════════════════════════════════
+     DROPDOWN — bridge invisible
+  ═══════════════════════════════════════════════════════════ */
+
   .header-dropdown {
     background-color: var(--color-ntt-blue-900);
     border: 1px solid rgba(212, 160, 23, 0.22);
     border-top: 2px solid var(--color-ntt-hgold-400);
     box-shadow: 0 20px 50px rgba(2, 20, 41, 0.65);
-    /* ✅ margin-top: 0 — hapus gap, ganti dengan bridge ::before */
     margin-top: 0;
     @apply absolute top-full left-0 rounded-xl min-w-55 py-1.5 z-9999;
     animation: dropIn 0.2s cubic-bezier(0.16,1,0.3,1) forwards;
     position: absolute;
   }
 
-  /* ✅ Bridge transparan 12px di atas dropdown agar mouse tidak keluar area hover */
+  /* Bridge transparan 12px di atas dropdown */
   .header-dropdown::before {
     content: '';
     position: absolute;
@@ -271,23 +361,22 @@
     background: transparent;
   }
 
-  /* ═══════════════════════════════════════════════
-     SUB-DROPDOWN — FIX: bridge invisible di sisi
-     kiri agar mouse tidak keluar saat geser kanan
-  ═══════════════════════════════════════════════ */
+  /* ═══════════════════════════════════════════════════════════
+     SUB-DROPDOWN — bridge invisible kiri
+  ═══════════════════════════════════════════════════════════ */
+
   .header-subdropdown {
     background-color: var(--color-ntt-blue-900);
     border: 1px solid rgba(212, 160, 23, 0.22);
     border-left: 2px solid var(--color-ntt-hgold-400);
     box-shadow: 0 20px 50px rgba(2, 20, 41, 0.65);
-    /* ✅ margin-left: 0 — hapus gap, ganti dengan bridge ::before */
     margin-left: 0;
     @apply absolute left-full top-0 rounded-xl min-w-52 py-1.5 z-9999;
     animation: slideInLeft 0.2s cubic-bezier(0.16,1,0.3,1) forwards;
     position: absolute;
   }
 
-  /* ✅ Bridge transparan 10px di kiri subdropdown */
+  /* Bridge transparan 10px di kiri subdropdown */
   .header-subdropdown::before {
     content: '';
     position: absolute;
@@ -298,7 +387,6 @@
     background: transparent;
   }
 
-  /* Dropdown section label */
   .header-dropdown-section-label {
     color: var(--color-ntt-hgold-400);
     font-size: 10px;
@@ -310,7 +398,6 @@
     padding: 6px 16px 6px;
   }
 
-  /* Dropdown link */
   .header-dropdown-link {
     color: rgba(180, 215, 250, 0.82);
     @apply flex items-center justify-between px-4 py-2.5 text-[12.5px] font-medium
@@ -321,13 +408,16 @@
     background-color: rgba(212, 160, 23, 0.1);
   }
 
-  /* Login button */
+  /* ═══════════════════════════════════════════════════════════
+     LOGIN BUTTON
+  ═══════════════════════════════════════════════════════════ */
+
   .header-btn-login {
     background: linear-gradient(135deg, var(--color-ntt-hgold-400), var(--color-ntt-gold-600));
     color: var(--color-ntt-navy-950);
     box-shadow: var(--shadow-gold-sm);
     @apply flex items-center gap-2 text-[12.5px] font-bold px-4 py-2.5 rounded-lg
-           tracking-wide transition-all duration-300;
+           tracking-wide transition-all duration-300 whitespace-nowrap;
   }
   .header-btn-login:hover {
     background: linear-gradient(135deg, var(--color-ntt-hgold-300), var(--color-ntt-hgold-400));
@@ -335,7 +425,10 @@
     transform: translateY(-1px);
   }
 
-  /* BerAKHLAK badge */
+  /* ═══════════════════════════════════════════════════════════
+     BerAKHLAK BADGE
+  ═══════════════════════════════════════════════════════════ */
+
   .header-badge {
     background-color: rgba(212, 160, 23, 0.1);
     border: 1px solid rgba(212, 160, 23, 0.28);
@@ -350,8 +443,12 @@
     @apply text-[11px] font-bold tracking-widest;
   }
 
-  /* Gold accent line */
+  /* ═══════════════════════════════════════════════════════════
+     GOLD ACCENT LINE — full width
+  ═══════════════════════════════════════════════════════════ */
+
   .gold-accent-line {
+    width: 100%;                /* ← pastikan full width */
     height: 1px;
     background: linear-gradient(
       90deg,
@@ -363,28 +460,39 @@
     );
   }
 
-  /* Nav separator */
+  /* ═══════════════════════════════════════════════════════════
+     NAV SEPARATOR
+  ═══════════════════════════════════════════════════════════ */
+
   .header-nav-separator {
     background-color: rgba(255, 255, 255, 0.08);
     @apply w-px h-6 mx-1;
   }
 
-  /* Mobile hamburger button */
+  /* ═══════════════════════════════════════════════════════════
+     MOBILE HAMBURGER BUTTON
+  ═══════════════════════════════════════════════════════════ */
+
   .header-mobile-toggle {
     background-color: var(--color-ntt-blue-800);
     border: 1px solid rgba(212, 160, 23, 0.2);
     color: var(--color-ntt-hgold-300);
     @apply lg:hidden w-10 h-10 flex items-center justify-center rounded-xl
            hover:bg-ntt-blue-700 transition-colors;
+    flex-shrink: 0;
   }
 
-  /* Mobile drawer */
+  /* ═══════════════════════════════════════════════════════════
+     MOBILE DRAWER — full width
+  ═══════════════════════════════════════════════════════════ */
+
   .header-mobile-drawer {
+    width: 100%;                /* ← full width */
     background-color: var(--color-ntt-blue-900);
     border-top: 2px solid var(--color-ntt-hgold-400);
+    /* padding menggunakan px-4 di TSX */
   }
 
-  /* Mobile nav link */
   .header-mobile-link {
     color: rgba(180, 215, 250, 0.8);
     border-color: var(--color-ntt-blue-800);
@@ -393,7 +501,6 @@
   .header-mobile-link:hover,
   .header-mobile-link.active { color: var(--color-ntt-hgold-300); }
 
-  /* Mobile expand button */
   .header-mobile-expand {
     color: rgba(180, 215, 250, 0.8);
     border-color: var(--color-ntt-blue-800);
@@ -402,21 +509,23 @@
   }
   .header-mobile-expand.open { color: var(--color-ntt-hgold-300); }
 
-  /* Mobile sub-menu */
   .header-mobile-submenu {
     border-left: 2px solid rgba(212, 160, 23, 0.3);
     background-color: rgba(7, 32, 69, 0.5);
     @apply ml-3;
   }
 
-  /* Mobile section label */
   .header-mobile-label {
     color: rgba(75, 131, 212, 0.5);
     @apply text-[10px] font-bold uppercase tracking-widest mb-4 px-2;
   }
 
-  /* ══ FOOTER ══ */
+  /* ═══════════════════════════════════════════════════════════
+     FOOTER — full width
+  ═══════════════════════════════════════════════════════════ */
+
   .footer-root {
+    width: 100%;
     background: linear-gradient(
       160deg,
       var(--color-ntt-blue-900) 0%,
@@ -425,7 +534,9 @@
     );
     color: white;
   }
+
   .footer-gradient-bar {
+    width: 100%;
     height: 3px;
     background: linear-gradient(
       90deg,
@@ -438,6 +549,14 @@
       transparent
     );
   }
+
+  /* Footer inner container — full width */
+  .footer-inner {
+    width: 100%;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
   .footer-brand-desc   { color: rgba(180, 215, 250, 0.55); }
   .footer-contact-row  { color: rgba(180, 215, 250, 0.65); }
   .footer-nav-link     { color: rgba(180, 215, 250, 0.6); }
@@ -445,6 +564,7 @@
   .footer-bottom-text  { color: rgba(180, 215, 250, 0.35); }
   .footer-bottom-link  { color: rgba(180, 215, 250, 0.42); }
   .footer-bottom-link:hover { color: var(--color-ntt-hgold-300); }
+
   .footer-values-pill {
     color: rgba(74, 150, 232, 0.5);
     background: rgba(74, 150, 232, 0.06);
@@ -462,7 +582,10 @@
 /* ─────────────────────────────────────────────────────
    GLOBAL UTILITIES
 ───────────────────────────────────────────────────── */
+
+/* Gradient bar — selalu full width */
 .gradient-bar {
+  width: 100%;
   height: 3px;
   background: linear-gradient(
     90deg,
@@ -473,24 +596,101 @@
 }
 
 /* ─────────────────────────────────────────────────────
+   RESPONSIVE CONTAINER UTILITY
+   Gunakan class ini sebagai pengganti "max-w-7xl mx-auto"
+   Untuk konten DALAM halaman (bukan header/footer)
+───────────────────────────────────────────────────── */
+.ntt-container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* Breakpoint: sm ke atas → padding lebih besar */
+@media (min-width: 640px) {
+  .ntt-container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+/* Breakpoint: lg ke atas → max-width untuk keterbacaan konten halaman */
+@media (min-width: 1024px) {
+  .ntt-container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+/* Breakpoint: xl ke atas */
+@media (min-width: 1280px) {
+  .ntt-container {
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
+}
+
+/* ─────────────────────────────────────────────────────
+   HEADER WRAPPER OVERRIDE
+   Paksa semua elemen dalam #site-header melebar penuh
+───────────────────────────────────────────────────── */
+
+/* Selector ini menangkap jika ada container Tailwind yg masih pakai max-w */
+#site-header,
+header[role="banner"],
+.site-header {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+#site-header > *,
+header[role="banner"] > *,
+.site-header > * {
+  width: 100%;
+  max-width: 100% !important;
+}
+
+/* Override jika ada utility class max-w-* di dalam header */
+#site-header .max-w-7xl,
+#site-header .max-w-6xl,
+#site-header .max-w-5xl,
+#site-header .container,
+header .max-w-7xl,
+header .max-w-6xl,
+header .max-w-5xl,
+header .container {
+  max-width: 100% !important;
+  width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+/* ─────────────────────────────────────────────────────
    KEYFRAMES
 ───────────────────────────────────────────────────── */
+
 @keyframes shimmer {
   0%   { background-position: 0% center; }
   100% { background-position: 200% center; }
 }
+
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(20px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+
 @keyframes dropIn {
   from { opacity: 0; transform: translateY(-8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+
 @keyframes slideInLeft {
   from { opacity: 0; transform: translateX(-8px); }
   to   { opacity: 1; transform: translateX(0); }
 }
+
 @keyframes ticker-scroll {
   0%   { transform: translateX(0); }
   100% { transform: translateX(-50%); }
@@ -499,6 +699,52 @@
 /* ─────────────────────────────────────────────────────
    ANIMATION CLASSES
 ───────────────────────────────────────────────────── */
+
 .animate-fade-in-up    { animation: fadeInUp 0.5s ease-out forwards; }
 .animate-drop-in       { animation: dropIn 0.2s cubic-bezier(0.16,1,0.3,1) forwards; }
 .animate-slide-in-left { animation: slideInLeft 0.2s cubic-bezier(0.16,1,0.3,1) forwards; }
+
+/* ─────────────────────────────────────────────────────
+   PANDUAN PENGGUNAAN DI TSX / JSX
+   ─────────────────────────────────────────────────────
+   
+   TOPBAR (baris ticker):
+   <div className="header-topbar">
+     <div className="header-topbar-inner">
+       <div className="header-ticker-label px-3 py-1 text-[10px] font-bold tracking-wider">
+         ⬤ BIRO
+       </div>
+       <div className="header-ticker-track">
+         <div className="header-ticker-inner">
+           ... ticker items ...
+         </div>
+       </div>
+       <div className="header-topbar-meta text-[11px] px-3 whitespace-nowrap flex-shrink-0">
+         Senin–Jumat: 08.00–16.00 WITA
+       </div>
+     </div>
+   </div>
+
+   NAVBAR MAIN:
+   <div className="header-main">
+     <div className="header-nav-container">
+       <div className="header-logo-area">
+         ... logo ...
+       </div>
+       <nav className="header-nav-links-area hidden lg:flex">
+         ... nav links ...
+       </nav>
+       <div className="header-nav-right-area">
+         ... badge + login button + mobile toggle ...
+       </div>
+     </div>
+     <div className="gold-accent-line" />
+   </div>
+
+   ─────────────────────────────────────────────────────
+   PENTING:
+   - JANGAN pakai max-w-7xl atau mx-auto di dalam header
+   - Gunakan .ntt-container hanya untuk konten halaman
+     (bukan header/footer)
+   - header-nav-container sudah handle padding sendiri
+   ───────────────────────────────────────────────────── */
