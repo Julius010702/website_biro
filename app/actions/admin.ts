@@ -103,6 +103,7 @@ export async function upsertBerita(data: {
   }
   revalidatePath('/admin/berita')
   revalidatePath('/berita')
+  revalidatePath('/')
 }
 
 export async function deleteBerita(id: string) {
@@ -110,6 +111,7 @@ export async function deleteBerita(id: string) {
   await prisma.berita.delete({ where: { id } })
   revalidatePath('/admin/berita')
   revalidatePath('/berita')
+  revalidatePath('/')
 }
 
 export async function togglePublishBerita(id: string, publish: boolean) {
@@ -117,6 +119,7 @@ export async function togglePublishBerita(id: string, publish: boolean) {
   await prisma.berita.update({ where: { id }, data: { publish } })
   revalidatePath('/admin/berita')
   revalidatePath('/berita')
+  revalidatePath('/')
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
