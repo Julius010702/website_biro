@@ -1,19 +1,38 @@
-// next.config.ts
-import type { NextConfig } from 'next'
-
-const nextConfig: NextConfig = {
+// next.config.js
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   images: {
     remotePatterns: [
-      { protocol: 'https', hostname: 'uploadthing.com' },
-      { protocol: 'https', hostname: 'utfs.io' },
-      { protocol: 'https', hostname: 'placehold.co' },
-      { protocol: 'https', hostname: 'drive.google.com' },
+      // Yahoo Images
+      {
+        protocol: 'https',
+        hostname: 'id.images.search.yahoo.com',
+      },
+      // Tribunnews / asset CDN
+      {
+        protocol: 'https',
+        hostname: 'asset.tribunnews.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.tribunnews.com',
+      },
+      // UploadThing (untuk upload gambar kamu)
+      {
+        protocol: 'https',
+        hostname: '**.ufs.sh',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.uploadthing.com',
+      },
+      // Neon / storage lain
+      {
+        protocol: 'https',
+        hostname: '**',  // wildcard semua domain - pakai ini kalau mau simple
+      },
     ],
-  },
-  serverExternalPackages: ['@prisma/client'],
-  outputFileTracingIncludes: {
-    '**': ['./prisma/**/*'],
   },
 }
 
-export default nextConfig
+module.exports = nextConfig
