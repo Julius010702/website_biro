@@ -87,7 +87,8 @@ export default function Header() {
           <div className="absolute bottom-0 left-1/3 w-72 h-16 bg-ntt-navy-400/10 blur-2xl" />
         </div>
 
-<div className="relative max-w-7xl mx-auto px-4 h-17.5 flex items-center justify-between gap-4">          {/* Logo */}
+        <div className="relative max-w-7xl mx-auto px-4 h-17.5 flex items-center justify-between gap-4">
+          {/* Logo */}
           <Link href="/" className="flex items-center gap-3 shrink-0 group">
             <div className="header-logo-icon relative w-12 h-12">
               <Image
@@ -99,9 +100,10 @@ export default function Header() {
                 priority
               />
             </div>
-            <div className="hidden sm:flex flex-col">
-              <span className="header-logo-title">BIRO ORGANISASI</span>
-              <span className="header-logo-sub">Prov. Nusa Tenggara Timur</span>
+            {/* FIX: ganti 'hidden sm:flex' → 'flex' agar muncul di mobile */}
+            <div className="flex flex-col">
+              <span className="header-logo-title text-[11px] sm:text-sm">BIRO ORGANISASI</span>
+              <span className="header-logo-sub text-[9px] sm:text-xs">Prov. Nusa Tenggara Timur</span>
             </div>
           </Link>
 
