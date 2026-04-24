@@ -18,45 +18,6 @@ function toDirectImageUrl(url: string): string {
   return url
 }
 
-// Struktur PPID statis (sesuaikan dengan data aktual)
-const strukturPPID = [
-  {
-    jabatan:   'Atasan PPID',
-    nama:      'Kepala Biro Organisasi',
-    level:     0,
-    color:     '#0A2342',
-    bg:        '#E8EFF8',
-  },
-  {
-    jabatan:   'PPID Pelaksana',
-    nama:      'Sekretaris / Kasubbag',
-    level:     1,
-    color:     '#0D47A1',
-    bg:        '#EFF6FF',
-  },
-  {
-    jabatan:   'Bidang Pengolahan Data & Klasifikasi',
-    nama:      'Staf Pengelola Informasi',
-    level:     2,
-    color:     '#065F46',
-    bg:        '#ECFDF5',
-  },
-  {
-    jabatan:   'Bidang Pelayanan & Dokumentasi',
-    nama:      'Staf Pelayanan Informasi',
-    level:     2,
-    color:     '#7C3AED',
-    bg:        '#F5F3FF',
-  },
-  {
-    jabatan:   'Bidang Keberatan & Penyelesaian Sengketa',
-    nama:      'Staf Hukum & Advokasi',
-    level:     2,
-    color:     '#B45309',
-    bg:        '#FFFBEB',
-  },
-]
-
 export default async function StrukturOrganisasiPPIDPage() {
   // Ambil gambar struktur dari DB jika ada
   const struktur = await prisma.strukturOrganisasi.findFirst({
@@ -96,62 +57,6 @@ export default async function StrukturOrganisasiPPIDPage() {
           )}
         </div>
       )}
-
-      {/* ── Bagan visual ── */}
-      <div className="rounded-2xl p-6" style={{ background: 'white', border: '1px solid #DBEAFE' }}>
-        <div className="flex items-center gap-2 mb-6">
-          <div className="w-1 h-5 rounded-full bg-blue-700" />
-          <h2 className="text-base font-bold" style={{ color: '#0A2342' }}>Susunan Jabatan PPID</h2>
-        </div>
-
-        <div className="flex flex-col items-center gap-0">
-          {strukturPPID.filter((s) => s.level < 2).map((s, i) => (
-            <div key={i} className="flex flex-col items-center w-full">
-              {/* Card jabatan */}
-              <div
-                className={`rounded-xl px-5 py-3 text-center transition-all hover:scale-105 ${
-                  s.level === 0 ? 'w-64' : 'w-56'
-                }`}
-                style={{
-                  background: s.bg,
-                  border: `1px solid ${s.color}30`,
-                  boxShadow: `0 2px 12px ${s.color}12`,
-                }}
-              >
-                <p className="text-[10px] font-bold uppercase tracking-wider mb-0.5" style={{ color: `${s.color}80` }}>
-                  {s.jabatan}
-                </p>
-                <p className="text-sm font-bold" style={{ color: s.color }}>{s.nama}</p>
-              </div>
-
-              {/* Connector line */}
-              <div className="w-px h-6 bg-slate-200" />
-            </div>
-          ))}
-
-          {/* Level 2 — ditampilkan horizontal */}
-          <div className="w-full">
-            <div className="flex items-start justify-center gap-3 flex-wrap">
-              {strukturPPID.filter((s) => s.level === 2).map((s, i) => (
-                <div
-                  key={i}
-                  className="rounded-xl px-4 py-3 text-center flex-1 min-w-40 max-w-xs transition-all hover:scale-105"
-                  style={{
-                    background: s.bg,
-                    border: `1px solid ${s.color}30`,
-                    boxShadow: `0 2px 12px ${s.color}12`,
-                  }}
-                >
-                  <p className="text-[9px] font-bold uppercase tracking-wider mb-0.5" style={{ color: `${s.color}80` }}>
-                    {s.jabatan}
-                  </p>
-                  <p className="text-xs font-bold" style={{ color: s.color }}>{s.nama}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
 
       {/* ── Tugas PPID ── */}
       <div className="rounded-2xl p-6" style={{ background: 'white', border: '1px solid #DBEAFE' }}>
