@@ -154,9 +154,8 @@ export default function HeroSlider({ slides, stats, tagline }: HeroSliderProps) 
               {/* Eyebrow badge */}
               <div className="inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 mb-5"
                 style={{
-                  background: 'rgba(255,255,255,0.09)',
+                  background: 'rgba(6,18,45,0.65)',
                   border: `1px solid ${accent}60`,
-                  backdropFilter: 'blur(4px)',
                 }}>
                 <span className="w-1.5 h-1.5 rounded-full" style={{ background: accent }} />
                 <span className="text-[11px] font-bold tracking-[0.2em] uppercase text-white/90">
@@ -219,7 +218,6 @@ export default function HeroSlider({ slides, stats, tagline }: HeroSliderProps) 
                     background: 'rgba(255,255,255,0.10)',
                     color: '#fff',
                     border: '1px solid rgba(255,255,255,0.22)',
-                    backdropFilter: 'blur(4px)',
                   }}>
                   Berita Terkini
                 </Link>
@@ -229,7 +227,7 @@ export default function HeroSlider({ slides, stats, tagline }: HeroSliderProps) 
               <div className="flex items-center gap-2.5">
                 <button onClick={prev} aria-label="Sebelumnya"
                   className="w-8 h-8 rounded-xl flex items-center justify-center transition-all hover:scale-105 active:scale-95"
-                  style={{ background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.18)', color: '#fff', cursor: 'pointer' }}>
+                  style={{ background: 'rgba(6,18,45,0.65)', border: '1px solid rgba(255,255,255,0.18)', color: '#fff', cursor: 'pointer' }}>
                   <ChevronLeft className="w-4 h-4" />
                 </button>
                 <button onClick={next} aria-label="Berikutnya"
@@ -254,7 +252,7 @@ export default function HeroSlider({ slides, stats, tagline }: HeroSliderProps) 
 
                 <button onClick={() => setPaused((p) => !p)} aria-label={paused ? 'Putar' : 'Jeda'}
                   className="w-7 h-7 rounded-lg flex items-center justify-center"
-                  style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.55)', cursor: 'pointer' }}>
+                  style={{ background: 'rgba(6,18,45,0.65)', border: '1px solid rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.55)', cursor: 'pointer' }}>
                   {paused ? <Play className="w-3 h-3" /> : <Pause className="w-3 h-3" />}
                 </button>
 
@@ -270,10 +268,9 @@ export default function HeroSlider({ slides, stats, tagline }: HeroSliderProps) 
               {/* Logo lingkaran */}
               <div className="relative" style={{
                 width: '156px', height: '156px', borderRadius: '50%',
-                background: 'rgba(15,30,70,0.50)',
+                background: 'rgba(6,18,45,0.65)',
                 border: `1.5px solid ${accent}50`,
                 boxShadow: `0 0 60px ${accent}16, 0 16px 48px rgba(0,0,0,0.25)`,
-                backdropFilter: 'blur(3px)',
                 transition: 'border-color 0.8s, box-shadow 0.8s',
                 flexShrink: 0,
               }}>
@@ -294,9 +291,8 @@ export default function HeroSlider({ slides, stats, tagline }: HeroSliderProps) 
                     <div key={s.id}
                       className="rounded-2xl p-4 text-center transition-transform duration-200 hover:scale-105"
                       style={{
-                        background: 'rgba(15,30,70,0.55)',
-                        border: '1px solid rgba(255,255,255,0.14)',
-                        backdropFilter: 'blur(4px)',
+                        background: 'rgba(6,18,45,0.72)',
+                        border: '1px solid rgba(255,255,255,0.12)',
                       }}>
                       <div className="flex justify-center mb-2" style={{ color: accent, transition: 'color 0.6s' }}>
                         {iconMap[s.ikon ?? ''] ?? <Shield className="w-4 h-4" />}
@@ -326,7 +322,7 @@ export default function HeroSlider({ slides, stats, tagline }: HeroSliderProps) 
             {stats.slice(0, 4).map((s) => (
               <div key={s.id}
                 className="rounded-xl p-3 flex items-center gap-2.5"
-                style={{ background: 'rgba(15,30,70,0.55)', border: '1px solid rgba(255,255,255,0.14)', backdropFilter: 'blur(4px)' }}>
+                style={{ background: 'rgba(6,18,45,0.72)', border: '1px solid rgba(255,255,255,0.12)' }}>
                 <div className="shrink-0" style={{ color: accent }}>
                   {iconMap[s.ikon ?? ''] ?? <Shield className="w-4 h-4" />}
                 </div>
