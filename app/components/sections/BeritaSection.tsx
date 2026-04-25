@@ -146,10 +146,8 @@ export default async function BeritaSection() {
                 </div>
 
                 {/* Judul */}
-                <h3 className="text-sm font-semibold leading-snug line-clamp-3 flex-1 transition-colors"
-                  style={{ color: 'rgba(255,255,255,0.85)' }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = '#F5A623')}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(255,255,255,0.85)')}>
+                <h3 className="berita-card-title text-sm font-semibold leading-snug line-clamp-3 flex-1 transition-colors group-hover:text-[#F5A623]"
+                  style={{ color: 'rgba(255,255,255,0.85)' }}>
                   {b.judul}
                 </h3>
 
