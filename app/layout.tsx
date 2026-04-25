@@ -1,3 +1,4 @@
+// app/layout.tsx
 import type { Metadata } from 'next'
 import './globals.css'
 
@@ -26,8 +27,11 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="id" style={{ overflowX: 'hidden', maxWidth: '100%' }}>
-      <body style={{ overflowX: 'hidden', maxWidth: '100%', width: '100%' }}>
+    // ⚠️ PENTING: JANGAN pakai overflow-x: hidden di <html> atau <body>
+    // karena overflow: hidden pada ancestor akan MEMATIKAN position: sticky.
+    // Solusi: cegah horizontal overflow lewat CSS globals saja (lihat globals.css).
+    <html lang="id">
+      <body>
         {children}
       </body>
     </html>

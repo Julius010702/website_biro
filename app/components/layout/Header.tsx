@@ -1,4 +1,5 @@
 'use client'
+// components/layout/Header.tsx
 import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -25,6 +26,23 @@ export default function Header() {
   const [activeSub, setActiveSub]   = useState<string | null>(null)
   const pathname = usePathname()
 
+  // Ref untuk mengukur tinggi header secara dinamis
+  const headerRef = useRef<HTMLDivElement>(null)
+  const [headerHeight, setHeaderHeight] = useState(112) // fallback default
+
+  // Ukur tinggi header setelah mount + resize
+  useEffect(() => {
+    const measure = () => {
+      if (headerRef.current) {
+        setHeaderHeight(headerRef.current.offsetHeight)
+      }
+    }
+    measure()
+    const ro = new ResizeObserver(measure)
+    if (headerRef.current) ro.observe(headerRef.current)
+    return () => ro.disconnect()
+  }, [])
+
   // Tutup menu saat navigasi
   const [prevPathname, setPrevPathname] = useState(pathname)
   if (prevPathname !== pathname) {
@@ -41,138 +59,171 @@ export default function Header() {
   }, [mobileOpen])
 
   return (
-    // ← wrapper sticky mencakup TOPBAR + NAVBAR sekaligus
-    <div className="sticky top-0 z-50 w-full" style={{ background: 'var(--color-ntt-blue-900, #0A1929)' }}>
+    <>
+      {/*
+        ── WRAPPER STICKY ──
+        • position: sticky + top: 0 → header menempel di atas saat scroll
+        • z-50 → di atas konten halaman
+        • width: 100% + left: 0 + right: 0 → pastikan tidak geser horizontal
+        • JANGAN bungkus dalam container yang punya overflow: hidden/auto/scroll,
+          karena itu akan mematikan sticky.
+      */}
+      <div
+        ref={headerRef}
+        className="sticky top-0 left-0 right-0 z-50 w-full"
+        style={{ background: '#0A1929' }}
+        id="site-header"
+      >
 
-      {/* ── TOP BAR ── */}
-      <div className="hidden md:flex items-center justify-between text-xs w-full overflow-hidden"
-        style={{ background: 'rgba(0,0,0,0.25)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-        {/* Ticker */}
-        <div className="flex items-center flex-1 min-w-0 overflow-hidden">
-          <div className="shrink-0 flex items-center gap-2 px-3 py-2"
-            style={{ background: 'rgba(245,166,35,0.12)', borderRight: '1px solid rgba(245,166,35,0.2)' }}>
-            <span className="w-1.5 h-1.5 rounded-full animate-pulse inline-block" style={{ background: '#F5A623' }} />
-            <span className="font-bold tracking-widest text-[10px] uppercase whitespace-nowrap" style={{ color: '#F5A623' }}>
-              BIRO
+        {/* ── TOP BAR ── */}
+        <div
+          className="hidden md:flex items-center justify-between text-xs w-full overflow-hidden"
+          style={{ background: 'rgba(0,0,0,0.25)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+        >
+          {/* Ticker */}
+          <div className="flex items-center flex-1 min-w-0 overflow-hidden">
+            <div
+              className="shrink-0 flex items-center gap-2 px-3 py-2"
+              style={{ background: 'rgba(245,166,35,0.12)', borderRight: '1px solid rgba(245,166,35,0.2)' }}
+            >
+              <span className="w-1.5 h-1.5 rounded-full animate-pulse inline-block" style={{ background: '#F5A623' }} />
+              <span className="font-bold tracking-widest text-[10px] uppercase whitespace-nowrap" style={{ color: '#F5A623' }}>
+                BIRO
+              </span>
+            </div>
+            <div className="flex-1 min-w-0 overflow-hidden relative py-2">
+              <div className="header-ticker-inner">
+                {[0, 1].map((i) => (
+                  <span key={i} className="header-ticker-text" style={{ color: 'rgba(255,255,255,0.65)', fontSize: '11px' }}>
+                    <span style={{ color: '#F5A623', marginRight: '12px' }}>◆</span>
+                    Biro Organisasi Sekretariat Daerah Provinsi Nusa Tenggara Timur
+                    &nbsp;&nbsp;&nbsp;
+                    <span style={{ color: '#F5A623', marginRight: '12px' }}>◆</span>
+                    Mendukung Tata Kelola Pemerintahan yang Efektif, Efisien, dan Akuntabel
+                    &nbsp;&nbsp;&nbsp;
+                    <span style={{ color: '#F5A623', marginRight: '12px' }}>◆</span>
+                    Nilai BerAKHLAK: Berorientasi Pelayanan · Akuntabel · Kompeten · Harmonis · Loyal · Adaptif · Kolaboratif
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+          {/* Meta info */}
+          <div className="shrink-0 flex items-center gap-4 px-4 py-2" style={{ color: 'rgba(255,255,255,0.55)' }}>
+            <span className="flex items-center gap-1.5 whitespace-nowrap">
+              <Clock className="w-3 h-3" style={{ color: '#F5A623' }} />
+              Senin – Jumat: 08.00 – 16.00 WITA
+            </span>
+            <span style={{ color: 'rgba(255,255,255,0.2)' }}>|</span>
+            <span className="flex items-center gap-1.5 whitespace-nowrap">
+              <Phone className="w-3 h-3" style={{ color: '#F5A623' }} />
+              (0380) 831021
             </span>
           </div>
-          <div className="flex-1 min-w-0 overflow-hidden relative py-2">
-            <div className="header-ticker-inner">
-              {[0, 1].map((i) => (
-                <span key={i} className="header-ticker-text" style={{ color: 'rgba(255,255,255,0.65)', fontSize: '11px' }}>
-                  <span style={{ color: '#F5A623', marginRight: '12px' }}>◆</span>
-                  Biro Organisasi Sekretariat Daerah Provinsi Nusa Tenggara Timur
-                  &nbsp;&nbsp;&nbsp;
-                  <span style={{ color: '#F5A623', marginRight: '12px' }}>◆</span>
-                  Mendukung Tata Kelola Pemerintahan yang Efektif, Efisien, dan Akuntabel
-                  &nbsp;&nbsp;&nbsp;
-                  <span style={{ color: '#F5A623', marginRight: '12px' }}>◆</span>
-                  Nilai BerAKHLAK: Berorientasi Pelayanan · Akuntabel · Kompeten · Harmonis · Loyal · Adaptif · Kolaboratif
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                </span>
-              ))}
-            </div>
-          </div>
         </div>
-        {/* Meta info */}
-        <div className="shrink-0 flex items-center gap-4 px-4 py-2" style={{ color: 'rgba(255,255,255,0.55)' }}>
-          <span className="flex items-center gap-1.5 whitespace-nowrap">
-            <Clock className="w-3 h-3" style={{ color: '#F5A623' }} />
-            Senin – Jumat: 08.00 – 16.00 WITA
-          </span>
-          <span style={{ color: 'rgba(255,255,255,0.2)' }}>|</span>
-          <span className="flex items-center gap-1.5 whitespace-nowrap">
-            <Phone className="w-3 h-3" style={{ color: '#F5A623' }} />
-            (0380) 831021
-          </span>
-        </div>
-      </div>
 
-      {/* ── GOLD LINE ── */}
-      <div className="hidden md:block h-px w-full" style={{ background: 'linear-gradient(90deg, transparent, #F5A623, #F5A623 60%, transparent)' }} />
+        {/* ── GOLD LINE ── */}
+        <div
+          className="hidden md:block h-px w-full"
+          style={{ background: 'linear-gradient(90deg, transparent, #F5A623, #F5A623 60%, transparent)' }}
+        />
 
-      {/* ── MAIN NAVBAR ── */}
-      <header className="w-full" style={{ background: 'var(--color-ntt-blue-900, #0A1929)', boxShadow: '0 2px 16px rgba(0,0,0,0.3)' }}>
-        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
+        {/* ── MAIN NAVBAR ── */}
+        <header
+          className="w-full"
+          style={{ background: '#0A1929', boxShadow: '0 2px 16px rgba(0,0,0,0.3)' }}
+        >
+          <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
 
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 shrink-0 group">
-            <div className="relative w-11 h-11 shrink-0">
-              <Image
-                src="/images/logo-prov-ntt.png"
-                alt="Logo Provinsi NTT"
-                fill sizes="44px"
-                className="object-contain"
-                priority
-              />
-            </div>
-            <div className="flex flex-col leading-tight">
-              <span className="font-black text-white tracking-wide" style={{ fontSize: 'clamp(10px, 2vw, 13px)' }}>
-                BIRO ORGANISASI
-              </span>
-              <span style={{ fontSize: 'clamp(9px, 1.5vw, 11px)', color: 'rgba(255,255,255,0.5)' }}>
-                Prov. Nusa Tenggara Timur
-              </span>
-            </div>
-          </Link>
-
-          {/* Desktop Nav */}
-          <nav className="hidden lg:flex items-center gap-0.5 flex-1 justify-center">
-            {mainNav.map((item, i) => (
-              <div key={item.label} className="flex items-center">
-                {i > 0 && i === mainNav.length - 1 && (
-                  <div className="w-px h-4 mx-1" style={{ background: 'rgba(255,255,255,0.12)' }} />
-                )}
-                <DesktopNavItem
-                  item={item}
-                  active={activeMenu === item.label}
-                  onHover={(label) => { setActiveMenu(label); setActiveSub(null) }}
-                  onLeave={() => { setActiveMenu(null); setActiveSub(null) }}
-                  activeSub={activeSub}
-                  onSubHover={setActiveSub}
-                  icon={navIcons[item.label]}
+            {/* Logo */}
+            <Link href="/" className="flex items-center gap-3 shrink-0 group">
+              <div className="relative w-11 h-11 shrink-0">
+                <Image
+                  src="/images/logo-prov-ntt.png"
+                  alt="Logo Provinsi NTT"
+                  fill sizes="44px"
+                  className="object-contain"
+                  priority
                 />
               </div>
-            ))}
-          </nav>
-
-          {/* Right actions */}
-          <div className="flex items-center gap-2 shrink-0">
-            <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold tracking-widest"
-              style={{ background: 'rgba(245,166,35,0.12)', border: '1px solid rgba(245,166,35,0.25)', color: '#F5A623' }}>
-              <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: '#F5A623' }} />
-              BerAKHLAK
-            </div>
-            <Link href="/login"
-              className="hidden md:flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all hover:scale-105"
-              style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', color: 'white' }}>
-              <LogIn className="w-3.5 h-3.5" />
-              Login
+              <div className="flex flex-col leading-tight">
+                <span className="font-black text-white tracking-wide" style={{ fontSize: 'clamp(10px, 2vw, 13px)' }}>
+                  BIRO ORGANISASI
+                </span>
+                <span style={{ fontSize: 'clamp(9px, 1.5vw, 11px)', color: 'rgba(255,255,255,0.5)' }}>
+                  Prov. Nusa Tenggara Timur
+                </span>
+              </div>
             </Link>
-            <button
-              onClick={() => setMobileOpen(!mobileOpen)}
-              className="lg:hidden w-9 h-9 rounded-xl flex items-center justify-center transition-colors"
-              style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', color: 'white' }}
-              aria-label="Toggle menu"
-            >
-              {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
-          </div>
-        </div>
-      </header>
 
-      {/* ── MOBILE DRAWER ── */}
+            {/* Desktop Nav */}
+            <nav className="hidden lg:flex items-center gap-0.5 flex-1 justify-center">
+              {mainNav.map((item, i) => (
+                <div key={item.label} className="flex items-center">
+                  {i > 0 && i === mainNav.length - 1 && (
+                    <div className="w-px h-4 mx-1" style={{ background: 'rgba(255,255,255,0.12)' }} />
+                  )}
+                  <DesktopNavItem
+                    item={item}
+                    active={activeMenu === item.label}
+                    onHover={(label) => { setActiveMenu(label); setActiveSub(null) }}
+                    onLeave={() => { setActiveMenu(null); setActiveSub(null) }}
+                    activeSub={activeSub}
+                    onSubHover={setActiveSub}
+                    icon={navIcons[item.label]}
+                  />
+                </div>
+              ))}
+            </nav>
+
+            {/* Right actions */}
+            <div className="flex items-center gap-2 shrink-0">
+              <div
+                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold tracking-widest"
+                style={{ background: 'rgba(245,166,35,0.12)', border: '1px solid rgba(245,166,35,0.25)', color: '#F5A623' }}
+              >
+                <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: '#F5A623' }} />
+                BerAKHLAK
+              </div>
+              <Link
+                href="/login"
+                className="hidden md:flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all hover:scale-105"
+                style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', color: 'white' }}
+              >
+                <LogIn className="w-3.5 h-3.5" />
+                Login
+              </Link>
+              <button
+                onClick={() => setMobileOpen(!mobileOpen)}
+                className="lg:hidden w-9 h-9 rounded-xl flex items-center justify-center transition-colors"
+                style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', color: 'white' }}
+                aria-label="Toggle menu"
+              >
+                {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              </button>
+            </div>
+          </div>
+        </header>
+      </div>
+
+      {/* ── MOBILE DRAWER ──
+          Diletakkan di LUAR wrapper sticky agar tidak ikut sticky,
+          tapi posisinya fixed dan top-nya menggunakan headerHeight dinamis.
+      */}
       {mobileOpen && (
-        <div className="fixed inset-0 z-40 lg:hidden" style={{ top: 0 }}>
+        <div className="fixed inset-0 z-40 lg:hidden">
+          {/* Backdrop */}
           <div
             className="absolute inset-0 backdrop-blur-sm"
             style={{ background: 'rgba(10,25,41,0.85)' }}
             onClick={() => setMobileOpen(false)}
           />
+          {/* Drawer panel */}
           <div
             className="absolute left-0 right-0 bottom-0 overflow-y-auto overflow-x-hidden"
             style={{
-              top: '112px', // tinggi topbar + navbar
+              top: `${headerHeight}px`, // ← dinamis, mengikuti tinggi header aktual
               background: '#0A1929',
               borderTop: '1px solid rgba(245,166,35,0.2)',
             }}
@@ -181,7 +232,7 @@ export default function Header() {
           </div>
         </div>
       )}
-    </div>
+    </>
   )
 }
 
@@ -222,8 +273,10 @@ function DesktopNavItem({
           ? <a href={item.href} target="_blank" rel="noopener noreferrer" className={linkStyle}>{icon}{item.label}</a>
           : <Link href={item.href} className={linkStyle}>{icon}{item.label}</Link>
       ) : (
-        <button className={cn('header-nav-link', (active || isActive) && 'active')}
-          onClick={() => onHover(active ? '' : item.label)}>
+        <button
+          className={cn('header-nav-link', (active || isActive) && 'active')}
+          onClick={() => onHover(active ? '' : item.label)}
+        >
           {icon}
           {item.label}
           {item.children && (
@@ -263,7 +316,9 @@ function SubItem({ child, activeSub, onSubHover }: {
     <div className="relative" onMouseEnter={handleSubEnter} onMouseLeave={handleSubLeave}>
       <button className={cn('header-dropdown-link w-full', activeSub === child.label && 'bg-white/5')}>
         <span>{child.label}</span>
-        {child.children && <ChevronRight className={cn('w-3.5 h-3.5 shrink-0 ml-auto transition-transform duration-200', activeSub === child.label && 'text-ntt-hgold-400')} />}
+        {child.children && (
+          <ChevronRight className={cn('w-3.5 h-3.5 shrink-0 ml-auto transition-transform duration-200', activeSub === child.label && 'text-ntt-hgold-400')} />
+        )}
       </button>
       {child.children && activeSub === child.label && (
         <div className="header-subdropdown" onMouseEnter={handleSubDropdownEnter} onMouseLeave={handleSubLeave}>
@@ -292,21 +347,34 @@ function MobileNav({ items, onClose }: { items: NavItem[]; onClose: () => void }
       </p>
       <div className="space-y-0.5">
         {items.map((item) => (
-          <MobileNavItem key={item.label} item={item} expanded={expanded}
-            onToggle={toggle} onClose={onClose} level={0} icon={navIcons[item.label]} />
+          <MobileNavItem
+            key={item.label}
+            item={item}
+            expanded={expanded}
+            onToggle={toggle}
+            onClose={onClose}
+            level={0}
+            icon={navIcons[item.label]}
+          />
         ))}
       </div>
 
       <div className="mt-8 pt-6" style={{ borderTop: '1px solid rgba(245,166,35,0.15)' }}>
-        <Link href="/login" onClick={onClose}
+        <Link
+          href="/login"
+          onClick={onClose}
           className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-bold transition-all"
-          style={{ background: 'rgba(245,166,35,0.12)', border: '1px solid rgba(245,166,35,0.25)', color: '#F5A623' }}>
+          style={{ background: 'rgba(245,166,35,0.12)', border: '1px solid rgba(245,166,35,0.25)', color: '#F5A623' }}
+        >
           <LogIn className="w-4 h-4" />
           Login Admin
         </Link>
       </div>
 
-      <div className="mt-4 px-3 py-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}>
+      <div
+        className="mt-4 px-3 py-3 rounded-xl"
+        style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}
+      >
         <p className="text-[10px] font-bold uppercase tracking-widest mb-2" style={{ color: 'rgba(255,255,255,0.3)' }}>Kontak</p>
         <div className="flex items-center gap-2 text-xs" style={{ color: 'rgba(255,255,255,0.6)' }}>
           <Phone className="w-3 h-3" style={{ color: '#F5A623' }} />
@@ -348,8 +416,10 @@ function MobileNavItem({ item, expanded, onToggle, onClose, level, icon }: {
 
   return (
     <div>
-      <button onClick={() => onToggle(item.label)}
-        className={cn('header-mobile-expand flex items-center gap-2.5 w-full', pl, isExpanded && 'open')}>
+      <button
+        onClick={() => onToggle(item.label)}
+        className={cn('header-mobile-expand flex items-center gap-2.5 w-full', pl, isExpanded && 'open')}
+      >
         <span className="flex items-center gap-2.5 flex-1 min-w-0">
           {level === 0 && icon && <span style={{ color: 'rgba(245,166,35,0.7)' }} className="shrink-0">{icon}</span>}
           <span className="truncate">{item.label}</span>
@@ -361,8 +431,14 @@ function MobileNavItem({ item, expanded, onToggle, onClose, level, icon }: {
       {isExpanded && item.children && (
         <div className="header-mobile-submenu">
           {item.children.map((child) => (
-            <MobileNavItem key={child.label} item={child} expanded={expanded}
-              onToggle={onToggle} onClose={onClose} level={level + 1} />
+            <MobileNavItem
+              key={child.label}
+              item={child}
+              expanded={expanded}
+              onToggle={onToggle}
+              onClose={onClose}
+              level={level + 1}
+            />
           ))}
         </div>
       )}

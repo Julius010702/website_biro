@@ -703,48 +703,43 @@ header .container {
 .animate-fade-in-up    { animation: fadeInUp 0.5s ease-out forwards; }
 .animate-drop-in       { animation: dropIn 0.2s cubic-bezier(0.16,1,0.3,1) forwards; }
 .animate-slide-in-left { animation: slideInLeft 0.2s cubic-bezier(0.16,1,0.3,1) forwards; }
+/*
+  ─────────────────────────────────────────────────────
+  PATCH globals.css — ganti bagian @layer base saja.
+  Salin dan timpa blok @layer base yang lama.
+  ─────────────────────────────────────────────────────
+*/
 
-/* ─────────────────────────────────────────────────────
-   PANDUAN PENGGUNAAN DI TSX / JSX
-   ─────────────────────────────────────────────────────
-   
-   TOPBAR (baris ticker):
-   <div className="header-topbar">
-     <div className="header-topbar-inner">
-       <div className="header-ticker-label px-3 py-1 text-[10px] font-bold tracking-wider">
-         ⬤ BIRO
-       </div>
-       <div className="header-ticker-track">
-         <div className="header-ticker-inner">
-           ... ticker items ...
-         </div>
-       </div>
-       <div className="header-topbar-meta text-[11px] px-3 whitespace-nowrap flex-shrink-0">
-         Senin–Jumat: 08.00–16.00 WITA
-       </div>
-     </div>
-   </div>
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    width: 100%;
+    /*
+      ⚠️ JANGAN pakai overflow-x: hidden di sini.
+      overflow: hidden pada <html> atau <body> akan MEMATIKAN
+      position: sticky pada semua elemen di dalamnya.
+      
+      Gunakan overflow-x: clip sebagai gantinya — clip mencegah
+      horizontal scrollbar tanpa membuat new scroll container,
+      sehingga sticky tetap bekerja normal.
+    */
+    overflow-x: clip;
+  }
+  body {
+    font-family: 'Source Sans 3', sans-serif;
+    background-color: #F8F5EE;
+    color: #1a1a2e;
+    -webkit-font-smoothing: antialiased;
+    width: 100%;
+    /*
+      overflow-x: clip — bukan hidden.
+      Alasan sama: hidden akan break sticky positioning.
+    */
+    overflow-x: clip;
+  }
+  h1, h2, h3 { font-family: 'Playfair Display', serif; }
 
-   NAVBAR MAIN:
-   <div className="header-main">
-     <div className="header-nav-container">
-       <div className="header-logo-area">
-         ... logo ...
-       </div>
-       <nav className="header-nav-links-area hidden lg:flex">
-         ... nav links ...
-       </nav>
-       <div className="header-nav-right-area">
-         ... badge + login button + mobile toggle ...
-       </div>
-     </div>
-     <div className="gold-accent-line" />
-   </div>
-
-   ─────────────────────────────────────────────────────
-   PENTING:
-   - JANGAN pakai max-w-7xl atau mx-auto di dalam header
-   - Gunakan .ntt-container hanya untuk konten halaman
-     (bukan header/footer)
-   - header-nav-container sudah handle padding sendiri
-   ───────────────────────────────────────────────────── */
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+}
