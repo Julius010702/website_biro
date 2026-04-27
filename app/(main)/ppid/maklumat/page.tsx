@@ -98,54 +98,6 @@ export default async function MaklumatPelayananPage() {
         </div>
       )}
 
-      {/* ── Standar pelayanan ── */}
-      <StandarPelayananSection />
-    </div>
-  )
-}
-
-async function StandarPelayananSection() {
-  const standarList = await prisma.standarPelayanan.findMany({
-    where:   { aktif: true },
-    orderBy: { urutan: 'asc' },
-  })
-
-  if (!standarList.length) return null
-
-  return (
-    <div className="rounded-2xl p-6" style={{ background: 'white', border: '1px solid #DBEAFE' }}>
-      <div className="flex items-center gap-2 mb-5">
-        <div className="w-1 h-5 rounded-full bg-blue-700" />
-        <h2 className="text-base font-bold" style={{ color: '#0A2342' }}>Standar Pelayanan</h2>
-      </div>
-      <div className="flex flex-col gap-4">
-        {standarList.map((s, i) => (
-          <div key={s.id} className="flex items-start gap-4">
-            <div
-              className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold shrink-0"
-              style={{ background: '#EFF6FF', color: '#0D47A1' }}
-            >
-              {i + 1}
-            </div>
-            <div className="flex-1">
-              <p className="text-sm font-semibold text-slate-800 mb-1">{s.judul}</p>
-              {s.deskripsi && (
-                <p className="text-xs text-slate-500 leading-relaxed">{s.deskripsi}</p>
-              )}
-              {s.file && (
-                <a
-                  href={s.file}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-[11px] font-semibold mt-2 text-blue-700 hover:text-blue-900"
-                >
-                  Unduh Dokumen →
-                </a>
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
     </div>
   )
 }

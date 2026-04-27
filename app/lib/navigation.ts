@@ -61,9 +61,7 @@ export const mainNav: NavItem[] = [
       { label: 'Struktur Organisasi PPID',           href: '/ppid/struktur-organisasi' },
       { label: 'Maklumat Pelayanan',                 href: '/ppid/maklumat' },
       { label: 'Pelayanan Informasi Publik',         href: '/ppid/informasi-publik' },
-      { label: 'Daftar Informasi',                   href: '/ppid/daftar-informasi' },
       { label: 'Permohonan Informasi Online',        href: '/ppid/permohonan' },
-      { label: 'Prosedur Peringatan Dini Bencana',   href: '/ppid/prosedur-bencana' },
     ],
   },
   {
@@ -136,9 +134,8 @@ export const ppidMenu = [
   { label: 'Struktur Organisasi PPID',           href: '/ppid/struktur-organisasi' },
   { label: 'Maklumat Pelayanan',                 href: '/ppid/maklumat' },
   { label: 'Pelayanan Informasi Publik',         href: '/ppid/informasi-publik' },
-  { label: 'Daftar Informasi',                   href: '/ppid/daftar-informasi' },
   { label: 'Permohonan Informasi Online',        href: '/ppid/permohonan' },
-  { label: 'Prosedur Peringatan Dini Bencana',   href: '/ppid/prosedur-bencana' },
+ 
 ]
 
 // ─── Helper: slug Bagian → URL ────────────────────────────────────────────────
