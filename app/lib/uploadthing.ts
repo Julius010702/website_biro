@@ -1,3 +1,5 @@
+// lib/uploadthing.ts
+// ← File ini KHUSUS server (middleware pakai next/headers via getSession)
 import { createUploadthing, type FileRouter } from 'uploadthing/next'
 import { getSession } from '@/lib/auth'
 
@@ -26,7 +28,6 @@ export const ourFileRouter = {
       return { url: file.ufsUrl }
     }),
 
-  // ← tambah ini untuk dokumen PDF
   pdfUploader: f({
     pdf: { maxFileSize: '16MB', maxFileCount: 1 },
   })
