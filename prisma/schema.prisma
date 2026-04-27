@@ -397,3 +397,26 @@ model SiteSettings {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+// ========== INFORMASI PUBLIK ==========
+model InformasiPublik {
+  id          String              @id @default(cuid())
+  judul       String
+  deskripsi   String?             @db.Text
+  kategori    String?
+  tipe        TipeInformasiPublik @default(GAMBAR)
+  url         String?
+  urlDokumen  String?
+  urutan      Int                 @default(0)
+  aktif       Boolean             @default(true)
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+
+  @@map("informasi_publik")
+}
+
+enum TipeInformasiPublik {
+  GAMBAR
+  DOKUMEN
+  GAMBAR_DOKUMEN
+}
