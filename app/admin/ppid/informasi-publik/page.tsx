@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
-import { useUploadThing } from '@/lib/uploadthing'
+import { useUploadThing } from '@/lib/uploadthing-client'
 import type { OurFileRouter } from '@/lib/uploadthing'
 import {
   Plus, Pencil, Trash2, Eye, EyeOff, GripVertical,
