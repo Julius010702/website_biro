@@ -27,9 +27,9 @@ const pathTitles: Record<string, string> = {
   '/admin/ppid/struktur-organisasi':          'Struktur Organisasi PPID',
   '/admin/ppid/maklumat':                     'Maklumat Pelayanan',
   '/admin/ppid/pelayanan':                    'Pelayanan Informasi',
-  '/admin/ppid/dokumen':                      'Daftar Informasi',
+  '/admin/ppid/informasi-publik':             'Informasi Publik',
   '/admin/ppid/permohonan':                   'Permohonan Informasi',
-  '/admin/ppid/prosedur-bencana':             'Prosedur Bencana',
+  
   // ── Lainnya ───────────────────────────────────────────────────────────────
   '/admin/kontak':                            'Pesan Kontak',
   '/admin/pengaduan':                         'Pengaduan (WBS)',
