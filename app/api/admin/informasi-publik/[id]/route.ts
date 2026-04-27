@@ -12,23 +12,24 @@ function err(message: string, status = 400) {
 // PUT — update item
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const body = await req.json()
     const { judul, deskripsi, kategori, tipe, url, urlDokumen, urutan, aktif } = body
 
     const data = await prisma.informasiPublik.update({
-      where: { id: params.id },
+      where: { id },
       data: {
-        ...(judul       !== undefined && { judul:      judul.trim() }),
-        ...(deskripsi   !== undefined && { deskripsi:  deskripsi?.trim()  || null }),
-        ...(kategori    !== undefined && { kategori:   kategori?.trim()   || null }),
-        ...(tipe        !== undefined && { tipe }),
-        ...(url         !== undefined && { url:        url?.trim()        || null }),
-        ...(urlDokumen  !== undefined && { urlDokumen: urlDokumen?.trim() || null }),
-        ...(urutan      !== undefined && { urutan:     Number(urutan) }),
-        ...(aktif       !== undefined && { aktif }),
+        ...(judul      !== undefined && { judul:      judul.trim() }),
+        ...(deskripsi  !== undefined && { deskripsi:  deskripsi?.trim()  || null }),
+        ...(kategori   !== undefined && { kategori:   kategori?.trim()   || null }),
+        ...(tipe       !== undefined && { tipe }),
+        ...(url        !== undefined && { url:        url?.trim()        || null }),
+        ...(urlDokumen !== undefined && { urlDokumen: urlDokumen?.trim() || null }),
+        ...(urutan     !== undefined && { urutan:     Number(urutan) }),
+        ...(aktif      !== undefined && { aktif }),
       },
     })
     return ok(data)
@@ -40,10 +41,11 @@ export async function PUT(
 // DELETE — hapus item
 export async function DELETE(
   _req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    await prisma.informasiPublik.delete({ where: { id: params.id } })
+    const { id } = await params
+    await prisma.informasiPublik.delete({ where: { id } })
     return ok({ deleted: true })
   } catch {
     return err('Gagal menghapus data', 500)
