@@ -9,7 +9,7 @@ export const metadata: Metadata = { title: 'Tugas Pokok dan Fungsi — Biro Orga
 const profilMenu = [
   { label: 'Tentang Kami',         href: '/profil/sekapur-sirih',       icon: <User          className="w-4 h-4" /> },
   { label: 'Struktur Organisasi',  href: '/profil/struktur-organisasi', icon: <Users         className="w-4 h-4" /> },
-  { label: 'Tugas Pokok & Fungsi', href: '/profil/tupoksi',             icon: <FileText      className="w-4 h-4" /> },
+  { label: 'Tugas Pokok & Fungsi', href: '/profil/tugas-pokok-fungsi',             icon: <FileText      className="w-4 h-4" /> },
   { label: 'Bagian',               href: '/profil/bagian',              icon: <Building2     className="w-4 h-4" /> },
 ]
 
