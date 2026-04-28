@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma'
 
 export async function GET() {
   try {
-    const data = await prisma.sekapurSirih.findFirst({
+    const data = await prisma.seputarPPID.findFirst({  // ✅ tabel yang benar
       orderBy: { createdAt: 'desc' },
     })
     return NextResponse.json(data ?? {})
@@ -17,12 +17,9 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   try {
     const { id, ...body } = await req.json()
-    let data
-    if (id) {
-      data = await prisma.sekapurSirih.update({ where: { id }, data: body })
-    } else {
-      data = await prisma.sekapurSirih.create({ data: body })
-    }
+    const data = id
+      ? await prisma.seputarPPID.update({ where: { id }, data: body })  // ✅
+      : await prisma.seputarPPID.create({ data: body })                  // ✅
     return NextResponse.json(data)
   } catch (e) {
     console.error('[POST /api/admin/ppid/seputar]', e)

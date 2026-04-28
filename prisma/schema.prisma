@@ -4,9 +4,8 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 // ========== AUTH ==========
@@ -322,6 +321,26 @@ enum TipePeraturan {
 }
 
 // ========== PPID ==========
+model SeputarPPID {
+  id        String   @id @default(cuid())
+  judul     String
+  konten    String   @db.Text
+  nama      String?
+  jabatan   String?
+  foto      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model TugasFungsiPPID {
+  id        String   @id @default(cuid())
+  judul     String
+  konten    String   @db.Text
+  urutan    Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model DokumenPPID {
   id        String       @id @default(cuid())
   judul     String
@@ -401,17 +420,17 @@ model SiteSettings {
 
 // ========== INFORMASI PUBLIK ==========
 model InformasiPublik {
-  id          String              @id @default(cuid())
-  judul       String
-  deskripsi   String?             @db.Text
-  kategori    String?
-  tipe        TipeInformasiPublik @default(GAMBAR)
-  url         String?
-  urlDokumen  String?
-  urutan      Int                 @default(0)
-  aktif       Boolean             @default(true)
-  createdAt   DateTime            @default(now())
-  updatedAt   DateTime            @updatedAt
+  id         String              @id @default(cuid())
+  judul      String
+  deskripsi  String?             @db.Text
+  kategori   String?
+  tipe       TipeInformasiPublik @default(GAMBAR)
+  url        String?
+  urlDokumen String?
+  urutan     Int                 @default(0)
+  aktif      Boolean             @default(true)
+  createdAt  DateTime            @default(now())
+  updatedAt  DateTime            @updatedAt
 
   @@map("informasi_publik")
 }
