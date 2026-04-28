@@ -5,7 +5,7 @@ import Link            from 'next/link'
 import Image           from 'next/image'
 import {
   LayoutDashboard, Newspaper, MessageSquare,
-  AlertTriangle, Settings, ChevronDown,
+  Settings, ChevronDown,
   Building2, Shield,
   Camera, Globe,
 } from 'lucide-react'
@@ -57,25 +57,19 @@ const navItems: NavItem[] = [
     label: 'PPID',
     icon:  <Shield className="w-4 h-4" />,
     children: [
-      { label: 'Seputar PPID',             href: '/admin/ppid/seputar' },
-      { label: 'Tugas & Fungsi',           href: '/admin/ppid/tugas-fungsi' },
-      { label: 'Struktur Organisasi',      href: '/admin/ppid/struktur-organisasi' },
-      { label: 'Maklumat Pelayanan',       href: '/admin/ppid/maklumat' },
-      { label: 'Pelayanan Informasi',      href: '/admin/ppid/pelayanan' },
-      { label: 'Informasi Publik',         href: '/admin/ppid/informasi-publik' },
-      { label: 'Permohonan Online',        href: '/admin/ppid/permohonan' },
-      
+      { label: 'Seputar PPID',        href: '/admin/ppid/seputar' },
+      { label: 'Tugas & Fungsi',      href: '/admin/ppid/tugas-fungsi' },
+      { label: 'Struktur Organisasi', href: '/admin/ppid/struktur-organisasi' },
+      { label: 'Maklumat Pelayanan',  href: '/admin/ppid/maklumat' },
+      { label: 'Pelayanan Informasi', href: '/admin/ppid/pelayanan' },
+      { label: 'Informasi Publik',    href: '/admin/ppid/informasi-publik' },
+      { label: 'Permohonan Online',   href: '/admin/ppid/permohonan' },
     ],
   },
   {
     label: 'Kontak',
     href:  '/admin/kontak',
     icon:  <MessageSquare className="w-4 h-4" />,
-  },
-  {
-    label: 'Pengaduan (WBS)',
-    href:  '/admin/pengaduan',
-    icon:  <AlertTriangle className="w-4 h-4" />,
   },
   {
     label: 'Pengaturan',
@@ -87,7 +81,6 @@ const navItems: NavItem[] = [
 export default function AdminSidebar() {
   const pathname = usePathname()
 
-  // Auto-expand grup yang aktif
   const [openGroups, setOpenGroups] = useState<string[]>(() =>
     navItems
       .filter((n) => n.children?.some((c) => pathname.startsWith(c.href)))
@@ -142,7 +135,6 @@ export default function AdminSidebar() {
       {/* ── Nav ── */}
       <nav className="flex-1 overflow-y-auto py-3 px-2 flex flex-col gap-0.5">
         {navItems.map((item) => {
-          // ── Single link ──
           if (!item.children) {
             const active = isActive(item.href!)
             return (
@@ -164,7 +156,6 @@ export default function AdminSidebar() {
             )
           }
 
-          // ── Group with children ──
           const isOpen      = openGroups.includes(item.label)
           const groupActive = item.children.some((c) => pathname.startsWith(c.href))
 
@@ -194,7 +185,6 @@ export default function AdminSidebar() {
                 />
               </button>
 
-              {/* Children */}
               {isOpen && (
                 <div
                   className="ml-4 mt-0.5 mb-1 flex flex-col gap-0.5 pl-3"

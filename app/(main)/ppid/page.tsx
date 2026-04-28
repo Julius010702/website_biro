@@ -10,7 +10,6 @@ export const metadata: Metadata = {
 }
 
 export default async function PPIDPage() {
-  // Ambil total dokumen per kategori untuk statistik
   const [totalDokumen, totalPermohonan, maklumat] = await Promise.all([
     prisma.dokumenPPID.count({ where: { aktif: true } }),
     prisma.permohonanInformasi.count(),
@@ -19,14 +18,14 @@ export default async function PPIDPage() {
 
   const infoCards = [
     {
-      icon: <Shield       className="w-6 h-6" />,
+      icon: <Shield        className="w-6 h-6" />,
       label: 'Dasar Hukum',
       nilai: 'UU 14/2008',
       sub: 'Keterbukaan Informasi Publik',
       color: '#0D47A1', bg: '#EFF6FF',
     },
     {
-      icon: <FileText     className="w-6 h-6" />,
+      icon: <FileText      className="w-6 h-6" />,
       label: 'Total Dokumen',
       nilai: String(totalDokumen),
       sub: 'Dokumen tersedia',
@@ -40,19 +39,12 @@ export default async function PPIDPage() {
       color: '#7C3AED', bg: '#F5F3FF',
     },
     {
-      icon: <Users        className="w-6 h-6" />,
+      icon: <Users         className="w-6 h-6" />,
       label: 'Atasan PPID',
       nilai: 'Kepala Biro',
       sub: 'Biro Organisasi Setda NTT',
       color: '#B45309', bg: '#FFFBEB',
     },
-  ]
-
-  const layananList = [
-    { label: 'Informasi yang Tersedia Setiap Saat', href: '/ppid/daftar-informasi', desc: 'Dokumen yang dapat diakses kapan saja tanpa permohonan khusus.' },
-    { label: 'Informasi Berkala',                   href: '/ppid/daftar-informasi', desc: 'Informasi yang wajib disediakan dan diumumkan secara berkala.' },
-    { label: 'Informasi Serta Merta',               href: '/ppid/daftar-informasi', desc: 'Informasi yang harus diumumkan segera karena menyangkut hajat orang banyak.' },
-    { label: 'Permohonan Informasi Online',         href: '/admin/ppid/permohonan',       desc: 'Ajukan permohonan informasi secara online melalui formulir digital.' },
   ]
 
   return (
@@ -126,29 +118,6 @@ export default async function PPIDPage() {
         </div>
       </div>
 
-      {/* ── Layanan tersedia ── */}
-      <div className="rounded-2xl p-6" style={{ background: 'white', border: '1px solid #DBEAFE' }}>
-        <div className="flex items-center gap-2 mb-5">
-          <div className="w-1 h-5 rounded-full bg-blue-700" />
-          <h2 className="text-base font-bold" style={{ color: '#0A2342' }}>Layanan Informasi</h2>
-        </div>
-        <div className="grid sm:grid-cols-2 gap-3">
-          {layananList.map((l) => (
-            <Link
-              key={l.href + l.label}
-              href={l.href}
-              className="group flex flex-col gap-1.5 p-4 rounded-xl transition-all hover:-translate-y-0.5 hover:shadow-md"
-              style={{ background: '#F8FAFF', border: '1px solid #DBEAFE', textDecoration: 'none' }}
-            >
-              <span className="text-xs font-bold text-blue-800 group-hover:text-blue-600 transition-colors leading-snug">
-                {l.label}
-              </span>
-              <span className="text-[11px] text-slate-500 leading-relaxed">{l.desc}</span>
-            </Link>
-          ))}
-        </div>
-      </div>
-
       {/* ── Maklumat singkat ── */}
       {maklumat && (
         <div
@@ -158,15 +127,20 @@ export default async function PPIDPage() {
           <Shield className="w-5 h-5 text-yellow-600 shrink-0 mt-0.5" />
           <div>
             <p className="text-xs font-bold text-yellow-800 mb-1">Maklumat Pelayanan</p>
-            <p className="text-xs text-yellow-700 leading-relaxed line-clamp-3"
+            <p
+              className="text-xs text-yellow-700 leading-relaxed line-clamp-3"
               dangerouslySetInnerHTML={{ __html: maklumat.konten.substring(0, 300) + '...' }}
             />
-            <Link href="/ppid/maklumat" className="text-[11px] font-bold text-yellow-700 mt-2 inline-flex items-center gap-1 hover:text-yellow-900">
+            <Link
+              href="/ppid/maklumat"
+              className="text-[11px] font-bold text-yellow-700 mt-2 inline-flex items-center gap-1 hover:text-yellow-900"
+            >
               Baca Selengkapnya <ExternalLink className="w-3 h-3" />
             </Link>
           </div>
         </div>
       )}
+
     </div>
   )
 }
