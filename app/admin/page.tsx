@@ -5,7 +5,7 @@ import { format }    from 'date-fns'
 import { id as localeId } from 'date-fns/locale'
 import type { Metadata } from 'next'
 import {
-  Newspaper, Images, MessageSquare, AlertTriangle,
+  Newspaper, Images, MessageSquare,
   FileText, Eye, Clock, ChevronRight,
   Users, BarChart3,
 } from 'lucide-react'
@@ -18,18 +18,15 @@ export default async function AdminDashboard() {
     totalBeritaDraft,
     totalGaleri,
     totalKontak,
-    totalPengaduan,
     totalPermohonan,
     totalBagian,
     beritaTerbaru,
     permohonanTerbaru,
-    pengaduanTerbaru,
   ] = await Promise.all([
     prisma.berita.count({ where: { publish: true } }),
     prisma.berita.count({ where: { publish: false } }),
     prisma.galeri.count({ where: { aktif: true } }),
     prisma.kontak.count({ where: { dibaca: false } }),
-    prisma.pengaduan.count({ where: { status: 'BARU' } }),
     prisma.permohonanInformasi.count({ where: { status: 'PENDING' } }),
     prisma.bagian.count(),
     prisma.berita.findMany({
@@ -43,89 +40,62 @@ export default async function AdminDashboard() {
       take:    3,
       select:  { id: true, namaPemohon: true, nomorRegister: true, status: true, createdAt: true },
     }),
-    prisma.pengaduan.findMany({
-      where:   { status: 'BARU' },
-      orderBy: { createdAt: 'desc' },
-      take:    3,
-      select:  { id: true, subjek: true, nomorTiket: true, unitKerja: true, createdAt: true },
-    }),
   ])
 
-  // ── Stat cards ──────────────────────────────────────────────────────────────
   const stats = [
     {
-      label:  'Berita Terbit',
-      value:  totalBerita,
-      sub:    `${totalBeritaDraft} draft`,
-      icon:   <Newspaper      className="w-5 h-5" />,
-      href:   '/admin/berita',
-      color:  '#0D47A1',
-      bg:     '#EFF6FF',
+      label: 'Berita Terbit',
+      value: totalBerita,
+      sub:   `${totalBeritaDraft} draft`,
+      icon:  <Newspaper     className="w-5 h-5" />,
+      href:  '/admin/berita',
+      color: '#0D47A1', bg: '#EFF6FF',
     },
     {
-      label:  'Galeri Aktif',
-      value:  totalGaleri,
-      sub:    'foto & video',
-      icon:   <Images         className="w-5 h-5" />,
-      href:   '/admin/galeri',
-      color:  '#0891B2',
-      bg:     '#ECFEFF',
+      label: 'Galeri Aktif',
+      value: totalGaleri,
+      sub:   'foto & video',
+      icon:  <Images        className="w-5 h-5" />,
+      href:  '/admin/galeri',
+      color: '#0891B2', bg: '#ECFEFF',
     },
     {
-      label:  'Pesan Belum Dibaca',
-      value:  totalKontak,
-      sub:    'perlu ditindaklanjuti',
-      icon:   <MessageSquare  className="w-5 h-5" />,
-      href:   '/admin/kontak',
-      color:  '#7C3AED',
-      bg:     '#F5F3FF',
+      label: 'Pesan Belum Dibaca',
+      value: totalKontak,
+      sub:   'perlu ditindaklanjuti',
+      icon:  <MessageSquare className="w-5 h-5" />,
+      href:  '/admin/kontak',
+      color: '#7C3AED', bg: '#F5F3FF',
     },
     {
-      label:  'Pengaduan Baru',
-      value:  totalPengaduan,
-      sub:    'belum diproses',
-      icon:   <AlertTriangle  className="w-5 h-5" />,
-      href:   '/admin/pengaduan',
-      color:  '#DC2626',
-      bg:     '#FEF2F2',
+      label: 'Permohonan Pending',
+      value: totalPermohonan,
+      sub:   'menunggu verifikasi',
+      icon:  <FileText      className="w-5 h-5" />,
+      href:  '/admin/ppid/permohonan',
+      color: '#D97706', bg: '#FFFBEB',
     },
     {
-      label:  'Permohonan Pending',
-      value:  totalPermohonan,
-      sub:    'menunggu verifikasi',
-      icon:   <FileText       className="w-5 h-5" />,
-      href:   '/admin/ppid/permohonan',
-      color:  '#D97706',
-      bg:     '#FFFBEB',
-    },
-    {
-      label:  'Unit Kerja (Bagian)',
-      value:  totalBagian,
-      sub:    'bagian aktif',
-      icon:   <Users          className="w-5 h-5" />,
-      href:   '/admin/profil/bagian',
-      color:  '#065F46',
-      bg:     '#ECFDF5',
+      label: 'Unit Kerja (Bagian)',
+      value: totalBagian,
+      sub:   'bagian aktif',
+      icon:  <Users         className="w-5 h-5" />,
+      href:  '/admin/profil/bagian',
+      color: '#065F46', bg: '#ECFDF5',
     },
   ]
 
-  // ── Status badge helper ──────────────────────────────────────────────────────
   function StatusBadge({ status }: { status: string }) {
     const map: Record<string, { label: string; color: string; bg: string }> = {
-      PENDING:     { label: 'Pending',     color: '#D97706', bg: '#FFFBEB' },
-      DIPROSES:    { label: 'Diproses',    color: '#0D47A1', bg: '#EFF6FF' },
-      SELESAI:     { label: 'Selesai',     color: '#065F46', bg: '#ECFDF5' },
-      DITOLAK:     { label: 'Ditolak',     color: '#DC2626', bg: '#FEF2F2' },
-      BARU:        { label: 'Baru',        color: '#DC2626', bg: '#FEF2F2' },
-      DIVERIFIKASI:{ label: 'Diverifikasi',color: '#7C3AED', bg: '#F5F3FF' },
-      DITUTUP:     { label: 'Ditutup',     color: '#64748B', bg: '#F1F5F9' },
+      PENDING:      { label: 'Pending',      color: '#D97706', bg: '#FFFBEB' },
+      DIPROSES:     { label: 'Diproses',     color: '#0D47A1', bg: '#EFF6FF' },
+      SELESAI:      { label: 'Selesai',      color: '#065F46', bg: '#ECFDF5' },
+      DITOLAK:      { label: 'Ditolak',      color: '#DC2626', bg: '#FEF2F2' },
     }
     const s = map[status] ?? { label: status, color: '#64748B', bg: '#F1F5F9' }
     return (
-      <span
-        className="text-[10px] font-bold px-2 py-0.5 rounded-full"
-        style={{ background: s.bg, color: s.color }}
-      >
+      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full"
+        style={{ background: s.bg, color: s.color }}>
         {s.label}
       </span>
     )
@@ -164,23 +134,13 @@ export default async function AdminDashboard() {
       </div>
 
       {/* ── Stat cards ── */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
         {stats.map((s) => (
-          <Link
-            key={s.label}
-            href={s.href}
+          <Link key={s.label} href={s.href}
             className="rounded-2xl p-4 flex flex-col gap-3 transition-all hover:-translate-y-0.5 hover:shadow-lg"
-            style={{
-              background:   'white',
-              border:       '1px solid #E2EAF6',
-              boxShadow:    '0 2px 10px rgba(13,71,161,0.06)',
-              textDecoration: 'none',
-            }}
-          >
-            <div
-              className="w-8 h-8 rounded-xl flex items-center justify-center"
-              style={{ background: s.bg, color: s.color }}
-            >
+            style={{ background: 'white', border: '1px solid #E2EAF6', boxShadow: '0 2px 10px rgba(13,71,161,0.06)', textDecoration: 'none' }}>
+            <div className="w-8 h-8 rounded-xl flex items-center justify-center"
+              style={{ background: s.bg, color: s.color }}>
               {s.icon}
             </div>
             <div>
@@ -192,18 +152,14 @@ export default async function AdminDashboard() {
         ))}
       </div>
 
-      {/* ── Tabel bawah: 3 kolom ── */}
-      <div className="grid lg:grid-cols-3 gap-4">
+      {/* ── Tabel bawah: 2 kolom ── */}
+      <div className="grid lg:grid-cols-2 gap-4">
 
         {/* Berita terbaru */}
-        <div
-          className="lg:col-span-1 rounded-2xl overflow-hidden"
-          style={{ background: 'white', border: '1px solid #E2EAF6', boxShadow: '0 2px 10px rgba(13,71,161,0.06)' }}
-        >
-          <div
-            className="flex items-center justify-between px-4 py-3"
-            style={{ borderBottom: '1px solid #EEF3FC', background: '#F8FAFF' }}
-          >
+        <div className="rounded-2xl overflow-hidden"
+          style={{ background: 'white', border: '1px solid #E2EAF6', boxShadow: '0 2px 10px rgba(13,71,161,0.06)' }}>
+          <div className="flex items-center justify-between px-4 py-3"
+            style={{ borderBottom: '1px solid #EEF3FC', background: '#F8FAFF' }}>
             <div className="flex items-center gap-2">
               <div className="w-1 h-4 rounded-full bg-blue-700" />
               <h3 className="text-xs font-bold" style={{ color: '#0A2342' }}>Berita Terbaru</h3>
@@ -216,22 +172,17 @@ export default async function AdminDashboard() {
             {beritaTerbaru.length === 0 ? (
               <p className="px-4 py-8 text-xs text-center text-slate-300">Belum ada berita.</p>
             ) : beritaTerbaru.map((b) => (
-              <Link
-                key={b.id}
-                href={`/admin/berita/${b.id}`}
+              <Link key={b.id} href={`/admin/berita/${b.id}`}
                 className="flex items-start justify-between gap-3 px-4 py-3 hover:bg-slate-50 transition-colors"
-                style={{ textDecoration: 'none' }}
-              >
+                style={{ textDecoration: 'none' }}>
                 <div className="min-w-0 flex-1">
                   <p className="text-[11px] font-semibold line-clamp-2 leading-snug" style={{ color: '#0A2342' }}>
                     {b.judul}
                   </p>
                   <div className="flex items-center gap-2 mt-1">
                     {b.kategori && (
-                      <span
-                        className="text-[9px] font-bold px-1.5 py-0.5 rounded"
-                        style={{ background: '#EFF6FF', color: '#1565C0' }}
-                      >
+                      <span className="text-[9px] font-bold px-1.5 py-0.5 rounded"
+                        style={{ background: '#EFF6FF', color: '#1565C0' }}>
                         {b.kategori}
                       </span>
                     )}
@@ -251,14 +202,10 @@ export default async function AdminDashboard() {
         </div>
 
         {/* Permohonan terbaru */}
-        <div
-          className="rounded-2xl overflow-hidden"
-          style={{ background: 'white', border: '1px solid #E2EAF6', boxShadow: '0 2px 10px rgba(13,71,161,0.06)' }}
-        >
-          <div
-            className="flex items-center justify-between px-4 py-3"
-            style={{ borderBottom: '1px solid #EEF3FC', background: '#F8FAFF' }}
-          >
+        <div className="rounded-2xl overflow-hidden"
+          style={{ background: 'white', border: '1px solid #E2EAF6', boxShadow: '0 2px 10px rgba(13,71,161,0.06)' }}>
+          <div className="flex items-center justify-between px-4 py-3"
+            style={{ borderBottom: '1px solid #EEF3FC', background: '#F8FAFF' }}>
             <div className="flex items-center gap-2">
               <div className="w-1 h-4 rounded-full" style={{ backgroundColor: '#D97706' }} />
               <h3 className="text-xs font-bold" style={{ color: '#0A2342' }}>Permohonan Informasi</h3>
@@ -271,12 +218,9 @@ export default async function AdminDashboard() {
             {permohonanTerbaru.length === 0 ? (
               <p className="px-4 py-8 text-xs text-center text-slate-300">Tidak ada permohonan.</p>
             ) : permohonanTerbaru.map((p) => (
-              <Link
-                key={p.id}
-                href={`/admin/ppid/permohonan/${p.id}`}
+              <Link key={p.id} href={`/admin/ppid/permohonan`}
                 className="flex items-start justify-between gap-3 px-4 py-3 hover:bg-slate-50 transition-colors"
-                style={{ textDecoration: 'none' }}
-              >
+                style={{ textDecoration: 'none' }}>
                 <div className="min-w-0 flex-1">
                   <p className="text-[11px] font-semibold truncate" style={{ color: '#0A2342' }}>
                     {p.namaPemohon}
@@ -293,72 +237,15 @@ export default async function AdminDashboard() {
           </div>
           {totalPermohonan > 3 && (
             <div className="px-4 py-2.5" style={{ borderTop: '1px solid #EEF3FC' }}>
-              <Link
-                href="/admin/ppid/permohonan"
+              <Link href="/admin/ppid/permohonan"
                 className="block text-center text-[11px] font-semibold py-2 rounded-xl transition-all hover:bg-blue-50"
-                style={{ color: '#0D47A1' }}
-              >
+                style={{ color: '#0D47A1' }}>
                 +{totalPermohonan - 3} permohonan lainnya
               </Link>
             </div>
           )}
         </div>
 
-        {/* Pengaduan terbaru */}
-        <div
-          className="rounded-2xl overflow-hidden"
-          style={{ background: 'white', border: '1px solid #E2EAF6', boxShadow: '0 2px 10px rgba(13,71,161,0.06)' }}
-        >
-          <div
-            className="flex items-center justify-between px-4 py-3"
-            style={{ borderBottom: '1px solid #EEF3FC', background: '#F8FAFF' }}
-          >
-            <div className="flex items-center gap-2">
-              <div className="w-1 h-4 rounded-full bg-red-600" />
-              <h3 className="text-xs font-bold" style={{ color: '#0A2342' }}>Pengaduan (WBS)</h3>
-            </div>
-            <Link href="/admin/pengaduan" className="text-[11px] font-semibold text-blue-600 flex items-center gap-0.5">
-              Semua <ChevronRight className="w-3 h-3" />
-            </Link>
-          </div>
-          <div className="divide-y divide-slate-50">
-            {pengaduanTerbaru.length === 0 ? (
-              <p className="px-4 py-8 text-xs text-center text-slate-300">Tidak ada pengaduan baru.</p>
-            ) : pengaduanTerbaru.map((p) => (
-              <Link
-                key={p.id}
-                href={`/admin/pengaduan/${p.id}`}
-                className="flex items-start gap-3 px-4 py-3 hover:bg-slate-50 transition-colors"
-                style={{ textDecoration: 'none' }}
-              >
-                <div
-                  className="w-6 h-6 rounded-lg flex items-center justify-center shrink-0 mt-0.5"
-                  style={{ background: '#FEF2F2' }}
-                >
-                  <AlertTriangle className="w-3 h-3 text-red-500" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="text-[11px] font-semibold line-clamp-1" style={{ color: '#0A2342' }}>
-                    {p.subjek}
-                  </p>
-                  <p className="text-[9px] text-slate-400 mt-0.5">{p.unitKerja}</p>
-                  <p className="text-[9px] font-mono text-slate-300 mt-0.5">{p.nomorTiket}</p>
-                </div>
-              </Link>
-            ))}
-          </div>
-          {totalPengaduan > 3 && (
-            <div className="px-4 py-2.5" style={{ borderTop: '1px solid #EEF3FC' }}>
-              <Link
-                href="/admin/pengaduan"
-                className="block text-center text-[11px] font-semibold py-2 rounded-xl transition-all hover:bg-red-50"
-                style={{ color: '#DC2626' }}
-              >
-                +{totalPengaduan - 3} pengaduan lainnya
-              </Link>
-            </div>
-          )}
-        </div>
       </div>
 
       {/* ── Quick actions ── */}
@@ -369,18 +256,15 @@ export default async function AdminDashboard() {
         </div>
         <div className="flex flex-wrap gap-2">
           {[
-            { label: '+ Tambah Berita',    href: '/admin/berita/tambah',        color: '#0D47A1', bg: '#EFF6FF' },
-            { label: '+ Upload Galeri',    href: '/admin/galeri/tambah',        color: '#0891B2', bg: '#ECFEFF' },
-            { label: '+ Tambah Regulasi',  href: '/admin/regulasi/tambah',      color: '#7C3AED', bg: '#F5F3FF' },
-            { label: '+ Dokumen PPID',     href: '/admin/ppid/dokumen/tambah',  color: '#065F46', bg: '#ECFDF5' },
-            { label: 'Pengaturan Situs',   href: '/admin/pengaturan',           color: '#64748B', bg: '#F1F5F9' },
+            { label: '+ Tambah Berita',   href: '/admin/berita/tambah',       color: '#0D47A1', bg: '#EFF6FF' },
+            { label: '+ Upload Galeri',   href: '/admin/galeri/tambah',       color: '#0891B2', bg: '#ECFEFF' },
+            { label: '+ Tambah Regulasi', href: '/admin/regulasi/tambah',     color: '#7C3AED', bg: '#F5F3FF' },
+            { label: '+ Dokumen PPID',    href: '/admin/ppid/dokumen/tambah', color: '#065F46', bg: '#ECFDF5' },
+            { label: 'Pengaturan Situs',  href: '/admin/pengaturan',          color: '#64748B', bg: '#F1F5F9' },
           ].map((a) => (
-            <Link
-              key={a.href}
-              href={a.href}
+            <Link key={a.href} href={a.href}
               className="text-xs font-semibold px-4 py-2 rounded-xl transition-all hover:scale-105 active:scale-95"
-              style={{ background: a.bg, color: a.color, border: `1px solid ${a.color}20` }}
-            >
+              style={{ background: a.bg, color: a.color, border: `1px solid ${a.color}20` }}>
               {a.label}
             </Link>
           ))}
