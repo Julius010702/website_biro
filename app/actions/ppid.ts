@@ -14,13 +14,11 @@ export async function submitPermohonan(formData: FormData) {
   const tujuanPenggunaan = formData.get('tujuanPenggunaan') as string
   const caraPenyampaian  = formData.get('caraPenyampaian')  as string
 
-  // Generate nomor register: PPID-YYYYMMDD-XXXX
   const now           = new Date()
   const tgl           = now.toISOString().slice(0, 10).replace(/-/g, '')
   const rand          = Math.floor(1000 + Math.random() * 9000)
   const nomorRegister = `PPID-${tgl}-${rand}`
 
-  // Simpan ke tabel PermohonanInformasi
   await prisma.permohonanInformasi.create({
     data: {
       namaPemohon,
@@ -37,7 +35,6 @@ export async function submitPermohonan(formData: FormData) {
     },
   })
 
-  // Simpan juga ke tabel Kontak agar muncul di halaman kontak admin
   await prisma.kontak.create({
     data: {
       nama:    namaPemohon,
