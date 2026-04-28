@@ -71,7 +71,12 @@
   html {
     scroll-behavior: smooth;
     width: 100%;
-    overflow-x: hidden;
+    /*
+      PENTING: gunakan overflow-x: clip bukan hidden.
+      overflow: hidden pada html/body akan MEMATIKAN position: sticky.
+      clip mencegah horizontal scroll tanpa membuat scroll container baru.
+    */
+    overflow-x: clip;
   }
   body {
     font-family: 'Source Sans 3', sans-serif;
@@ -79,11 +84,10 @@
     color: #1a1a2e;
     -webkit-font-smoothing: antialiased;
     width: 100%;
-    overflow-x: hidden;
+    overflow-x: clip;
   }
   h1, h2, h3 { font-family: 'Playfair Display', serif; }
 
-  /* Reset semua elemen agar tidak overflow */
   *, *::before, *::after {
     box-sizing: border-box;
   }
@@ -157,24 +161,20 @@
   ::-webkit-scrollbar-thumb { background: #1B5FA8; border-radius: 3px; }
 
   /* ═══════════════════════════════════════════════════════════
-     HEADER TICKER — FULL WIDTH FIX
+     HEADER TICKER
   ═══════════════════════════════════════════════════════════ */
-
-  /* Label "BIRO" di kiri ticker */
   .header-ticker-label {
     background-color: var(--color-ntt-hgold-400);
     border-right: 1px solid rgba(212, 160, 23, 0.3);
-    /* flex-shrink: 0 agar label tidak menyusut */
     flex-shrink: 0;
   }
   .header-ticker-label .header-topbar-text {
     color: var(--color-ntt-blue-900) !important;
   }
 
-  /* Track ticker: flex-1 + min-width:0 agar mengisi sisa lebar */
   .header-ticker-track {
     flex: 1;
-    min-width: 0;               /* ← KRITIS: cegah overflow keluar container */
+    min-width: 0;
     overflow: hidden;
     mask-image: linear-gradient(to right, transparent 0%, black 4%, black 88%, transparent 100%);
     -webkit-mask-image: linear-gradient(to right, transparent 0%, black 4%, black 88%, transparent 100%);
@@ -203,25 +203,20 @@
   }
 
   /* ═══════════════════════════════════════════════════════════
-     HEADER TOPBAR — FULL WIDTH FIX
-     Hapus semua max-w-* dari wrapper topbar
+     HEADER TOPBAR
   ═══════════════════════════════════════════════════════════ */
-
   .header-topbar {
-    /* Full width — tidak boleh ada max-width di sini */
     width: 100%;
     background-color: var(--color-ntt-blue-900);
     border-bottom: 2px solid var(--color-ntt-hgold-400);
   }
 
-  /* Wrapper inner topbar — FULL WIDTH tanpa max-w */
   .header-topbar-inner {
-    width: 100%;                /* ← KUNCI: bukan max-w-7xl */
+    width: 100%;
     display: flex;
     align-items: center;
-    /* Padding kiri-kanan minimal, biarkan lebar mengikuti viewport */
-    padding-left: 0;            /* label ticker mulai dari tepi kiri */
-    padding-right: 1rem;        /* sedikit padding kanan untuk meta info */
+    padding-left: 0;
+    padding-right: 1rem;
     height: 32px;
     gap: 0;
   }
@@ -231,11 +226,9 @@
   .header-topbar-divider { color: rgba(255, 255, 255, 0.2); }
 
   /* ═══════════════════════════════════════════════════════════
-     HEADER MAIN — FULL WIDTH FIX
+     HEADER MAIN
   ═══════════════════════════════════════════════════════════ */
-
   .header-main {
-    /* Full width */
     width: 100%;
     background: linear-gradient(
       135deg,
@@ -250,23 +243,17 @@
   }
 
   /* ═══════════════════════════════════════════════════════════
-     HEADER NAV INNER — FULL WIDTH FIX
-     Ini wrapper di dalam header-main yang menampung
-     logo + nav links + tombol login
-     Hapus max-w-7xl mx-auto dari class ini di TSX Anda
+     HEADER NAV CONTAINER
   ═══════════════════════════════════════════════════════════ */
-
   .header-nav-container {
-    /* FULL WIDTH — bukan max-w-7xl */
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0.625rem 1.25rem;  /* py-2.5 px-5 */
+    padding: 0.625rem 1.25rem;
     gap: 0.75rem;
   }
 
-  /* Logo area — tidak boleh menyusut */
   .header-logo-area {
     display: flex;
     align-items: center;
@@ -274,17 +261,15 @@
     flex-shrink: 0;
   }
 
-  /* Nav links area — mengisi ruang tengah */
   .header-nav-links-area {
     display: flex;
     align-items: center;
     gap: 0.25rem;
-    flex: 1;                    /* ← mengisi sisa ruang di tengah */
-    justify-content: center;    /* ← tetap di tengah */
+    flex: 1;
+    justify-content: center;
     min-width: 0;
   }
 
-  /* Right area (badge + login) — tidak boleh menyusut */
   .header-nav-right-area {
     display: flex;
     align-items: center;
@@ -295,14 +280,10 @@
   /* ═══════════════════════════════════════════════════════════
      LOGO
   ═══════════════════════════════════════════════════════════ */
-
   .header-logo-icon {
     background: linear-gradient(135deg, var(--color-ntt-hgold-400), var(--color-ntt-gold-600));
-    box-shadow:
-      0 2px 16px rgba(212,160,23,0.4),
-      0 0 0 2px rgba(212,160,23,0.15);
-    @apply w-12 h-12 rounded-xl flex items-center justify-center text-2xl
-           transition-all duration-300;
+    box-shadow: 0 2px 16px rgba(212,160,23,0.4), 0 0 0 2px rgba(212,160,23,0.15);
+    @apply w-12 h-12 rounded-xl flex items-center justify-center text-2xl transition-all duration-300;
     flex-shrink: 0;
   }
   .header-logo-icon:hover {
@@ -323,7 +304,6 @@
   /* ═══════════════════════════════════════════════════════════
      NAV LINKS
   ═══════════════════════════════════════════════════════════ */
-
   .header-nav-link {
     color: rgba(180, 215, 250, 0.85);
     @apply flex items-center gap-1 px-3 py-2 rounded-lg text-[13px] font-semibold
@@ -336,9 +316,8 @@
   }
 
   /* ═══════════════════════════════════════════════════════════
-     DROPDOWN — bridge invisible
+     DROPDOWN
   ═══════════════════════════════════════════════════════════ */
-
   .header-dropdown {
     background-color: var(--color-ntt-blue-900);
     border: 1px solid rgba(212, 160, 23, 0.22);
@@ -349,8 +328,6 @@
     animation: dropIn 0.2s cubic-bezier(0.16,1,0.3,1) forwards;
     position: absolute;
   }
-
-  /* Bridge transparan 12px di atas dropdown */
   .header-dropdown::before {
     content: '';
     position: absolute;
@@ -362,9 +339,8 @@
   }
 
   /* ═══════════════════════════════════════════════════════════
-     SUB-DROPDOWN — bridge invisible kiri
+     SUB-DROPDOWN
   ═══════════════════════════════════════════════════════════ */
-
   .header-subdropdown {
     background-color: var(--color-ntt-blue-900);
     border: 1px solid rgba(212, 160, 23, 0.22);
@@ -375,8 +351,6 @@
     animation: slideInLeft 0.2s cubic-bezier(0.16,1,0.3,1) forwards;
     position: absolute;
   }
-
-  /* Bridge transparan 10px di kiri subdropdown */
   .header-subdropdown::before {
     content: '';
     position: absolute;
@@ -411,7 +385,6 @@
   /* ═══════════════════════════════════════════════════════════
      LOGIN BUTTON
   ═══════════════════════════════════════════════════════════ */
-
   .header-btn-login {
     background: linear-gradient(135deg, var(--color-ntt-hgold-400), var(--color-ntt-gold-600));
     color: var(--color-ntt-navy-950);
@@ -428,7 +401,6 @@
   /* ═══════════════════════════════════════════════════════════
      BerAKHLAK BADGE
   ═══════════════════════════════════════════════════════════ */
-
   .header-badge {
     background-color: rgba(212, 160, 23, 0.1);
     border: 1px solid rgba(212, 160, 23, 0.28);
@@ -444,11 +416,10 @@
   }
 
   /* ═══════════════════════════════════════════════════════════
-     GOLD ACCENT LINE — full width
+     GOLD ACCENT LINE
   ═══════════════════════════════════════════════════════════ */
-
   .gold-accent-line {
-    width: 100%;                /* ← pastikan full width */
+    width: 100%;
     height: 1px;
     background: linear-gradient(
       90deg,
@@ -463,16 +434,14 @@
   /* ═══════════════════════════════════════════════════════════
      NAV SEPARATOR
   ═══════════════════════════════════════════════════════════ */
-
   .header-nav-separator {
     background-color: rgba(255, 255, 255, 0.08);
     @apply w-px h-6 mx-1;
   }
 
   /* ═══════════════════════════════════════════════════════════
-     MOBILE HAMBURGER BUTTON
+     MOBILE HAMBURGER
   ═══════════════════════════════════════════════════════════ */
-
   .header-mobile-toggle {
     background-color: var(--color-ntt-blue-800);
     border: 1px solid rgba(212, 160, 23, 0.2);
@@ -483,14 +452,12 @@
   }
 
   /* ═══════════════════════════════════════════════════════════
-     MOBILE DRAWER — full width
+     MOBILE DRAWER
   ═══════════════════════════════════════════════════════════ */
-
   .header-mobile-drawer {
-    width: 100%;                /* ← full width */
+    width: 100%;
     background-color: var(--color-ntt-blue-900);
     border-top: 2px solid var(--color-ntt-hgold-400);
-    /* padding menggunakan px-4 di TSX */
   }
 
   .header-mobile-link {
@@ -521,9 +488,8 @@
   }
 
   /* ═══════════════════════════════════════════════════════════
-     FOOTER — full width
+     FOOTER
   ═══════════════════════════════════════════════════════════ */
-
   .footer-root {
     width: 100%;
     background: linear-gradient(
@@ -550,7 +516,6 @@
     );
   }
 
-  /* Footer inner container — full width */
   .footer-inner {
     width: 100%;
     padding-left: 1.5rem;
@@ -582,8 +547,6 @@
 /* ─────────────────────────────────────────────────────
    GLOBAL UTILITIES
 ───────────────────────────────────────────────────── */
-
-/* Gradient bar — selalu full width */
 .gradient-bar {
   width: 100%;
   height: 3px;
@@ -596,9 +559,7 @@
 }
 
 /* ─────────────────────────────────────────────────────
-   RESPONSIVE CONTAINER UTILITY
-   Gunakan class ini sebagai pengganti "max-w-7xl mx-auto"
-   Untuk konten DALAM halaman (bukan header/footer)
+   RESPONSIVE CONTAINER
 ───────────────────────────────────────────────────── */
 .ntt-container {
   width: 100%;
@@ -607,37 +568,19 @@
   padding-left: 1rem;
   padding-right: 1rem;
 }
-
-/* Breakpoint: sm ke atas → padding lebih besar */
 @media (min-width: 640px) {
-  .ntt-container {
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-  }
+  .ntt-container { padding-left: 1.5rem; padding-right: 1.5rem; }
 }
-
-/* Breakpoint: lg ke atas → max-width untuk keterbacaan konten halaman */
 @media (min-width: 1024px) {
-  .ntt-container {
-    padding-left: 2rem;
-    padding-right: 2rem;
-  }
+  .ntt-container { padding-left: 2rem; padding-right: 2rem; }
 }
-
-/* Breakpoint: xl ke atas */
 @media (min-width: 1280px) {
-  .ntt-container {
-    padding-left: 3rem;
-    padding-right: 3rem;
-  }
+  .ntt-container { padding-left: 3rem; padding-right: 3rem; }
 }
 
 /* ─────────────────────────────────────────────────────
-   HEADER WRAPPER OVERRIDE
-   Paksa semua elemen dalam #site-header melebar penuh
+   HEADER OVERRIDE — force full width
 ───────────────────────────────────────────────────── */
-
-/* Selector ini menangkap jika ada container Tailwind yg masih pakai max-w */
 #site-header,
 header[role="banner"],
 .site-header {
@@ -652,45 +595,73 @@ header[role="banner"] > *,
   max-width: 100% !important;
 }
 
-/* Override jika ada utility class max-w-* di dalam header */
-#site-header .max-w-7xl,
-#site-header .max-w-6xl,
-#site-header .max-w-5xl,
-#site-header .container,
-header .max-w-7xl,
-header .max-w-6xl,
-header .max-w-5xl,
-header .container {
-  max-width: 100% !important;
-  width: 100% !important;
-  margin-left: 0 !important;
-  margin-right: 0 !important;
+
+/* ─────────────────────────────────────────────────────
+   SCROLL ANIMATIONS
+   Gunakan class ini di elemen yang ingin dianimasikan
+   saat scroll. JS di ScrollAnimator.tsx akan menambah
+   class 'in-view' ketika elemen masuk viewport.
+───────────────────────────────────────────────────── */
+
+/* Base state — sembunyikan sebelum in-view */
+.reveal {
+  opacity: 0;
+  transition-property: opacity, transform;
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  transition-duration: 0.7s;
+  will-change: opacity, transform;
+}
+
+/* Muncul saat masuk viewport */
+.reveal.in-view {
+  opacity: 1;
+  transform: none !important;
+}
+
+/* ── Variasi arah ── */
+.reveal-up       { transform: translateY(40px); }
+.reveal-down     { transform: translateY(-40px); }
+.reveal-left     { transform: translateX(-48px); }
+.reveal-right    { transform: translateX(48px); }
+.reveal-scale    { transform: scale(0.92); }
+.reveal-scale-up { transform: scale(0.88) translateY(24px); }
+
+/* ── Delay ── */
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+.reveal-delay-5 { transition-delay: 0.5s; }
+.reveal-delay-6 { transition-delay: 0.6s; }
+
+/* ── Durasi custom ── */
+.reveal-fast   { transition-duration: 0.45s; }
+.reveal-slow   { transition-duration: 1.1s; }
+
+/* Nonaktifkan animasi kalau user prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
 }
 
 /* ─────────────────────────────────────────────────────
    KEYFRAMES
 ───────────────────────────────────────────────────── */
-
 @keyframes shimmer {
   0%   { background-position: 0% center; }
   100% { background-position: 200% center; }
 }
-
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(20px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-
 @keyframes dropIn {
   from { opacity: 0; transform: translateY(-8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-
 @keyframes slideInLeft {
   from { opacity: 0; transform: translateX(-8px); }
   to   { opacity: 1; transform: translateX(0); }
 }
-
 @keyframes ticker-scroll {
   0%   { transform: translateX(0); }
   100% { transform: translateX(-50%); }
@@ -699,47 +670,6 @@ header .container {
 /* ─────────────────────────────────────────────────────
    ANIMATION CLASSES
 ───────────────────────────────────────────────────── */
-
 .animate-fade-in-up    { animation: fadeInUp 0.5s ease-out forwards; }
 .animate-drop-in       { animation: dropIn 0.2s cubic-bezier(0.16,1,0.3,1) forwards; }
 .animate-slide-in-left { animation: slideInLeft 0.2s cubic-bezier(0.16,1,0.3,1) forwards; }
-/*
-  ─────────────────────────────────────────────────────
-  PATCH globals.css — ganti bagian @layer base saja.
-  Salin dan timpa blok @layer base yang lama.
-  ─────────────────────────────────────────────────────
-*/
-
-@layer base {
-  html {
-    scroll-behavior: smooth;
-    width: 100%;
-    /*
-      ⚠️ JANGAN pakai overflow-x: hidden di sini.
-      overflow: hidden pada <html> atau <body> akan MEMATIKAN
-      position: sticky pada semua elemen di dalamnya.
-      
-      Gunakan overflow-x: clip sebagai gantinya — clip mencegah
-      horizontal scrollbar tanpa membuat new scroll container,
-      sehingga sticky tetap bekerja normal.
-    */
-    overflow-x: clip;
-  }
-  body {
-    font-family: 'Source Sans 3', sans-serif;
-    background-color: #F8F5EE;
-    color: #1a1a2e;
-    -webkit-font-smoothing: antialiased;
-    width: 100%;
-    /*
-      overflow-x: clip — bukan hidden.
-      Alasan sama: hidden akan break sticky positioning.
-    */
-    overflow-x: clip;
-  }
-  h1, h2, h3 { font-family: 'Playfair Display', serif; }
-
-  *, *::before, *::after {
-    box-sizing: border-box;
-  }
-}
