@@ -6,7 +6,7 @@ export async function GET(req: NextRequest) {
   try {
     const dibaca = req.nextUrl.searchParams.get('dibaca')
     const data = await prisma.kontak.findMany({
-      where:   dibaca !== null ? { dibaca: dibaca === 'true' } : undefined,
+      where: dibaca !== null ? { dibaca: dibaca === 'true' } : undefined,
       orderBy: { createdAt: 'desc' },
     })
     return NextResponse.json(data)
