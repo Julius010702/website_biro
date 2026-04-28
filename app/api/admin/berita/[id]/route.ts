@@ -9,7 +9,6 @@ export async function DELETE(
 ) {
   const session = await getSession()
   if (!session) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
-
   const { id } = await params
   await prisma.berita.delete({ where: { id } })
   return NextResponse.json({ message: 'Berita berhasil dihapus' })
@@ -21,13 +20,8 @@ export async function PATCH(
 ) {
   const session = await getSession()
   if (!session) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
-
   const { id } = await params
-  const body = await req.json()
-
-  const berita = await prisma.berita.update({
-    where: { id },
-    data: body,
-  })
+  const body    = await req.json()
+  const berita  = await prisma.berita.update({ where: { id }, data: body })
   return NextResponse.json(berita)
 }

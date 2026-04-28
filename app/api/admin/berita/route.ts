@@ -3,23 +3,19 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getSession } from '@/lib/auth'
 
-// GET /api/admin/berita — ambil semua berita
 export async function GET(req: NextRequest) {
   const session = await getSession()
   if (!session) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
 
   const { searchParams } = new URL(req.url)
-  const page = parseInt(searchParams.get('page') ?? '1')
-  const limit = parseInt(searchParams.get('limit') ?? '10')
-  const search = searchParams.get('search') ?? ''
+  const page     = parseInt(searchParams.get('page')     ?? '1')
+  const limit    = parseInt(searchParams.get('limit')    ?? '50')
+  const search   = searchParams.get('search')   ?? ''
   const kategori = searchParams.get('kategori') ?? ''
-
-  const skip = (page - 1) * limit
+  const skip     = (page - 1) * limit
 
   const where = {
-    ...(search && {
-      judul: { contains: search, mode: 'insensitive' as const },
-    }),
+    ...(search   && { judul: { contains: search, mode: 'insensitive' as const } }),
     ...(kategori && { kategori }),
   }
 
@@ -30,61 +26,41 @@ export async function GET(req: NextRequest) {
       skip,
       take: limit,
       select: {
-        id: true,
-        judul: true,
-        slug: true,
-        kategori: true,
-        publish: true,
-        gambar: true,
-        createdAt: true,
-        updatedAt: true,
+        id: true, judul: true, slug: true, kategori: true,
+        publish: true, gambar: true, video: true,   // ✅ tambah video
+        penulis: true, views: true, tags: true,
+        createdAt: true, updatedAt: true,
       },
     }),
     prisma.berita.count({ where }),
   ])
 
-  return NextResponse.json({
-    data,
-    total,
-    page,
-    limit,
-    totalPages: Math.ceil(total / limit),
-  })
+  return NextResponse.json({ data, total, page, limit, totalPages: Math.ceil(total / limit) })
 }
 
-// POST /api/admin/berita — buat berita baru
 export async function POST(req: NextRequest) {
   const session = await getSession()
   if (!session) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
 
   const body = await req.json()
+  const { judul, slug, konten, gambar, video, kategori, penulis, tags, publish } = body
 
-  const { judul, slug, konten, gambar, kategori, publish } = body
+  if (!judul || !slug || !konten)
+    return NextResponse.json({ message: 'Judul, slug, dan konten wajib diisi' }, { status: 400 })
 
-  if (!judul || !slug || !konten) {
-    return NextResponse.json(
-      { message: 'Judul, slug, dan konten wajib diisi' },
-      { status: 400 }
-    )
-  }
-
-  // Cek slug duplikat
   const existing = await prisma.berita.findUnique({ where: { slug } })
-  if (existing) {
-    return NextResponse.json(
-      { message: 'Slug sudah digunakan, gunakan slug lain' },
-      { status: 409 }
-    )
-  }
+  if (existing)
+    return NextResponse.json({ message: 'Slug sudah digunakan' }, { status: 409 })
 
   const berita = await prisma.berita.create({
     data: {
-      judul,
-      slug,
-      konten,
-      gambar: gambar ?? null,
+      judul, slug, konten,
+      gambar:   gambar   ?? null,
+      video:    video    ?? null,   // ✅
       kategori: kategori ?? null,
-      publish: publish ?? false,
+      penulis:  penulis  ?? null,
+      tags:     tags     ?? [],
+      publish:  publish  ?? false,
     },
   })
 

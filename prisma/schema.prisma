@@ -224,6 +224,7 @@ model Berita {
   konten    String    @db.Text
   ringkasan String?
   gambar    String?
+  video     String?
   kategori  String?
   tags      String[]
   penulis   String?

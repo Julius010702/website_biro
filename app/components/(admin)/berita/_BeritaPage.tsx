@@ -8,12 +8,9 @@ import { useUploadThing } from '@/lib/uploadthing-client'
 import {
   Eye, Search, Upload, Link2, X, Loader2, ImageIcon,
   CheckCircle2, AlertCircle, FileImage, ExternalLink,
-  Calendar, Tag, User, Newspaper, RefreshCw,
+  Calendar, Tag, User, Newspaper, RefreshCw, Video, Play,
 } from 'lucide-react'
 
-// ─────────────────────────────────────────────
-// Types
-// ─────────────────────────────────────────────
 type Berita = {
   konten: string
   id: string
@@ -21,6 +18,7 @@ type Berita = {
   slug: string
   ringkasan: string | null
   gambar: string | null
+  video: string | null       // ✅
   kategori: string | null
   penulis: string | null
   publish: boolean
@@ -29,27 +27,223 @@ type Berita = {
   tags: string[]
 }
 
-// ─────────────────────────────────────────────
-// Helpers
-// ─────────────────────────────────────────────
 function slugify(str: string) {
-  return str
-    .toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/[^a-z0-9-]/g, '')
-    .replace(/-+/g, '-')
-    .replace(/^-|-$/g, '')
+  return str.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '').replace(/-+/g, '-').replace(/^-|-$/g, '')
 }
 
 function formatTanggal(dateStr: string) {
-  return new Date(dateStr).toLocaleDateString('id-ID', {
-    day: '2-digit', month: 'short', year: 'numeric',
-  })
+  return new Date(dateStr).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })
 }
 
-// ─────────────────────────────────────────────
-// ImageUploader Component
-// ─────────────────────────────────────────────
+// ── Helpers video ──────────────────────────────────────────
+function getYoutubeId(url: string) {
+  const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([^?&\s]{11})/)
+  return m?.[1] ?? null
+}
+function getYoutubeThumbnail(id: string) {
+  return `https://img.youtube.com/vi/${id}/hqdefault.jpg`
+}
+function isYoutube(url: string) { return /youtube\.com|youtu\.be/.test(url) }
+function isVimeo(url: string)   { return /vimeo\.com/.test(url) }
+function getVimeoEmbed(url: string) {
+  const id = url.match(/vimeo\.com\/(\d+)/)?.[1]
+  return id ? `https://player.vimeo.com/video/${id}?autoplay=1` : null
+}
+function getYoutubeEmbed(id: string) {
+  return `https://www.youtube.com/embed/${id}?autoplay=1&rel=0`
+}
+
+// ── VideoPlayer (style YouTube) ────────────────────────────
+function VideoPlayer({ url }: { url: string }) {
+  const [playing, setPlaying] = useState(false)
+  const ytId = isYoutube(url) ? getYoutubeId(url) : null
+
+  if (isYoutube(url) && ytId) {
+    const thumb = getYoutubeThumbnail(ytId)
+    const embedSrc = getYoutubeEmbed(ytId)
+    return (
+      <div style={{ position: 'relative', paddingTop: '56.25%', borderRadius: 12, overflow: 'hidden', background: '#000', boxShadow: '0 8px 32px rgba(0,0,0,0.35)' }}>
+        {!playing ? (
+          <div
+            onClick={() => setPlaying(true)}
+            style={{ position: 'absolute', inset: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={thumb} alt="thumbnail" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+            {/* Dark overlay */}
+            <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.30)' }} />
+            {/* YouTube play button */}
+            <div style={{
+              position: 'relative', zIndex: 2,
+              width: 68, height: 48, borderRadius: 12,
+              background: '#FF0000', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              boxShadow: '0 4px 24px rgba(255,0,0,0.50)',
+              transition: 'transform .15s',
+            }}>
+              <Play size={22} fill="white" color="white" style={{ marginLeft: 4 }} />
+            </div>
+          </div>
+        ) : (
+          <iframe
+            src={embedSrc}
+            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 'none' }}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+        )}
+      </div>
+    )
+  }
+
+  if (isVimeo(url)) {
+    const embedSrc = getVimeoEmbed(url)
+    if (!embedSrc) return null
+    return (
+      <div style={{ position: 'relative', paddingTop: '56.25%', borderRadius: 12, overflow: 'hidden', background: '#000' }}>
+        <iframe
+          src={embedSrc}
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 'none' }}
+          allow="autoplay; fullscreen"
+          allowFullScreen
+        />
+      </div>
+    )
+  }
+
+  // File video langsung (mp4, webm, dst)
+  return (
+    <div style={{ borderRadius: 12, overflow: 'hidden', background: '#000', boxShadow: '0 8px 32px rgba(0,0,0,0.35)' }}>
+      <video
+        controls
+        style={{ width: '100%', display: 'block', maxHeight: 400 }}
+        src={url}
+      />
+    </div>
+  )
+}
+
+// ── VideoUploader ──────────────────────────────────────────
+function VideoUploader({ value, onChange }: { value: string; onChange: (url: string) => void }) {
+  const [tab, setTab]       = useState<'url' | 'upload'>('url')
+  const [urlInput, setUrl]  = useState('')
+  const [status, setStatus] = useState<{ type: 'error' | 'success'; msg: string } | null>(null)
+  const inputRef            = useRef<HTMLInputElement>(null)
+
+  const { startUpload, isUploading } = useUploadThing('videoUploader', {
+    onClientUploadComplete: (res) => {
+      const url = res?.[0]?.ufsUrl ?? res?.[0]?.url
+      if (url) { onChange(url); setStatus({ type: 'success', msg: 'Video berhasil diupload!' }) }
+      else setStatus({ type: 'error', msg: 'Upload selesai tapi URL tidak ditemukan.' })
+    },
+    onUploadError: (err) => setStatus({ type: 'error', msg: `Upload gagal: ${err.message}` }),
+  })
+
+  const handleFile = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (!file.type.startsWith('video/')) return setStatus({ type: 'error', msg: 'File harus berupa video' })
+    if (file.size > 256 * 1024 * 1024) return setStatus({ type: 'error', msg: 'Ukuran video maksimal 256MB' })
+    setStatus(null)
+    await startUpload([file])
+    e.target.value = ''
+  }, [startUpload])
+
+  const applyUrl = () => {
+    const u = urlInput.trim()
+    if (!u) return setStatus({ type: 'error', msg: 'URL tidak boleh kosong' })
+    onChange(u); setUrl(''); setStatus({ type: 'success', msg: 'URL video diterapkan!' })
+  }
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+      {/* Tab */}
+      <div style={{ display: 'flex', gap: 4, padding: 4, background: '#EEF3FC', borderRadius: 12 }}>
+        {(['url', 'upload'] as const).map((t) => (
+          <button key={t} type="button" onClick={() => { setTab(t); setStatus(null) }} style={{
+            flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+            padding: '6px 12px', borderRadius: 8, border: 'none', cursor: 'pointer',
+            fontSize: 11, fontWeight: 700, transition: 'all .15s',
+            background: tab === t ? 'white' : 'transparent',
+            color: tab === t ? '#0D47A1' : '#94A3B8',
+            boxShadow: tab === t ? '0 1px 6px rgba(13,71,161,.15)' : 'none',
+          }}>
+            {t === 'url' ? <><Link2 size={12} /> YouTube / URL</> : <><Upload size={12} /> Upload File</>}
+          </button>
+        ))}
+      </div>
+
+      {tab === 'url' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          <p style={{ margin: 0, fontSize: 10, color: '#94A3B8' }}>Paste URL YouTube, Vimeo, atau link video langsung</p>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <input
+              type="text" value={urlInput}
+              onChange={(e) => { setUrl(e.target.value); setStatus(null) }}
+              placeholder="https://www.youtube.com/watch?v=..."
+              onKeyDown={(e) => e.key === 'Enter' && applyUrl()}
+              style={{ flex: 1, padding: '8px 12px', borderRadius: 10, border: '1px solid #DBEAFE', background: '#F8FAFF', fontSize: 12, color: '#0A2342', outline: 'none' }}
+            />
+            <button type="button" onClick={applyUrl} style={{ padding: '8px 16px', borderRadius: 10, border: 'none', background: '#0D47A1', color: 'white', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
+              Terapkan
+            </button>
+          </div>
+        </div>
+      )}
+
+      {tab === 'upload' && (
+        <div
+          onClick={() => !isUploading && inputRef.current?.click()}
+          style={{
+            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+            gap: 10, padding: '28px 16px', border: `2px dashed ${isUploading ? '#BFDBFE' : '#BFDBFE'}`,
+            borderRadius: 14, background: isUploading ? '#F0FDF4' : '#F8FAFF',
+            cursor: isUploading ? 'not-allowed' : 'pointer',
+          }}
+        >
+          {isUploading ? (
+            <><Loader2 size={24} color="#1D4ED8" style={{ animation: 'spin 1s linear infinite' }} />
+            <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: '#1D4ED8' }}>Mengupload video...</p>
+            <p style={{ margin: 0, fontSize: 10, color: '#94A3B8' }}>Jangan tutup halaman</p></>
+          ) : (
+            <><Video size={28} color="#1D4ED8" />
+            <div style={{ textAlign: 'center' }}>
+              <p style={{ margin: '0 0 2px', fontSize: 12, fontWeight: 700, color: '#1D4ED8' }}>Klik untuk upload video</p>
+              <p style={{ margin: 0, fontSize: 10, color: '#94A3B8' }}>MP4 · WEBM · MOV &nbsp;·&nbsp; Maks 256MB</p>
+            </div></>
+          )}
+          <input ref={inputRef} type="file" accept="video/mp4,video/webm,video/quicktime" style={{ display: 'none' }} onChange={handleFile} disabled={isUploading} />
+        </div>
+      )}
+
+      {status && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 12px', borderRadius: 8, fontSize: 11, background: status.type === 'error' ? '#FEF2F2' : '#F0FDF4', color: status.type === 'error' ? '#DC2626' : '#16A34A', border: `1px solid ${status.type === 'error' ? '#FECACA' : '#BBF7D0'}` }}>
+          {status.type === 'error' ? <AlertCircle size={13} /> : <CheckCircle2 size={13} />}
+          {status.msg}
+        </div>
+      )}
+
+      {/* Preview */}
+      {value && (
+        <div style={{ position: 'relative' }}>
+          <VideoPlayer url={value} />
+          <button
+            type="button" onClick={() => { onChange(''); setStatus(null) }}
+            style={{ position: 'absolute', top: 10, right: 10, width: 28, height: 28, borderRadius: '50%', border: 'none', background: 'rgba(0,0,0,0.65)', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10 }}
+          ><X size={14} /></button>
+        </div>
+      )}
+
+      {!value && (
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: 16, borderRadius: 10, border: '1px solid #EEF3FC', background: '#FAFBFF' }}>
+          <Video size={16} color="#CBD5E1" />
+          <span style={{ fontSize: 11, color: '#CBD5E1' }}>Belum ada video dipilih</span>
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ── ImageUploader (tidak berubah) ──────────────────────────
 function ImageUploader({ value, onChange }: { value: string; onChange: (url: string) => void }) {
   const [tab, setTab]           = useState<'upload' | 'url'>('upload')
   const [urlInput, setUrlInput] = useState('')
@@ -63,51 +257,27 @@ function ImageUploader({ value, onChange }: { value: string; onChange: (url: str
   const { startUpload, isUploading } = useUploadThing('imageUploader', {
     onClientUploadComplete: (res) => {
       const url = res?.[0]?.ufsUrl ?? res?.[0]?.url
-      if (url) {
-        onChange(url)
-        setStatus({ type: 'success', msg: 'Gambar berhasil diupload ke cloud!' })
-      } else {
-        setStatus({ type: 'error', msg: 'Upload selesai tapi URL tidak ditemukan.' })
-      }
+      if (url) { onChange(url); setStatus({ type: 'success', msg: 'Gambar berhasil diupload ke cloud!' }) }
+      else setStatus({ type: 'error', msg: 'Upload selesai tapi URL tidak ditemukan.' })
     },
-    onUploadError: (err) => {
-      setStatus({ type: 'error', msg: `Upload gagal: ${err.message}` })
-    },
+    onUploadError: (err) => setStatus({ type: 'error', msg: `Upload gagal: ${err.message}` }),
   })
 
   const processFile = useCallback(async (file: File) => {
-    if (!file.type.startsWith('image/')) {
-      return setStatus({ type: 'error', msg: 'File harus berupa gambar (JPG, PNG, WEBP, GIF)' })
-    }
-    if (file.size > 4 * 1024 * 1024) {
-      return setStatus({ type: 'error', msg: 'Ukuran file maksimal 4MB' })
-    }
+    if (!file.type.startsWith('image/')) return setStatus({ type: 'error', msg: 'File harus berupa gambar' })
+    if (file.size > 4 * 1024 * 1024) return setStatus({ type: 'error', msg: 'Ukuran file maksimal 4MB' })
     setStatus(null)
     await startUpload([file])
   }, [startUpload])
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) processFile(file)
-    e.target.value = ''
-  }
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault()
-    setDragging(false)
-    const file = e.dataTransfer.files?.[0]
-    if (file) processFile(file)
-  }
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => { const f = e.target.files?.[0]; if (f) processFile(f); e.target.value = '' }
+  const handleDrop = (e: React.DragEvent) => { e.preventDefault(); setDragging(false); const f = e.dataTransfer.files?.[0]; if (f) processFile(f) }
 
   const handleUrlApply = () => {
     const url = urlInput.trim()
     if (!url) return setStatus({ type: 'error', msg: 'URL tidak boleh kosong' })
-    if (!url.startsWith('http://') && !url.startsWith('https://')) {
-      return setStatus({ type: 'error', msg: 'URL harus diawali https://' })
-    }
-    onChange(url)
-    setUrlInput('')
-    setStatus({ type: 'success', msg: 'URL gambar berhasil diterapkan!' })
+    if (!url.startsWith('http://') && !url.startsWith('https://')) return setStatus({ type: 'error', msg: 'URL harus diawali https://' })
+    onChange(url); setUrlInput(''); setStatus({ type: 'success', msg: 'URL gambar berhasil diterapkan!' })
   }
 
   const handleRemove = () => { onChange(''); setStatus(null); setImgError(false) }
@@ -128,147 +298,74 @@ function ImageUploader({ value, onChange }: { value: string; onChange: (url: str
           </button>
         ))}
       </div>
-
       {tab === 'upload' && (
-        <div
-          onDrop={handleDrop}
-          onDragOver={(e) => { e.preventDefault(); setDragging(true) }}
-          onDragLeave={() => setDragging(false)}
+        <div onDrop={handleDrop} onDragOver={(e) => { e.preventDefault(); setDragging(true) }} onDragLeave={() => setDragging(false)}
           onClick={() => !isUploading && inputRef.current?.click()}
-          style={{
-            display: 'flex', flexDirection: 'column', alignItems: 'center',
-            justifyContent: 'center', gap: 10, padding: '28px 16px',
-            border: `2px dashed ${dragging ? '#1D4ED8' : '#BFDBFE'}`,
-            borderRadius: 14,
-            background: dragging ? '#EFF6FF' : isUploading ? '#F0FDF4' : '#F8FAFF',
-            cursor: isUploading ? 'not-allowed' : 'pointer',
-            transition: 'all .2s', minHeight: 100,
-          }}
-        >
+          style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 10, padding: '28px 16px', border: `2px dashed ${dragging ? '#1D4ED8' : '#BFDBFE'}`, borderRadius: 14, background: dragging ? '#EFF6FF' : isUploading ? '#F0FDF4' : '#F8FAFF', cursor: isUploading ? 'not-allowed' : 'pointer', transition: 'all .2s', minHeight: 100 }}>
           {isUploading ? (
-            <>
-              <div style={{ width: 44, height: 44, borderRadius: '50%', background: '#DBEAFE', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Loader2 size={22} color="#1D4ED8" style={{ animation: 'spin 1s linear infinite' }} />
-              </div>
-              <p style={{ fontSize: 12, fontWeight: 700, color: '#1D4ED8', margin: 0 }}>Mengupload ke cloud...</p>
-              <p style={{ fontSize: 10, color: '#94A3B8', margin: 0 }}>Mohon tunggu, jangan tutup halaman</p>
-            </>
+            <><div style={{ width: 44, height: 44, borderRadius: '50%', background: '#DBEAFE', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Loader2 size={22} color="#1D4ED8" style={{ animation: 'spin 1s linear infinite' }} /></div><p style={{ fontSize: 12, fontWeight: 700, color: '#1D4ED8', margin: 0 }}>Mengupload...</p></>
           ) : dragging ? (
             <><FileImage size={32} color="#1D4ED8" /><p style={{ fontSize: 12, fontWeight: 700, color: '#1D4ED8', margin: 0 }}>Lepaskan untuk upload</p></>
           ) : (
-            <>
-              <div style={{ width: 44, height: 44, borderRadius: 14, background: '#DBEAFE', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Upload size={20} color="#1D4ED8" />
-              </div>
-              <div style={{ textAlign: 'center' }}>
-                <p style={{ fontSize: 12, fontWeight: 700, color: '#1D4ED8', margin: '0 0 2px' }}>Klik atau drag &amp; drop gambar</p>
-                <p style={{ fontSize: 10, color: '#94A3B8', margin: 0 }}>JPG · PNG · WEBP · GIF &nbsp;·&nbsp; Maks 4MB</p>
-              </div>
-            </>
+            <><div style={{ width: 44, height: 44, borderRadius: 14, background: '#DBEAFE', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Upload size={20} color="#1D4ED8" /></div><div style={{ textAlign: 'center' }}><p style={{ fontSize: 12, fontWeight: 700, color: '#1D4ED8', margin: '0 0 2px' }}>Klik atau drag &amp; drop gambar</p><p style={{ fontSize: 10, color: '#94A3B8', margin: 0 }}>JPG · PNG · WEBP &nbsp;·&nbsp; Maks 4MB</p></div></>
           )}
-          <input ref={inputRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif"
-            style={{ display: 'none' }} onChange={handleFileChange} disabled={isUploading} />
+          <input ref={inputRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" style={{ display: 'none' }} onChange={handleFileChange} disabled={isUploading} />
         </div>
       )}
-
       {tab === 'url' && (
         <div style={{ display: 'flex', gap: 8 }}>
-          <input
-            type="text" value={urlInput}
-            onChange={(e) => { setUrlInput(e.target.value); setStatus(null) }}
-            placeholder="https://contoh.com/gambar.jpg"
-            onKeyDown={(e) => e.key === 'Enter' && handleUrlApply()}
-            style={{
-              flex: 1, padding: '8px 12px', borderRadius: 10,
-              border: '1px solid #DBEAFE', background: '#F8FAFF',
-              fontSize: 12, color: '#0A2342', outline: 'none',
-            }}
-          />
-          <button type="button" onClick={handleUrlApply} style={{
-            padding: '8px 16px', borderRadius: 10, border: 'none',
-            background: '#0D47A1', color: 'white', fontSize: 12, fontWeight: 700, cursor: 'pointer',
-          }}>Terapkan</button>
+          <input type="text" value={urlInput} onChange={(e) => { setUrlInput(e.target.value); setStatus(null) }} placeholder="https://contoh.com/gambar.jpg" onKeyDown={(e) => e.key === 'Enter' && handleUrlApply()} style={{ flex: 1, padding: '8px 12px', borderRadius: 10, border: '1px solid #DBEAFE', background: '#F8FAFF', fontSize: 12, color: '#0A2342', outline: 'none' }} />
+          <button type="button" onClick={handleUrlApply} style={{ padding: '8px 16px', borderRadius: 10, border: 'none', background: '#0D47A1', color: 'white', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>Terapkan</button>
         </div>
       )}
-
       {status && (
-        <div style={{
-          display: 'flex', alignItems: 'center', gap: 6,
-          padding: '8px 12px', borderRadius: 8, fontSize: 11,
-          background: status.type === 'error' ? '#FEF2F2' : '#F0FDF4',
-          color: status.type === 'error' ? '#DC2626' : '#16A34A',
-          border: `1px solid ${status.type === 'error' ? '#FECACA' : '#BBF7D0'}`,
-        }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 12px', borderRadius: 8, fontSize: 11, background: status.type === 'error' ? '#FEF2F2' : '#F0FDF4', color: status.type === 'error' ? '#DC2626' : '#16A34A', border: `1px solid ${status.type === 'error' ? '#FECACA' : '#BBF7D0'}` }}>
           {status.type === 'error' ? <AlertCircle size={13} /> : <CheckCircle2 size={13} />}
           {status.msg}
         </div>
       )}
-
       {value && !imgError ? (
         <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden', border: '1px solid #DBEAFE', background: '#F8FAFF' }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={value} alt="Preview" style={{ width: '100%', maxHeight: 200, objectFit: 'cover', display: 'block' }}
-            onError={() => setImgError(true)} />
+          <img src={value} alt="Preview" style={{ width: '100%', maxHeight: 200, objectFit: 'cover', display: 'block' }} onError={() => setImgError(true)} />
           <div style={{ padding: '6px 10px', display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(255,255,255,0.95)', borderTop: '1px solid #EEF3FC' }}>
             <CheckCircle2 size={11} color="#16A34A" style={{ flexShrink: 0 }} />
-            <span style={{ fontSize: 10, color: '#64748B', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-              {value.startsWith('data:') ? 'Preview lokal' : value}
-            </span>
-            <a href={value} target="_blank" rel="noreferrer" style={{ color: '#0D47A1', flexShrink: 0 }} onClick={(e) => e.stopPropagation()}>
-              <ExternalLink size={11} />
-            </a>
+            <span style={{ fontSize: 10, color: '#64748B', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{value}</span>
+            <a href={value} target="_blank" rel="noreferrer" style={{ color: '#0D47A1', flexShrink: 0 }} onClick={(e) => e.stopPropagation()}><ExternalLink size={11} /></a>
           </div>
-          <button type="button" onClick={handleRemove} style={{
-            position: 'absolute', top: 8, right: 8, width: 26, height: 26, borderRadius: '50%',
-            border: 'none', cursor: 'pointer', background: 'rgba(0,0,0,0.55)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}><X size={13} color="white" /></button>
+          <button type="button" onClick={handleRemove} style={{ position: 'absolute', top: 8, right: 8, width: 26, height: 26, borderRadius: '50%', border: 'none', cursor: 'pointer', background: 'rgba(0,0,0,0.55)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><X size={13} color="white" /></button>
         </div>
       ) : value && imgError ? (
         <div style={{ padding: '12px 14px', borderRadius: 10, background: '#FFF7ED', border: '1px solid #FED7AA', display: 'flex', alignItems: 'flex-start', gap: 8 }}>
           <AlertCircle size={14} color="#EA580C" style={{ flexShrink: 0, marginTop: 1 }} />
-          <div>
-            <p style={{ fontSize: 11, fontWeight: 700, color: '#C2410C', margin: '0 0 4px' }}>Gambar tidak dapat ditampilkan</p>
-            <p style={{ fontSize: 10, color: '#9A3412', margin: '0 0 8px', wordBreak: 'break-all' }}>{value}</p>
-            <div style={{ display: 'flex', gap: 6 }}>
-              <button type="button" onClick={handleRemove} style={{ padding: '4px 10px', borderRadius: 6, border: 'none', background: '#DC2626', color: 'white', fontSize: 10, fontWeight: 700, cursor: 'pointer' }}>
-                Hapus &amp; Ganti
-              </button>
-              <a href={value} target="_blank" rel="noreferrer" style={{ padding: '4px 10px', borderRadius: 6, border: '1px solid #FED7AA', background: 'white', color: '#EA580C', fontSize: 10, fontWeight: 700, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 3 }}>
-                Buka URL <ExternalLink size={9} />
-              </a>
-            </div>
-          </div>
+          <div><p style={{ fontSize: 11, fontWeight: 700, color: '#C2410C', margin: '0 0 4px' }}>Gambar tidak dapat ditampilkan</p><button type="button" onClick={handleRemove} style={{ padding: '4px 10px', borderRadius: 6, border: 'none', background: '#DC2626', color: 'white', fontSize: 10, fontWeight: 700, cursor: 'pointer' }}>Hapus &amp; Ganti</button></div>
         </div>
       ) : (
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: 16, borderRadius: 10, border: '1px solid #EEF3FC', background: '#FAFBFF' }}>
-          <ImageIcon size={16} color="#CBD5E1" />
-          <span style={{ fontSize: 11, color: '#CBD5E1' }}>Belum ada gambar dipilih</span>
+          <ImageIcon size={16} color="#CBD5E1" /><span style={{ fontSize: 11, color: '#CBD5E1' }}>Belum ada gambar dipilih</span>
         </div>
       )}
     </div>
   )
 }
 
-// ─────────────────────────────────────────────
-// Thumbnail di tabel
-// ─────────────────────────────────────────────
-function Thumbnail({ src, alt }: { src: string | null; alt: string }) {
+function Thumbnail({ src, alt, hasVideo }: { src: string | null; alt: string; hasVideo?: boolean }) {
   const [err, setErr] = useState(false)
   return (
-    <div style={{ width: 44, height: 44, borderRadius: 10, overflow: 'hidden', flexShrink: 0, border: '1px solid #EEF3FC', background: '#F1F5F9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <div style={{ position: 'relative', width: 44, height: 44, borderRadius: 10, overflow: 'hidden', flexShrink: 0, border: '1px solid #EEF3FC', background: '#F1F5F9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       {src && !err
         // eslint-disable-next-line @next/next/no-img-element
         ? <img src={src} alt={alt} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={() => setErr(true)} />
-        : <ImageIcon size={16} color="#CBD5E1" />
-      }
+        : <ImageIcon size={16} color="#CBD5E1" />}
+      {hasVideo && (
+        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.35)' }}>
+          <Play size={14} fill="white" color="white" />
+        </div>
+      )}
     </div>
   )
 }
 
-// ─────────────────────────────────────────────
-// Main Page
-// ─────────────────────────────────────────────
 export default function BeritaPage() {
   const [list, setList]       = useState<Berita[]>([])
   const [loading, setLoading] = useState(true)
@@ -279,26 +376,18 @@ export default function BeritaPage() {
 
   function load() {
     setLoading(true)
-    fetch('/api/admin/berita')
+    fetch('/api/admin/berita?limit=50')
       .then((r) => r.json())
       .then((d) => setList(Array.isArray(d) ? d : (d?.data ?? [])))
       .catch(() => setList([]))
       .finally(() => setLoading(false))
   }
 
-  useEffect(() => {
-    let cancelled = false
-    fetch('/api/admin/berita')
-      .then((r) => r.json())
-      .then((d) => { if (!cancelled) setList(Array.isArray(d) ? d : (d?.data ?? [])) })
-      .catch(() => { if (!cancelled) setList([]) })
-      .finally(() => { if (!cancelled) setLoading(false) })
-    return () => { cancelled = true }
-  }, [])
+  useEffect(() => { load() }, [])
 
   const filtered = list.filter((b) => b.judul.toLowerCase().includes(search.toLowerCase()))
 
-  function openNew() { setForm({ publish: false, tags: [] }) }
+  function openNew()      { setForm({ publish: false, tags: [], video: null }) }
   function openEdit(b: Berita) {
     setForm({ ...b })
     setTimeout(() => document.getElementById('berita-form')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100)
@@ -311,6 +400,7 @@ export default function BeritaPage() {
         await upsertBerita({
           id: form.id, judul: form.judul!, slug: form.slug!, konten: form.konten ?? '',
           ringkasan: form.ringkasan ?? undefined, gambar: form.gambar ?? undefined,
+          video: form.video ?? undefined,          // ✅
           kategori: form.kategori ?? undefined, penulis: form.penulis ?? undefined,
           tags: form.tags ?? [], publish: form.publish ?? false,
         })
@@ -355,8 +445,7 @@ export default function BeritaPage() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 12px', borderRadius: 10, border: '1px solid #DBEAFE', background: '#F8FAFF' }}>
               <Search size={12} color="#94A3B8" />
-              <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Cari judul..."
-                style={{ border: 'none', outline: 'none', background: 'transparent', fontSize: 11, color: '#0A2342', width: 140 }} />
+              <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Cari judul..." style={{ border: 'none', outline: 'none', background: 'transparent', fontSize: 11, color: '#0A2342', width: 140 }} />
             </div>
             <button type="button" onClick={load} title="Refresh" style={{ width: 32, height: 32, borderRadius: 8, border: '1px solid #DBEAFE', background: '#F8FAFF', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <RefreshCw size={13} color="#64748B" />
@@ -376,15 +465,13 @@ export default function BeritaPage() {
           ) : filtered.length === 0 ? (
             <div style={{ padding: '48px 20px', textAlign: 'center' }}>
               <Newspaper size={36} color="#E2E8F0" style={{ margin: '0 auto 10px' }} />
-              <p style={{ fontSize: 13, color: '#94A3B8', margin: 0 }}>
-                {search ? `Tidak ada berita "${search}"` : 'Belum ada berita'}
-              </p>
+              <p style={{ fontSize: 13, color: '#94A3B8', margin: 0 }}>{search ? `Tidak ada berita "${search}"` : 'Belum ada berita'}</p>
             </div>
           ) : (
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
                 <tr style={{ background: '#FAFBFF' }}>
-                  {['Berita', 'Kategori', 'Penulis', 'Tanggal', 'Views', 'Status', 'Aksi'].map((h) => (
+                  {['Berita', 'Media', 'Kategori', 'Penulis', 'Tanggal', 'Views', 'Status', 'Aksi'].map((h) => (
                     <th key={h} style={{ padding: '10px 16px', textAlign: 'left', fontSize: 10, fontWeight: 700, color: '#94A3B8', letterSpacing: '.05em', textTransform: 'uppercase', borderBottom: '1px solid #EEF3FC' }}>{h}</th>
                   ))}
                 </tr>
@@ -396,22 +483,25 @@ export default function BeritaPage() {
                     onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
                     <td style={{ padding: '10px 16px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                        <Thumbnail src={b.gambar} alt={b.judul} />
+                        <Thumbnail src={b.gambar} alt={b.judul} hasVideo={!!b.video} />
                         <div style={{ minWidth: 0 }}>
-                          <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: '#0A2342', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 220 }}>{b.judul}</p>
-                          <p style={{ margin: '2px 0 0', fontSize: 10, color: '#94A3B8', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 200 }}>{b.slug}</p>
+                          <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: '#0A2342', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 200 }}>{b.judul}</p>
+                          <p style={{ margin: '2px 0 0', fontSize: 10, color: '#94A3B8', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 180 }}>{b.slug}</p>
                         </div>
                       </div>
                     </td>
                     <td style={{ padding: '10px 16px' }}>
-                      {b.kategori
-                        ? <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '3px 8px', borderRadius: 6, background: '#EFF6FF', color: '#1D4ED8', fontSize: 10, fontWeight: 700 }}><Tag size={9} />{b.kategori}</span>
-                        : <span style={{ fontSize: 11, color: '#CBD5E1' }}>—</span>}
+                      <div style={{ display: 'flex', gap: 4 }}>
+                        {b.gambar && <span style={{ padding: '2px 7px', borderRadius: 5, background: '#EFF6FF', color: '#1D4ED8', fontSize: 9, fontWeight: 700 }}>IMG</span>}
+                        {b.video  && <span style={{ padding: '2px 7px', borderRadius: 5, background: '#FEF2F2', color: '#DC2626', fontSize: 9, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 2 }}><Play size={8} fill="#DC2626" />VID</span>}
+                        {!b.gambar && !b.video && <span style={{ fontSize: 11, color: '#CBD5E1' }}>—</span>}
+                      </div>
                     </td>
                     <td style={{ padding: '10px 16px' }}>
-                      {b.penulis
-                        ? <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 11, color: '#64748B' }}><User size={10} />{b.penulis}</span>
-                        : <span style={{ fontSize: 11, color: '#CBD5E1' }}>—</span>}
+                      {b.kategori ? <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '3px 8px', borderRadius: 6, background: '#EFF6FF', color: '#1D4ED8', fontSize: 10, fontWeight: 700 }}><Tag size={9} />{b.kategori}</span> : <span style={{ fontSize: 11, color: '#CBD5E1' }}>—</span>}
+                    </td>
+                    <td style={{ padding: '10px 16px' }}>
+                      {b.penulis ? <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 11, color: '#64748B' }}><User size={10} />{b.penulis}</span> : <span style={{ fontSize: 11, color: '#CBD5E1' }}>—</span>}
                     </td>
                     <td style={{ padding: '10px 16px' }}>
                       <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 10, color: '#94A3B8' }}><Calendar size={10} />{formatTanggal(b.createdAt)}</span>
@@ -421,7 +511,7 @@ export default function BeritaPage() {
                     </td>
                     <td style={{ padding: '10px 16px' }}>
                       <button type="button" onClick={() => start(async () => { await togglePublishBerita(b.id, !b.publish); load() })}
-                        style={{ padding: '4px 10px', borderRadius: 20, border: 'none', cursor: 'pointer', fontSize: 10, fontWeight: 700, transition: 'all .15s', background: b.publish ? '#DCFCE7' : '#FEF9C3', color: b.publish ? '#15803D' : '#A16207' }}>
+                        style={{ padding: '4px 10px', borderRadius: 20, border: 'none', cursor: 'pointer', fontSize: 10, fontWeight: 700, background: b.publish ? '#DCFCE7' : '#FEF9C3', color: b.publish ? '#15803D' : '#A16207' }}>
                         {b.publish ? '● Publish' : '○ Draft'}
                       </button>
                     </td>
@@ -454,10 +544,11 @@ export default function BeritaPage() {
           </div>
 
           <div style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 14 }}>
+            {/* Judul + Slug */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
               {[
                 { label: 'Judul', required: true, value: form.judul ?? '', mono: false, placeholder: 'Judul berita...', onChange: (v: string) => setForm({ ...form, judul: v, slug: form.id ? form.slug : slugify(v) }) },
-                { label: 'Slug', required: true, value: form.slug ?? '', mono: true, placeholder: 'judul-berita', hint: 'otomatis dari judul', onChange: (v: string) => setForm({ ...form, slug: v }) },
+                { label: 'Slug',  required: true, value: form.slug  ?? '', mono: true,  placeholder: 'judul-berita', hint: 'otomatis dari judul', onChange: (v: string) => setForm({ ...form, slug: v }) },
               ].map(({ label, required, value, mono, placeholder, hint, onChange }) => (
                 <div key={label}>
                   <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#374151', marginBottom: 6 }}>
@@ -470,6 +561,7 @@ export default function BeritaPage() {
               ))}
             </div>
 
+            {/* Kategori + Penulis */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
               {[
                 { label: 'Kategori', value: form.kategori ?? '', placeholder: 'Kegiatan, Pengumuman...', onChange: (v: string) => setForm({ ...form, kategori: v }) },
@@ -483,23 +575,30 @@ export default function BeritaPage() {
               ))}
             </div>
 
+            {/* Gambar */}
             <div>
               <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#374151', marginBottom: 6 }}>
-                Gambar <span style={{ fontSize: 9, color: '#94A3B8', fontWeight: 400, marginLeft: 4 }}>upload file atau pakai URL eksternal</span>
+                Gambar <span style={{ fontSize: 9, color: '#94A3B8', fontWeight: 400, marginLeft: 4 }}>thumbnail / cover artikel</span>
               </label>
               <ImageUploader value={form.gambar ?? ''} onChange={(url) => setForm({ ...form, gambar: url || null })} />
             </div>
 
+            {/* ✅ Video */}
+            <div>
+              <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#374151', marginBottom: 6 }}>
+                Video <span style={{ fontSize: 9, color: '#94A3B8', fontWeight: 400, marginLeft: 4 }}>YouTube · Vimeo · upload file MP4</span>
+              </label>
+              <VideoUploader value={form.video ?? ''} onChange={(url) => setForm({ ...form, video: url || null })} />
+            </div>
+
+            {/* Tags */}
             <div>
               <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#374151', marginBottom: 6 }}>
                 Tags <span style={{ fontSize: 9, color: '#94A3B8', fontWeight: 400, marginLeft: 4 }}>pisahkan dengan koma</span>
               </label>
-              <input
-                value={(form.tags ?? []).join(', ')}
-                onChange={(e) => setForm({ ...form, tags: e.target.value.split(',').map((t) => t.trim()).filter(Boolean) })}
+              <input value={(form.tags ?? []).join(', ')} onChange={(e) => setForm({ ...form, tags: e.target.value.split(',').map((t) => t.trim()).filter(Boolean) })}
                 placeholder="organisasi, ntt, kegiatan"
-                style={{ width: '100%', padding: '8px 12px', borderRadius: 10, boxSizing: 'border-box', border: '1px solid #DBEAFE', background: '#F8FAFF', fontSize: 12, color: '#0A2342', outline: 'none' }}
-              />
+                style={{ width: '100%', padding: '8px 12px', borderRadius: 10, boxSizing: 'border-box', border: '1px solid #DBEAFE', background: '#F8FAFF', fontSize: 12, color: '#0A2342', outline: 'none' }} />
               {(form.tags ?? []).length > 0 && (
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginTop: 6 }}>
                   {(form.tags ?? []).map((t) => <span key={t} style={{ padding: '2px 8px', borderRadius: 20, background: '#EFF6FF', color: '#1D4ED8', fontSize: 10, fontWeight: 700 }}>#{t}</span>)}
@@ -507,6 +606,7 @@ export default function BeritaPage() {
               )}
             </div>
 
+            {/* Ringkasan */}
             <div>
               <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#374151', marginBottom: 6 }}>Ringkasan</label>
               <textarea value={form.ringkasan ?? ''} onChange={(e) => setForm({ ...form, ringkasan: e.target.value })} rows={2}
@@ -514,6 +614,7 @@ export default function BeritaPage() {
                 style={{ width: '100%', padding: '8px 12px', borderRadius: 10, boxSizing: 'border-box', border: '1px solid #DBEAFE', background: '#F8FAFF', fontSize: 12, color: '#0A2342', outline: 'none', resize: 'vertical' }} />
             </div>
 
+            {/* Konten */}
             <div>
               <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#374151', marginBottom: 6 }}>
                 Konten <span style={{ color: '#EF4444' }}>*</span>
@@ -524,24 +625,19 @@ export default function BeritaPage() {
                 style={{ width: '100%', padding: '10px 12px', borderRadius: 10, boxSizing: 'border-box', border: '1px solid #DBEAFE', background: '#0A2342', fontSize: 11, color: '#93C5FD', outline: 'none', resize: 'vertical', fontFamily: "'Courier New', monospace", lineHeight: 1.6 }} />
             </div>
 
+            {/* Publish toggle */}
             <label style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 14px', borderRadius: 10, cursor: 'pointer', background: form.publish ? '#F0FDF4' : '#F8FAFF', border: `1px solid ${form.publish ? '#BBF7D0' : '#DBEAFE'}`, transition: 'all .2s' }}>
               <input type="checkbox" checked={form.publish ?? false} onChange={(e) => setForm({ ...form, publish: e.target.checked })} style={{ width: 16, height: 16, accentColor: '#16A34A' }} />
               <div>
-                <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: form.publish ? '#15803D' : '#374151' }}>
-                  {form.publish ? '✅ Berita akan dipublikasikan' : '📝 Simpan sebagai draft'}
-                </p>
-                <p style={{ margin: 0, fontSize: 10, color: '#94A3B8', marginTop: 1 }}>
-                  {form.publish ? 'Langsung tampil di halaman publik' : 'Belum tampil di publik'}
-                </p>
+                <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: form.publish ? '#15803D' : '#374151' }}>{form.publish ? '✅ Berita akan dipublikasikan' : '📝 Simpan sebagai draft'}</p>
+                <p style={{ margin: 0, fontSize: 10, color: '#94A3B8', marginTop: 1 }}>{form.publish ? 'Langsung tampil di halaman publik' : 'Belum tampil di publik'}</p>
               </div>
             </label>
           </div>
 
           <div style={{ padding: '14px 20px', display: 'flex', justifyContent: 'flex-end', gap: 8, borderTop: '1px solid #EEF3FC', background: '#FAFBFF' }}>
-            <button type="button" onClick={() => setForm(null)} style={{ padding: '8px 18px', borderRadius: 10, border: '1px solid #DBEAFE', background: 'white', fontSize: 12, fontWeight: 700, color: '#64748B', cursor: 'pointer' }}>
-              Batal
-            </button>
-            <button type="button" onClick={handleSave} disabled={pending} style={{ padding: '8px 20px', borderRadius: 10, border: 'none', background: pending ? '#93C5FD' : '#0D47A1', color: 'white', fontSize: 12, fontWeight: 700, cursor: pending ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: 6, transition: 'all .15s' }}>
+            <button type="button" onClick={() => setForm(null)} style={{ padding: '8px 18px', borderRadius: 10, border: '1px solid #DBEAFE', background: 'white', fontSize: 12, fontWeight: 700, color: '#64748B', cursor: 'pointer' }}>Batal</button>
+            <button type="button" onClick={handleSave} disabled={pending} style={{ padding: '8px 20px', borderRadius: 10, border: 'none', background: pending ? '#93C5FD' : '#0D47A1', color: 'white', fontSize: 12, fontWeight: 700, cursor: pending ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
               {pending && <Loader2 size={13} style={{ animation: 'spin 1s linear infinite' }} />}
               {form.id ? 'Simpan Perubahan' : 'Tambah Berita'}
             </button>

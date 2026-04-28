@@ -1,5 +1,4 @@
 // lib/uploadthing.ts
-// ← File ini KHUSUS server (middleware pakai next/headers via getSession)
 import { createUploadthing, type FileRouter } from 'uploadthing/next'
 import { getSession } from '@/lib/auth'
 
@@ -16,25 +15,27 @@ export const ourFileRouter = {
     image: { maxFileSize: '4MB', maxFileCount: 1 },
   })
     .middleware(authMiddleware)
-    .onUploadComplete(async ({ file }) => {
-      return { url: file.ufsUrl }
-    }),
+    .onUploadComplete(async ({ file }) => ({ url: file.ufsUrl })),
 
   profileUploader: f({
     image: { maxFileSize: '4MB', maxFileCount: 1 },
   })
     .middleware(authMiddleware)
-    .onUploadComplete(async ({ file }) => {
-      return { url: file.ufsUrl }
-    }),
+    .onUploadComplete(async ({ file }) => ({ url: file.ufsUrl })),
 
   pdfUploader: f({
     pdf: { maxFileSize: '16MB', maxFileCount: 1 },
   })
     .middleware(authMiddleware)
-    .onUploadComplete(async ({ file }) => {
-      return { url: file.ufsUrl }
-    }),
+    .onUploadComplete(async ({ file }) => ({ url: file.ufsUrl })),
+
+  // ✅ tambah ini
+  videoUploader: f({
+    video: { maxFileSize: '256MB', maxFileCount: 1 },
+  })
+    .middleware(authMiddleware)
+    .onUploadComplete(async ({ file }) => ({ url: file.ufsUrl })),
+
 } satisfies FileRouter
 
 export type OurFileRouter = typeof ourFileRouter

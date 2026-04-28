@@ -11,8 +11,7 @@ import {
   ArrowLeft, Share2, Newspaper,
 } from 'lucide-react'
 import BeritaImage, { GambarPlaceholder } from '@/components/shared/BeritaImage'
-
-// ─── Generate metadata ────────────────────────────────────────────────────────
+import VideoPlayer from '@/components/shared/VideoPlayer'
 export async function generateMetadata({
   params,
 }: {
@@ -24,7 +23,6 @@ export async function generateMetadata({
     select: { judul: true, ringkasan: true, gambar: true },
   })
   if (!berita) return { title: 'Berita Tidak Ditemukan' }
-
   return {
     title:       berita.judul,
     description: berita.ringkasan ?? berita.judul,
@@ -36,7 +34,6 @@ export async function generateMetadata({
   }
 }
 
-// ─── Page ────────────────────────────────────────────────────────────────────
 export default async function BeritaDetailPage({
   params,
 }: {
@@ -49,13 +46,11 @@ export default async function BeritaDetailPage({
   })
   if (!berita) notFound()
 
-  // Increment views (fire and forget)
   prisma.berita.update({
     where: { id: berita.id },
     data:  { views: { increment: 1 } },
   }).catch(() => {})
 
-  // Berita terkait (sama kategori, bukan diri sendiri)
   const terkait = await prisma.berita.findMany({
     where: {
       publish: true,
@@ -76,16 +71,13 @@ export default async function BeritaDetailPage({
           <Image
             src={berita.gambar}
             alt={berita.judul}
-            fill
-            priority
-            sizes="100vw"
+            fill priority sizes="100vw"
             className="object-cover"
           />
           <div
             className="absolute inset-0"
             style={{ background: 'linear-gradient(to top, rgba(10,35,66,0.90) 0%, rgba(10,35,66,0.45) 55%, transparent 100%)' }}
           />
-          {/* Breadcrumb di atas gambar */}
           <div className="absolute top-0 left-0 right-0 px-4 py-4">
             <div className="max-w-4xl mx-auto flex items-center gap-2 text-xs text-white/60">
               <Link href="/" style={{ textDecoration: 'none', color: 'inherit' }} className="hover:text-white/90">Beranda</Link>
@@ -95,14 +87,10 @@ export default async function BeritaDetailPage({
               <span className="text-white/80 truncate max-w-48">{berita.judul}</span>
             </div>
           </div>
-          {/* Judul di bawah gambar */}
           <div className="absolute bottom-0 left-0 right-0 px-4 pb-8">
             <div className="max-w-4xl mx-auto">
               {berita.kategori && (
-                <span
-                  className="inline-block text-[10px] font-bold px-2.5 py-1 rounded-lg mb-3"
-                  style={{ background: '#F5A623', color: '#0A2342' }}
-                >
+                <span className="inline-block text-[10px] font-bold px-2.5 py-1 rounded-lg mb-3" style={{ background: '#F5A623', color: '#0A2342' }}>
                   {berita.kategori}
                 </span>
               )}
@@ -176,6 +164,22 @@ export default async function BeritaDetailPage({
               </div>
             )}
 
+            {/* ✅ Video Player — tampil di atas konten jika ada video */}
+            {berita.video && (
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-2">
+                  <div
+                    className="w-1 h-4 rounded-full"
+                    style={{ background: '#FF0000' }}
+                  />
+                  <span className="text-xs font-bold" style={{ color: '#0A2342' }}>
+                    Video
+                  </span>
+                </div>
+                <VideoPlayer url={berita.video} />
+              </div>
+            )}
+
             {/* Konten artikel */}
             <div
               className="rounded-2xl p-6 sm:p-8"
@@ -215,7 +219,6 @@ export default async function BeritaDetailPage({
                 <ArrowLeft className="w-3.5 h-3.5" /> Semua Berita
               </Link>
               <button
-                onClick={undefined}
                 className="inline-flex items-center gap-2 text-xs font-semibold px-4 py-2 rounded-xl transition-all hover:scale-105"
                 style={{ background: 'white', color: '#64748B', border: '1px solid #E2E8F0' }}
               >
@@ -226,8 +229,6 @@ export default async function BeritaDetailPage({
 
           {/* ── Sidebar ── */}
           <aside className="flex flex-col gap-5">
-
-            {/* Berita terkait */}
             <div
               className="rounded-2xl overflow-hidden sticky top-24"
               style={{ background: 'white', border: '1px solid #DBEAFE' }}
@@ -253,14 +254,12 @@ export default async function BeritaDetailPage({
                       className="group flex gap-3 p-3.5 hover:bg-slate-50 transition-colors"
                       style={{ textDecoration: 'none' }}
                     >
-                      {/* Thumbnail */}
                       <div className="relative w-16 h-16 rounded-lg overflow-hidden shrink-0">
                         {t.gambar
                           ? <BeritaImage src={t.gambar} alt={t.judul} fill sizes="64px" className="object-cover" />
                           : <GambarPlaceholder size="sm" />
                         }
                       </div>
-                      {/* Text */}
                       <div className="flex-1 min-w-0">
                         <p
                           className="text-xs font-semibold leading-snug line-clamp-3 mb-1 transition-colors group-hover:text-blue-700"

@@ -5,8 +5,6 @@ import { revalidatePath } from 'next/cache'
 import { auth } from '@/lib/auth'
 import type { BagianSlug, TipePeraturan, KategoriPPID } from '@prisma/client'
 
-
-
 // ─── Auth guard ───────────────────────────────────────────────────────────────
 async function requireAdmin() {
   const session = await auth()
@@ -17,7 +15,6 @@ async function requireAdmin() {
 // PROFIL
 // ══════════════════════════════════════════════════════════════════════════════
 
-// ─── Sekapur Sirih ────────────────────────────────────────────────────────────
 export async function upsertSekapurSirih(data: {
   id?: string; judul: string; konten: string; nama?: string; jabatan?: string; foto?: string
 }) {
@@ -31,7 +28,6 @@ export async function upsertSekapurSirih(data: {
   revalidatePath('/profil/sekapur-sirih')
 }
 
-// ─── Struktur Organisasi ──────────────────────────────────────────────────────
 export async function upsertStrukturOrganisasi(data: {
   id?: string; gambar: string; deskripsi?: string; aktif: boolean
 }) {
@@ -51,7 +47,6 @@ export async function deleteStrukturOrganisasi(id: string) {
   revalidatePath('/admin/profil/struktur-organisasi')
 }
 
-// ─── Tugas Pokok Fungsi ───────────────────────────────────────────────────────
 export async function upsertTupoksi(data: {
   id?: string; judul: string; konten: string; urutan: number
 }) {
@@ -71,7 +66,6 @@ export async function deleteTupoksi(id: string) {
   revalidatePath('/admin/profil/tupoksi')
 }
 
-// ─── Bagian ───────────────────────────────────────────────────────────────────
 export async function upsertBagian(data: {
   id?: string; nama: string; slug: BagianSlug; deskripsi?: string; konten?: string; urutan: number
 }) {
@@ -88,10 +82,19 @@ export async function upsertBagian(data: {
 // ══════════════════════════════════════════════════════════════════════════════
 // BERITA
 // ══════════════════════════════════════════════════════════════════════════════
+
 export async function upsertBerita(data: {
-  id?: string; judul: string; slug: string; konten: string
-  ringkasan?: string; gambar?: string; kategori?: string
-  tags?: string[]; penulis?: string; publish: boolean
+  id?: string
+  judul: string
+  slug: string
+  konten: string
+  ringkasan?: string
+  gambar?: string
+  video?: string        // ✅
+  kategori?: string
+  tags?: string[]
+  penulis?: string
+  publish: boolean
 }) {
   await requireAdmin()
   const { id, tags, ...rest } = data
@@ -125,6 +128,7 @@ export async function togglePublishBerita(id: string, publish: boolean) {
 // ══════════════════════════════════════════════════════════════════════════════
 // KEGIATAN
 // ══════════════════════════════════════════════════════════════════════════════
+
 export async function upsertKegiatan(data: {
   id?: string; judul: string; slug: string; konten: string
   ringkasan?: string; gambar?: string; tanggalMulai: Date
@@ -149,6 +153,7 @@ export async function deleteKegiatan(id: string) {
 // ══════════════════════════════════════════════════════════════════════════════
 // GALERI
 // ══════════════════════════════════════════════════════════════════════════════
+
 export async function upsertGaleri(data: {
   id?: string; judul: string; deskripsi?: string
   tipe: 'FOTO' | 'VIDEO'; url: string; thumbnail?: string
@@ -174,6 +179,7 @@ export async function deleteGaleri(id: string) {
 // ══════════════════════════════════════════════════════════════════════════════
 // PPID
 // ══════════════════════════════════════════════════════════════════════════════
+
 export async function upsertDokumenPPID(data: {
   id?: string; judul: string; deskripsi?: string; file?: string
   kategori: KategoriPPID; tahun?: number; aktif: boolean
@@ -206,6 +212,7 @@ export async function updateStatusPermohonan(id: string, status: string, keteran
 // ══════════════════════════════════════════════════════════════════════════════
 // REGULASI
 // ══════════════════════════════════════════════════════════════════════════════
+
 export async function upsertPeraturan(data: {
   id?: string; nomor: string; judul: string; tahun: number
   tentang: string; file?: string; tipe: TipePeraturan
@@ -230,6 +237,7 @@ export async function deletePeraturan(id: string) {
 // ══════════════════════════════════════════════════════════════════════════════
 // KONTAK
 // ══════════════════════════════════════════════════════════════════════════════
+
 export async function tandaiDibacaKontak(id: string) {
   await requireAdmin()
   await prisma.kontak.update({ where: { id }, data: { dibaca: true } })
@@ -245,6 +253,7 @@ export async function deleteKontak(id: string) {
 // ══════════════════════════════════════════════════════════════════════════════
 // PENGADUAN
 // ══════════════════════════════════════════════════════════════════════════════
+
 export async function updateStatusPengaduan(id: string, status: string, tanggapan?: string) {
   await requireAdmin()
   await prisma.pengaduan.update({
@@ -263,10 +272,11 @@ export async function deletePengaduan(id: string) {
 // ══════════════════════════════════════════════════════════════════════════════
 // PENGATURAN
 // ══════════════════════════════════════════════════════════════════════════════
+
 export async function upsertSiteSetting(key: string, value: string, label?: string) {
   await requireAdmin()
   await prisma.siteSettings.upsert({
-    where: { key },
+    where:  { key },
     update: { value, label },
     create: { key, value, label },
   })
