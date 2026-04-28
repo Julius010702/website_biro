@@ -224,9 +224,8 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 py-5">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-center">
           <p className="footer-bottom-text text-xs">
-            © {year} Biro Organisasi Sekretariat Daerah Provinsi Nusa Tenggara Timur. Hak cipta dilindungi undang-undang.
-          </p>
-          <div className="flex items-center gap-4">
+  © {year} Biro Organisasi Sekretariat Daerah Provinsi Nusa Tenggara Timur. Hak cipta dilindungi undang-undang. | By Julius Djami
+</p>  <div className="flex items-center gap-4">
             {[
               { label: 'Kebijakan Privasi', href: '#' },
               { label: 'Syarat Penggunaan', href: '#' },
