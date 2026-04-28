@@ -1,32 +1,24 @@
 // app/(public)/ppid/tugas-fungsi/page.tsx
 import type { Metadata } from 'next'
 import { FileText } from 'lucide-react'
+import { prisma } from '@/lib/prisma'
 
 export const metadata: Metadata = {
   title: 'Tugas dan Fungsi PPID',
 }
 
-const tugasPPID = [
-  'Menyimpan, mendokumentasikan, menyediakan, dan memberi pelayanan informasi kepada publik',
-  'Melakukan verifikasi bahan informasi publik yang akan ditetapkan oleh atasan PPID sebagai informasi publik yang terbuka atau yang dikecualikan',
-  'Melakukan uji konsekuensi atas informasi yang dikecualikan sebelum menyatakan informasi publik tertentu dikecualikan',
-  'Melakukan pemutakhiran informasi dan dokumentasi',
-  'Menyediakan informasi dan dokumentasi untuk diakses oleh masyarakat',
-  'Melakukan koordinasi dengan unit kerja terkait dalam rangka pengumpulan informasi',
-  'Mengajukan keberatan kepada atasan PPID berdasarkan pertimbangan tertulis dan prosedur tertentu',
-  'Menyelesaikan sengketa informasi melalui mediasi dan/atau ajudikasi nonlitigasi bersama Komisi Informasi',
-  'Membuat dan mengumumkan laporan pelayanan informasi publik',
-  'Melaksanakan fungsi lain yang berkaitan dengan pengelolaan informasi dan dokumentasi',
-]
-
 const dasarHukum = [
-  { nomor: 'UU No. 14 Tahun 2008',      tentang: 'Keterbukaan Informasi Publik' },
-  { nomor: 'PP No. 61 Tahun 2010',       tentang: 'Pelaksanaan UU No. 14/2008' },
+  { nomor: 'UU No. 14 Tahun 2008',        tentang: 'Keterbukaan Informasi Publik' },
+  { nomor: 'PP No. 61 Tahun 2010',         tentang: 'Pelaksanaan UU No. 14/2008' },
   { nomor: 'Permendagri No. 3 Tahun 2017', tentang: 'Pedoman Pengelolaan Pelayanan Informasi dan Dokumentasi Kemendagri' },
-  { nomor: 'Perki No. 1 Tahun 2010',     tentang: 'Standar Layanan Informasi Publik' },
+  { nomor: 'Perki No. 1 Tahun 2010',       tentang: 'Standar Layanan Informasi Publik' },
 ]
 
-export default function TugasFungsiPPIDPage() {
+export default async function TugasFungsiPPIDPage() {
+  const tugasList = await prisma.tugasFungsiPPID.findMany({
+    orderBy: { urutan: 'asc' },
+  })
+
   return (
     <div className="flex flex-col gap-6">
       <div className="rounded-2xl p-6" style={{ background: 'white', border: '1px solid #DBEAFE' }}>
@@ -41,28 +33,35 @@ export default function TugasFungsiPPIDPage() {
         </p>
       </div>
 
-      {/* Tugas */}
-      <div className="rounded-2xl p-6" style={{ background: 'white', border: '1px solid #DBEAFE' }}>
-        <div className="flex items-center gap-2 mb-5">
-          <div className="w-1 h-5 rounded-full bg-blue-700" />
-          <h2 className="text-base font-bold" style={{ color: '#0A2342' }}>Tugas PPID</h2>
-        </div>
-        <div className="flex flex-col gap-3">
-          {tugasPPID.map((t, i) => (
-            <div key={i} className="flex items-start gap-3">
-              <div
-                className="w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5"
-                style={{ background: '#EFF6FF', color: '#0D47A1' }}
-              >
-                {i + 1}
+      {/* Tugas dari DB */}
+      {tugasList.length > 0 && (
+        <div className="rounded-2xl p-6" style={{ background: 'white', border: '1px solid #DBEAFE' }}>
+          <div className="flex items-center gap-2 mb-5">
+            <div className="w-1 h-5 rounded-full bg-blue-700" />
+            <h2 className="text-base font-bold" style={{ color: '#0A2342' }}>Tugas PPID</h2>
+          </div>
+          <div className="flex flex-col gap-3">
+            {tugasList.map((item, i) => (
+              <div key={item.id} className="flex items-start gap-3">
+                <div
+                  className="w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5"
+                  style={{ background: '#EFF6FF', color: '#0D47A1' }}
+                >
+                  {i + 1}
+                </div>
+                <div>
+                  {item.judul && (
+                    <p className="text-sm font-semibold text-slate-700 mb-0.5">{item.judul}</p>
+                  )}
+                  <p className="text-sm text-slate-600 leading-relaxed">{item.konten}</p>
+                </div>
               </div>
-              <p className="text-sm text-slate-600 leading-relaxed">{t}</p>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
-      {/* Dasar hukum */}
+      {/* Dasar Hukum */}
       <div className="rounded-2xl p-6" style={{ background: 'white', border: '1px solid #DBEAFE' }}>
         <div className="flex items-center gap-2 mb-5">
           <div className="w-1 h-5 rounded-full bg-blue-700" />
