@@ -111,7 +111,7 @@ export const footerLinks = {
   situsTerkait: [
     {
       label: 'G-SINJAB',
-      href: 'https://gsinjab.nttprov.go.id',
+      href: 'http://nusatenggaratimurprov3.5.sinjab.info/',
       external: true,
       thumbnail: [
         '/images/apps/gsinjab.jpeg',

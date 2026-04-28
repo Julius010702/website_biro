@@ -7,7 +7,7 @@ import {
   LayoutDashboard, Newspaper, MessageSquare,
   Settings, ChevronDown,
   Building2, Shield,
-  Camera, Globe,
+  Camera, Globe, ExternalLink,
 } from 'lucide-react'
 import { useState } from 'react'
 
@@ -52,6 +52,11 @@ const navItems: NavItem[] = [
     label: 'Galeri',
     href:  '/admin/galeri',
     icon:  <Camera className="w-4 h-4" />,
+  },
+  {
+    label: 'Situs Terkait',
+    href:  '/admin/situs-terkait',
+    icon:  <ExternalLink className="w-4 h-4" />,
   },
   {
     label: 'PPID',
