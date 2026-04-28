@@ -51,12 +51,12 @@ export async function GET(req: NextRequest) {
     const permohonan = await prisma.permohonanInformasi.findUnique({
       where: { nomorRegister: nomor },
       select: {
-        nomorRegister:  true,
-        namaPemohon:    true,
-        status:         true,
-        keterangan:     true,
-        createdAt:      true,
-        updatedAt:      true,
+        nomorRegister: true,
+        namaPemohon:   true,
+        status:        true,
+        keterangan:    true,
+        createdAt:     true,
+        updatedAt:     true,
       },
     })
     if (!permohonan) return NextResponse.json({ error: 'Permohonan tidak ditemukan' }, { status: 404 })
