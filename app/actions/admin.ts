@@ -5,15 +5,6 @@ import { revalidatePath } from 'next/cache'
 import { auth } from '@/lib/auth'
 import type { BagianSlug, TipePeraturan, KategoriPPID } from '@prisma/client'
 
-
-export {
-  upsertSitusTerkait,
-  deleteSitusTerkait,
-  toggleAktifSitusTerkait,
-  updateUrutanSitusTerkait,
-} from './situs-terkait'
- 
-
 // ─── Auth guard ───────────────────────────────────────────────────────────────
 async function requireAdmin() {
   const session = await auth()
@@ -99,7 +90,7 @@ export async function upsertBerita(data: {
   konten: string
   ringkasan?: string
   gambar?: string
-  video?: string        // ✅
+  video?: string
   kategori?: string
   tags?: string[]
   penulis?: string

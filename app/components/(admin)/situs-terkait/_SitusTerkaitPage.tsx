@@ -8,7 +8,7 @@ import {
   deleteSitusTerkait,
   toggleAktifSitusTerkait,
   updateUrutanSitusTerkait,
-} from '@/actions/admin'
+} from '@/actions/situs-terkait'
 import { useUploadThing } from '@/lib/uploadthing-client'
 import {
   Globe, Plus, Search, RefreshCw, Upload, Link2, X, Loader2,

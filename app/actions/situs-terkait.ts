@@ -1,63 +1,73 @@
-// actions/admin/situs-terkait.ts
 'use server'
-
+// app/actions/situs-terkait.ts
 import { prisma } from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
+import { auth } from '@/lib/auth'
 
-export type SitusTerkaitPayload = {
+async function requireAdmin() {
+  const session = await auth()
+  if (!session) throw new Error('Unauthorized')
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// SITUS TERKAIT
+// ══════════════════════════════════════════════════════════════════════════════
+
+export async function upsertSitusTerkait(data: {
   id?:       string
   label:     string
   href:      string
-  external:  boolean
-  thumbnail: string[]   // array URL
+  external?: boolean
+  thumbnail?: string[]
   favicon?:  string
-  aktif:     boolean
+  deskripsi?: string
   urutan:    number
-}
-
-// ── Upsert (create or update) ─────────────────────────────────────────────────
-export async function upsertSitusTerkait(payload: SitusTerkaitPayload) {
-  const data = {
-    label:     payload.label.trim(),
-    href:      payload.href.trim(),
-    external:  payload.external,
-    thumbnail: payload.thumbnail.filter(Boolean),
-    favicon:   payload.favicon?.trim() || null,
-    aktif:     payload.aktif,
-    urutan:    payload.urutan,
+  aktif:     boolean
+}) {
+  await requireAdmin()
+  const { id, ...rest } = data
+  const payload = {
+    label:     rest.label,
+    href:      rest.href,
+    external:  rest.external ?? true,
+    thumbnail: rest.thumbnail ?? [],
+    favicon:   rest.favicon ?? null,
+    urutan:    rest.urutan,
+    aktif:     rest.aktif,
   }
-
-  if (payload.id) {
-    await prisma.situsTerkait.update({ where: { id: payload.id }, data })
+  if (id) {
+    await prisma.situsTerkait.update({ where: { id }, data: payload })
   } else {
-    await prisma.situsTerkait.create({ data })
+    await prisma.situsTerkait.create({ data: payload })
   }
-
+  revalidatePath('/admin/situs-terkait')
   revalidatePath('/')
-  revalidatePath('/admin')
 }
 
-// ── Delete ────────────────────────────────────────────────────────────────────
 export async function deleteSitusTerkait(id: string) {
+  await requireAdmin()
   await prisma.situsTerkait.delete({ where: { id } })
+  revalidatePath('/admin/situs-terkait')
   revalidatePath('/')
-  revalidatePath('/admin')
 }
 
-// ── Toggle aktif ──────────────────────────────────────────────────────────────
 export async function toggleAktifSitusTerkait(id: string, aktif: boolean) {
+  await requireAdmin()
   await prisma.situsTerkait.update({ where: { id }, data: { aktif } })
+  revalidatePath('/admin/situs-terkait')
   revalidatePath('/')
-  revalidatePath('/admin')
 }
 
-// ── Update urutan (drag-and-drop order) ───────────────────────────────────────
 export async function updateUrutanSitusTerkait(items: { id: string; urutan: number }[]) {
+  await requireAdmin()
   await Promise.all(
-    items.map(({ id, urutan }) =>
-      prisma.situsTerkait.update({ where: { id }, data: { urutan } })
+    items.map((item) =>
+      prisma.situsTerkait.update({
+        where: { id: item.id },
+        data:  { urutan: item.urutan },
+      })
     )
   )
+  revalidatePath('/admin/situs-terkait')
   revalidatePath('/')
-  revalidatePath('/admin')
 }
