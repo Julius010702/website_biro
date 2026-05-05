@@ -26,14 +26,6 @@ export const mainNav: NavItem[] = [
       { label: 'Tentang Kami',           href: '/profil/sekapur-sirih' },
       { label: 'Struktur Organisasi',      href: '/profil/struktur-organisasi' },
       { label: 'Tugas Pokok dan Fungsi',   href: '/profil/tugas-pokok-fungsi' },
-      {
-        label: 'Bagian',
-        children: [
-          { label: 'Kelembagaan & Analisis Jabatan',       href: '/profil/bagian/kelembagaan-analisis-jabatan' },
-          { label: 'Reformasi Birokrasi & Akuntabilitas',  href: '/profil/bagian/reformasi-birokrasi-akuntabilitas' },
-          { label: 'Tata Laksana',                         href: '/profil/bagian/tata-laksana' },
-        ],
-      },
     ],
   },
   {
