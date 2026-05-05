@@ -7,7 +7,7 @@ import {
   LayoutDashboard, Newspaper, MessageSquare,
   AlertTriangle, Settings, ChevronDown,
   Building2, Shield,
-  Camera, Globe,
+  Camera, Globe, Layout,
 } from 'lucide-react'
 import { useState } from 'react'
 
@@ -76,6 +76,11 @@ const navItems: NavItem[] = [
     label: 'Pengaduan (WBS)',
     href:  '/admin/pengaduan',
     icon:  <AlertTriangle className="w-4 h-4" />,
+  },
+  {
+    label: 'Footer',
+    href:  '/admin/footer',
+    icon:  <Layout className="w-4 h-4" />,
   },
   {
     label: 'Pengaturan',
