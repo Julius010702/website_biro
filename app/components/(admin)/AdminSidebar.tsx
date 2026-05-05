@@ -7,7 +7,7 @@ import {
   LayoutDashboard, Newspaper, MessageSquare,
   Settings, ChevronDown,
   Building2, Shield,
-  Camera, Globe, ExternalLink,
+  Camera, Globe, ExternalLink, Layout,
 } from 'lucide-react'
 import { useState } from 'react'
 
@@ -75,6 +75,11 @@ const navItems: NavItem[] = [
     label: 'Kontak',
     href:  '/admin/kontak',
     icon:  <MessageSquare className="w-4 h-4" />,
+  },
+  {
+    label: 'Footer',
+    href:  '/admin/footer',
+    icon:  <Layout className="w-4 h-4" />,
   },
   {
     label: 'Pengaturan',
