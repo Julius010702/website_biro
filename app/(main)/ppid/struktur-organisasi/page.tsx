@@ -58,33 +58,6 @@ export default async function StrukturOrganisasiPPIDPage() {
         </div>
       )}
 
-      {/* ── Tugas PPID ── */}
-      <div className="rounded-2xl p-6" style={{ background: 'white', border: '1px solid #DBEAFE' }}>
-        <div className="flex items-center gap-2 mb-4">
-          <div className="w-1 h-5 rounded-full bg-blue-700" />
-          <h2 className="text-base font-bold" style={{ color: '#0A2342' }}>Tugas PPID Pelaksana</h2>
         </div>
-        <div className="flex flex-col gap-3">
-          {[
-            'Menyimpan, mendokumentasikan, menyediakan, dan memberi pelayanan informasi kepada publik',
-            'Melakukan verifikasi bahan informasi publik yang akan ditetapkan oleh atasan PPID',
-            'Melakukan pemutakhiran informasi dan dokumentasi',
-            'Menyediakan informasi dan dokumentasi untuk diakses oleh masyarakat',
-            'Melakukan koordinasi dengan unit kerja terkait dalam rangka pengumpulan informasi',
-            'Mengajukan keberatan kepada atasan PPID berdasarkan pertimbangan tertulis',
-          ].map((t, i) => (
-            <div key={i} className="flex items-start gap-3">
-              <div
-                className="w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5"
-                style={{ background: '#EFF6FF', color: '#0D47A1' }}
-              >
-                {i + 1}
-              </div>
-              <p className="text-sm text-slate-600 leading-relaxed">{t}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
   )
 }
