@@ -5,8 +5,6 @@ import { MapPin, Phone, Mail, Clock, Globe, ExternalLink, ArrowRight, Shield, Na
 import { footerLinks } from '@/lib/navigation'
 import FooterSocialButtons from './FooterSocialButtons'
 
-type Kontak = { id: string; nama: string; nilai: string; ikon: string | null; tipe: string; urutan: number }
-type Situs = { id: string; label: string; href: string; external: boolean; aktif: boolean; urutan: number }
 type SosmedVal = { platform: string; url: string; aktif: boolean }
 
 function KontakIcon({ ikon }: { ikon: string | null }) {

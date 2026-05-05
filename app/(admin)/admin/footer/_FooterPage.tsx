@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState, useTransition } from 'react'
-import { Phone, Instagram, Globe, Plus, Trash2, Save, Loader2, CheckCircle2, AlertCircle } from 'lucide-react'
+import { Phone, Globe, Plus, Trash2, Save, Loader2, CheckCircle2, AlertCircle } from 'lucide-react'
 
 type InformasiKontak = { id: string; nama: string; nilai: string; ikon: string | null; tipe: string; urutan: number }
 type SitusTerkait = { id: string; label: string; href: string; aktif: boolean; urutan: number }
@@ -210,7 +210,7 @@ export default function FooterAdminPage() {
         </div>
       </SectionCard>
 
-      <SectionCard title="Sosial Media" icon={<Instagram className="w-4 h-4" />}>
+      <SectionCard title="Sosial Media" icon={<Globe className="w-4 h-4" />}>
         <div className="flex flex-col gap-3 mb-4">
           {sosmed.map(function(s) {
             return (
