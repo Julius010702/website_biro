@@ -1,4 +1,3 @@
-// app/api/admin/tupoksi/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
