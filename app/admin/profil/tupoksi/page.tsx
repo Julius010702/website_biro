@@ -1,3 +1,4 @@
+// app/admin/profil/tupoksi/page.tsx
 'use client'
 import { useEffect, useState, useTransition } from 'react'
 import {

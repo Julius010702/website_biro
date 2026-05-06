@@ -18,6 +18,7 @@ const navIcons: Record<string, React.ReactNode> = {
   PPID:               <Shield    className="w-3.5 h-3.5" />,
   Berita:             <Newspaper className="w-3.5 h-3.5" />,
   'Daftar Informasi': <Database  className="w-3.5 h-3.5" />,
+  'Daftar Aplikasi':  <Grid      className="w-3.5 h-3.5" />,
 }
 
 export default function Header() {
