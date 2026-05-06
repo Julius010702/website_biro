@@ -2,7 +2,7 @@
 import Link from 'next/link'
 import {
   User, Building2, ClipboardList, Layers,
-  ChevronRight, ExternalLink
+  ChevronRight
 } from 'lucide-react'
 
 const profilMenu = [
