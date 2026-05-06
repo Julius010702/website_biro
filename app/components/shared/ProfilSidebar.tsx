@@ -131,34 +131,6 @@ export default function ProfilSidebar({ activeHref, title, description }: Profil
         </nav>
       </div>
 
-      {/* Quick links */}
-      <div
-        className="rounded-2xl p-4"
-        style={{ background: '#F8FAFF', border: '1px solid #DBEAFE' }}
-      >
-        <p className="text-[10px] font-black tracking-[0.18em] uppercase mb-3" style={{ color: '#94A3B8' }}>
-          Tautan Cepat
-        </p>
-        <div className="flex flex-col gap-2">
-          {[
-            { label: 'SINJAB NTT',  href: 'http://nusatenggaratimurprov3.5.sinjab.info/' },
-            { label: 'SiMBAGA NTT', href: 'https://simbagabiroorganisasi.nttprov.go.id/login' },
-          ].map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 text-xs font-semibold transition-colors hover:text-blue-700"
-              style={{ color: '#1565C0' }}
-            >
-              <ExternalLink className="w-3 h-3 shrink-0" />
-              {l.label}
-            </a>
-          ))}
-        </div>
-      </div>
-
     </aside>
   )
 }
