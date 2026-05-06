@@ -88,7 +88,7 @@ export default function PPIDLayout({ children }: { children: React.ReactNode }) 
             <div className="mx-4 mb-4 p-3 rounded-xl" style={{ background: '#FFF7ED', border: '1px solid #FED7AA' }}>
               <p className="text-[10px] font-bold text-orange-700 mb-1">Butuh Bantuan?</p>
               <p className="text-[10px] text-orange-600 leading-snug">
-                Hubungi kami di jam kerja<br />Senin–Jumat, 08.00–16.00 WITA
+                Hubungi kami di jam kerja<br />Sen-Kam: 08.00-16.00 | Jum: 08.00-16.30 WITA
               </p>
             </div>
           </div>

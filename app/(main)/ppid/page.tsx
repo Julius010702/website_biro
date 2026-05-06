@@ -121,7 +121,7 @@ export default async function PPIDPage() {
             Biro Organisasi Setda Provinsi NTT sebagai badan publik wajib menyediakan, memberikan, dan/atau menerbitkan informasi publik yang berada di bawah kewenangannya kepada pemohon informasi publik, selain informasi yang dikecualikan sesuai ketentuan peraturan perundang-undangan.
           </p>
           <p>
-            Pelayanan informasi publik dilaksanakan pada hari dan jam kerja: <strong>Senin–Jumat, pukul 08.00–16.00 WITA</strong>.
+            Pelayanan informasi publik dilaksanakan pada hari dan jam kerja: <strong>Sen-Kam: 08.00-16.00 | Jum: 08.00-16.30 WITA</strong>.
           </p>
         </div>
       </div>

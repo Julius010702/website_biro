@@ -31,7 +31,7 @@ export default async function AlamatPPIDPage() {
     { id: '1', tipe: 'alamat',    nama: 'Alamat Kantor', nilai: 'Jl. El Tari No. 1, Kupang, Nusa Tenggara Timur 85111' },
     { id: '2', tipe: 'telepon',   nama: 'Telepon',       nilai: '(0380) 833-xxx' },
     { id: '3', tipe: 'email',     nama: 'Email',         nilai: 'biroorganisasi@nttprov.go.id' },
-    { id: '4', tipe: 'jam_kerja', nama: 'Jam Pelayanan', nilai: 'Senin – Jumat: 08.00 – 16.00 WITA' },
+    { id: '4', tipe: 'jam_kerja', nama: 'Jam Pelayanan', nilai: 'Sen-Kam: 08.00-16.00 | Jum: 08.00-16.30 WITA' },
   ]
 
   const displayKontak = kontakList.length > 0 ? kontakList : defaultKontak
