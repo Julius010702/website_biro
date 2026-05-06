@@ -89,7 +89,7 @@ export default function Header() {
           <div className="shrink-0 flex items-center gap-4 px-4 header-topbar-meta text-xs">
             <span className="flex items-center gap-1.5 whitespace-nowrap">
               <Clock className="w-3 h-3" style={{ color: 'var(--color-ntt-hgold-400)' }} />
-              Sen-Kam: 08.00-16.00 | Jum: 08.00-16.30 WITA
+              Sen-Kam: 08.00-16.00 (ist. 12.00-13.00) | Jum: 08.00-16.30 (ist. 11.30-13.20) WITA
             </span>
             <span className="header-topbar-divider">|</span>
             <span className="flex items-center gap-1.5 whitespace-nowrap">
@@ -444,7 +444,7 @@ function MobileNav({ items, onClose }: { items: NavItem[]; onClose: () => void }
           style={{ color: 'rgba(255,255,255,0.6)' }}
         >
           <Clock className="w-3 h-3" style={{ color: 'var(--color-ntt-hgold-400)' }} />
-          Sen-Kam: 08.00-16.00 | Jum: 08.00-16.30 WITA
+          Sen-Kam: 08.00-16.00 (ist. 12.00-13.00) | Jum: 08.00-16.30 (ist. 11.30-13.20) WITA
         </div>
       </div>
     </div>

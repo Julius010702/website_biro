@@ -224,7 +224,7 @@ export default async function SekapurSirihPage() {
               <div className="space-y-1.5">
                 {[
                   { label: 'Lantai 3 Kantor Gubernur NTT', icon: '📍' },
-                  { label: 'Sen-Kam: 08.00-16.00 | Jum: 08.00-16.30 WITA', icon: '🕐' },
+                  { label: 'Sen-Kam: 08.00-16.00 (ist. 12.00-13.00) | Jum: 08.00-16.30 (ist. 11.30-13.20) WITA', icon: '🕐' },
                   { label: '(0380) 831021', icon: '📞' },
                 ].map((info) => (
                   <div key={info.label} className="flex items-start gap-2">
