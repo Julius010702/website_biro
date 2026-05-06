@@ -16,7 +16,7 @@ const profilMenu = [
 
 export default async function StrukturOrganisasiPage() {
   const data = await prisma.strukturOrganisasi.findFirst({
-    where:   { aktif: true },
+    where:   { aktif: true, NOT: { deskripsi: 'STRUKTUR PPID' } },
     orderBy: { createdAt: 'desc' },
   })
 

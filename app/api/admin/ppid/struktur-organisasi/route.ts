@@ -1,10 +1,12 @@
-// app/api/admin/ppid/struktur-organisasi/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
 export async function GET() {
   try {
-    const data = await prisma.strukturOrganisasi.findMany({ orderBy: { createdAt: 'desc' } })
+    const data = await prisma.strukturOrganisasi.findMany({
+      where: { deskripsi: 'STRUKTUR PPID' },
+      orderBy: { createdAt: 'desc' },
+    })
     return NextResponse.json(data)
   } catch {
     return NextResponse.json({ error: 'Gagal' }, { status: 500 })
@@ -14,7 +16,9 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
-    const data = await prisma.strukturOrganisasi.create({ data: body })
+    const data = await prisma.strukturOrganisasi.create({
+      data: { ...body, deskripsi: 'STRUKTUR PPID' },
+    })
     return NextResponse.json(data)
   } catch {
     return NextResponse.json({ error: 'Gagal' }, { status: 500 })
@@ -24,7 +28,10 @@ export async function POST(req: NextRequest) {
 export async function PUT(req: NextRequest) {
   try {
     const { id, ...rest } = await req.json()
-    const data = await prisma.strukturOrganisasi.update({ where: { id }, data: rest })
+    const data = await prisma.strukturOrganisasi.update({
+      where: { id },
+      data: { ...rest, deskripsi: 'STRUKTUR PPID' },
+    })
     return NextResponse.json(data)
   } catch {
     return NextResponse.json({ error: 'Gagal' }, { status: 500 })
