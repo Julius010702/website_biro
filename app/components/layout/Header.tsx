@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
   Menu, X, ChevronDown, ChevronRight, LogIn, Phone, Clock,
-  Home, Users, Building2, Newspaper, Database, Shield
+  Home, Users, Building2, Newspaper, Database, Shield, LayoutGrid
 } from 'lucide-react'
 import { mainNav, type NavItem } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
