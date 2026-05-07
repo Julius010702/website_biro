@@ -83,13 +83,6 @@ export const mainNav: NavItem[] = [
     label: 'Daftar Aplikasi',
     href: '/daftar-aplikasi',
   },
-      {
-        label: 'SiMBAGA NTT',
-        href: 'https://simbagabiroorganisasi.nttprov.go.id/login',
-        external: true,
-      },
-    ],
-  },
 ]
 
 export const footerLinks = {
