@@ -77,6 +77,11 @@ const navItems: NavItem[] = [
     icon:  <MessageSquare className="w-4 h-4" />,
   },
   {
+    label: 'Daftar Aplikasi',
+    href:  '/admin/daftar-aplikasi',
+    icon:  <LayoutGrid className="w-4 h-4" />,
+  },
+  {
     label: 'Footer',
     href:  '/admin/footer',
     icon:  <Layout className="w-4 h-4" />,
