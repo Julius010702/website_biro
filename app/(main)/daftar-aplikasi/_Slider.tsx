@@ -79,7 +79,7 @@ export default function DaftarAplikasiSlider({ list }: { list: Aplikasi[] }) {
     return (
       <div className="text-center py-20">
         <Monitor className="w-12 h-12 mx-auto mb-3" style={{ color: '#CBD5E1' }} />
-        <p className="text-sm" style={{ color: '#94A3B8' }}>Belum ada aplikasi tersedia.</p>
+        <p className="text-sm" style={{ color: 'rgba(255,255,255,0.45)' }}>Belum ada aplikasi tersedia.</p>
       </div>
     )
   }
@@ -97,10 +97,10 @@ export default function DaftarAplikasiSlider({ list }: { list: Aplikasi[] }) {
           disabled={idx === 0}
           className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95 disabled:opacity-30"
           style={{
-            background: 'white',
-            boxShadow: '0 4px 16px rgba(13,71,161,0.15)',
-            border: '1px solid #DBEAFE',
-            color: '#0D47A1',
+            background: 'rgba(255,255,255,0.08)',
+            boxShadow: '0 4px 16px rgba(0,0,0,0.3)',
+            border: '1px solid rgba(255,255,255,0.15)',
+            color: 'white',
           }}
         >
           <ChevronLeft className="w-5 h-5" />
@@ -149,8 +149,8 @@ export default function DaftarAplikasiSlider({ list }: { list: Aplikasi[] }) {
                   style={{
                     width: 160,
                     height: 80,
-                    background: '#F8FAFF',
-                    border: '1px solid #EEF3FC',
+                    background: 'rgba(255,255,255,0.08)',
+                    border: '1px solid rgba(255,255,255,0.12)',
                   }}
                 >
                   {app.logo ? (
@@ -163,22 +163,22 @@ export default function DaftarAplikasiSlider({ list }: { list: Aplikasi[] }) {
                       draggable={false}
                     />
                   ) : (
-                    <Monitor className="w-10 h-10" style={{ color: '#BFDBFE' }} />
+                    <Monitor className="w-10 h-10" style={{ color: 'rgba(255,255,255,0.2)' }} />
                   )}
                 </div>
 
                 {/* Info */}
                 <div className="w-full text-center">
-                  <p className="text-sm font-black mb-0.5 leading-tight" style={{ color: '#0A2342', fontFamily: 'var(--font-heading)' }}>
+                  <p className="text-sm font-black mb-0.5 leading-tight" style={{ color: 'white', fontFamily: 'var(--font-heading)' }}>
                     {app.nama}
                   </p>
                   {app.kategori && (
-                    <p className="text-[10px] font-semibold mb-2" style={{ color: '#94A3B8' }}>
+                    <p className="text-[10px] font-semibold mb-2" style={{ color: 'rgba(255,255,255,0.45)' }}>
                       {app.kategori}
                     </p>
                   )}
                   {app.deskripsi && (
-                    <p className="text-[11px] leading-relaxed mb-3 line-clamp-2" style={{ color: '#64748B' }}>
+                    <p className="text-[11px] leading-relaxed mb-3 line-clamp-2" style={{ color: 'rgba(255,255,255,0.55)' }}>
                       {app.deskripsi}
                     </p>
                   )}
@@ -187,7 +187,7 @@ export default function DaftarAplikasiSlider({ list }: { list: Aplikasi[] }) {
                 {/* CTA */}
                 <div
                   className="flex items-center gap-1.5 text-xs font-bold mt-auto pt-3 opacity-0 group-hover:opacity-100 transition-all -translate-y-1 group-hover:translate-y-0"
-                  style={{ color: '#0D47A1' }}
+                  style={{ color: '#F5A623' }}
                 >
                   <ExternalLink className="w-3.5 h-3.5" />
                   Buka Aplikasi
@@ -196,7 +196,7 @@ export default function DaftarAplikasiSlider({ list }: { list: Aplikasi[] }) {
                 {/* Bottom accent */}
                 <div
                   className="absolute bottom-0 left-0 right-0 h-0.5 rounded-b-2xl opacity-0 group-hover:opacity-100 transition-opacity"
-                  style={{ background: 'linear-gradient(90deg, #0D47A1, #1565C0)' }}
+                  style={{ background: 'linear-gradient(90deg, #F5A623, #F59E0B)' }}
                 />
               </a>
             ))}
@@ -209,10 +209,10 @@ export default function DaftarAplikasiSlider({ list }: { list: Aplikasi[] }) {
           disabled={idx >= maxIdx}
           className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95 disabled:opacity-30"
           style={{
-            background: 'white',
-            boxShadow: '0 4px 16px rgba(13,71,161,0.15)',
-            border: '1px solid #DBEAFE',
-            color: '#0D47A1',
+            background: 'rgba(255,255,255,0.08)',
+            boxShadow: '0 4px 16px rgba(0,0,0,0.3)',
+            border: '1px solid rgba(255,255,255,0.15)',
+            color: 'white',
           }}
         >
           <ChevronRight className="w-5 h-5" />
@@ -230,7 +230,7 @@ export default function DaftarAplikasiSlider({ list }: { list: Aplikasi[] }) {
               style={{
                 width: i === idx ? 24 : 8,
                 height: 8,
-                background: i === idx ? '#0D47A1' : '#DBEAFE',
+                background: i === idx ? '#F5A623' : 'rgba(255,255,255,0.2)',
               }}
             />
           ))}
@@ -238,7 +238,7 @@ export default function DaftarAplikasiSlider({ list }: { list: Aplikasi[] }) {
       )}
 
       {/* Count */}
-      <p className="text-center text-xs mt-3" style={{ color: '#94A3B8' }}>
+      <p className="text-center text-xs mt-3" style={{ color: 'rgba(255,255,255,0.45)' }}>
         {list.length} aplikasi tersedia
       </p>
     </div>
