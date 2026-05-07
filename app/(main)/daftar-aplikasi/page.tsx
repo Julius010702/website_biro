@@ -96,7 +96,7 @@ export default async function DaftarAplikasiPage() {
                   }}
                 >
                   {/* Top banner */}
-                  <div className="relative h-28 flex items-center justify-center overflow-hidden"
+                  <div className="relative h-40 flex items-center justify-center overflow-hidden"
                     style={{ background: grad }}>
                     {/* Pattern */}
                     <div className="absolute inset-0 opacity-10" style={{
@@ -104,14 +104,14 @@ export default async function DaftarAplikasiPage() {
                       backgroundSize: '20px 20px',
                     }} />
                     {app.logo ? (
-                      <div className="relative z-10 w-16 h-16 rounded-2xl overflow-hidden flex items-center justify-center"
+                      <div className="relative z-10 w-24 h-24 rounded-2xl overflow-hidden flex items-center justify-center"
                         style={{ background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.25)' }}>
-                        <NextImage src={app.logo} alt={app.nama} width={48} height={48} className="object-contain p-1" />
+                        <NextImage src={app.logo} alt={app.nama} width={96} height={96} className="object-cover w-full h-full" />
                       </div>
                     ) : (
-                      <div className="relative z-10 w-16 h-16 rounded-2xl flex items-center justify-center"
+                      <div className="relative z-10 w-24 h-24 rounded-2xl flex items-center justify-center"
                         style={{ background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.25)' }}>
-                        <Monitor className="w-8 h-8 text-white" />
+                        <Monitor className="w-12 h-12 text-white" />
                       </div>
                     )}
                     {/* Glow */}
