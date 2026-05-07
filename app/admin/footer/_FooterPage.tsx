@@ -244,44 +244,6 @@ export default function FooterAdminPage() {
         </div>
       </SectionCard>
 
-      <SectionCard title="Situs Terkait" icon={<Globe className="w-4 h-4" />}>
-        <div className="flex flex-col gap-3 mb-4">
-          {situs.sort(function(a, b) { return a.urutan - b.urutan }).map(function(s) {
-            return (
-              <div key={s.id} className="flex items-center gap-3 p-3 rounded-xl" style={{ background: '#F8FAFF', border: '1px solid #E2EAF6' }}>
-                <div className="grid grid-cols-2 gap-2 flex-1">
-                  <input value={s.label} onChange={function(e) { updateSitus(s.id, 'label', e.target.value) }}
-                    placeholder="Nama Situs" className="rounded-lg px-3 py-2 text-xs outline-none"
-                    style={{ border: '1px solid #E2EAF6', background: 'white', color: '#0A2342' }} />
-                  <input value={s.href} onChange={function(e) { updateSitus(s.id, 'href', e.target.value) }}
-                    placeholder="https://..." className="rounded-lg px-3 py-2 text-xs outline-none"
-                    style={{ border: '1px solid #E2EAF6', background: 'white', color: '#0A2342' }} />
-                </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <input type="number" value={s.urutan} onChange={function(e) { updateSitus(s.id, 'urutan', parseInt(e.target.value)) }}
-                    className="w-14 rounded-lg px-2 py-2 text-xs text-center outline-none" title="Urutan"
-                    style={{ border: '1px solid #E2EAF6', background: 'white', color: '#0A2342' }} />
-                  <label className="flex items-center gap-1.5 text-xs font-semibold cursor-pointer" style={{ color: '#64748B' }}>
-                    <input type="checkbox" checked={s.aktif} onChange={function(e) { updateSitus(s.id, 'aktif', e.target.checked) }} /> Aktif
-                  </label>
-                  <button onClick={function() { removeSitus(s.id) }}
-                    className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-red-100" style={{ color: '#EF4444' }}>
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              </div>
-            )
-          })}
-          {situs.length === 0 && <p className="text-xs text-center py-4" style={{ color: '#94A3B8' }}>Belum ada situs terkait.</p>}
-        </div>
-        <div className="flex items-center justify-between">
-          <button onClick={addSitus} className="flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-lg hover:scale-105 transition-all"
-            style={{ background: '#EFF6FF', color: '#0D47A1', border: '1px solid #DBEAFE' }}>
-            <Plus className="w-3.5 h-3.5" /> Tambah Situs
-          </button>
-          <SaveBtn loading={loadingSitus} onClick={saveSitus} />
-        </div>
-      </SectionCard>
     </div>
   )
 }
