@@ -77,8 +77,6 @@ export default async function Footer() {
           <div>
             <h3 className="text-white text-sm font-bold mb-5 flex items-center gap-2">
               <span className="inline-block w-1.5 h-4 rounded-full" style={{ backgroundColor: 'var(--color-ntt-hgold-400)' }} />
-            <h3 className="text-white text-sm font-bold mb-5 flex items-center gap-2">
-              <span className="inline-block w-1.5 h-4 rounded-full" style={{ backgroundColor: 'var(--color-ntt-hgold-400)' }} />
               Kontak
             </h3>
             <ul className="space-y-3.5">

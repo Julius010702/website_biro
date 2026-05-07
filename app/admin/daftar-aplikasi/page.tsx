@@ -2,6 +2,7 @@
 import { useEffect, useState, useTransition } from 'react'
 import { Plus, Trash2, Save, CheckCircle2, AlertCircle, Pencil, ExternalLink, Monitor } from 'lucide-react'
 import { useUploadThing } from '@/lib/uploadthing-client'
+import NextImg from 'next/image'
 
 type Aplikasi = { id: string; nama: string; deskripsi: string | null; href: string; kategori: string | null; logo: string | null; urutan: number; aktif: boolean }
 
@@ -27,7 +28,7 @@ function LogoUpload({ value, onChange }: { value: string; onChange: (url: string
     <div className="flex flex-col gap-2">
       <div className="flex gap-2 items-center">
         {value && (
-          <img src={value} alt="logo" className="w-10 h-10 rounded-lg object-contain border" style={{ borderColor: '#E2EAF6' }} />
+          <NextImg src={value} alt="logo" width={40} height={40} className="rounded-lg object-contain" style={{ border: '1px solid #E2EAF6' }} />
         )}
         <label className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold cursor-pointer transition-all hover:scale-105"
           style={{ background: busy ? '#F1F5F9' : '#EFF6FF', color: busy ? '#94A3B8' : '#0D47A1', border: '1px solid #DBEAFE', pointerEvents: busy ? 'none' : 'auto' }}>
@@ -126,7 +127,7 @@ export default function DaftarAplikasiAdminPage() {
                   <td style={{ padding: '12px 16px' }}>
                     <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: '#EFF6FF', border: '1px solid #DBEAFE' }}>
                       {a.logo
-                        ? <img src={a.logo} alt={a.nama} className="w-8 h-8 object-contain rounded" />
+                        ? <NextImg src={a.logo} alt={a.nama} width={32} height={32} className="object-contain rounded" />
                         : <Monitor className="w-5 h-5" style={{ color: '#0D47A1' }} />}
                     </div>
                   </td>

@@ -7,7 +7,7 @@ import {
   LayoutDashboard, Newspaper, MessageSquare, LayoutGrid,
   Settings, ChevronDown,
   Building2, Shield,
-  Camera, Globe, ExternalLink, Layout,
+  Camera, Globe, Layout,
 } from 'lucide-react'
 import { useState } from 'react'
 
