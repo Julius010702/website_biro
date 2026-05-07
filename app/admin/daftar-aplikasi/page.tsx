@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState, useTransition } from 'react'
 import { Plus, Trash2, Save, CheckCircle2, AlertCircle, Pencil, ExternalLink, Monitor } from 'lucide-react'
+import { useUploadThing } from '@/lib/uploadthing-client'
 
 type Aplikasi = { id: string; nama: string; deskripsi: string | null; href: string; kategori: string | null; logo: string | null; urutan: number; aktif: boolean }
 
@@ -9,6 +10,46 @@ function Toast({ msg, type }: { msg: string; type: 'ok' | 'err' }) {
     <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold shadow-xl"
       style={{ background: type === 'ok' ? '#ECFDF5' : '#FFF1F2', color: type === 'ok' ? '#065F46' : '#9D174D', border: '1px solid ' + (type === 'ok' ? '#D1FAE5' : '#FCE7F3') }}>
       {type === 'ok' ? <CheckCircle2 className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}{msg}
+    </div>
+  )
+}
+
+function LogoUpload({ value, onChange }: { value: string; onChange: (url: string) => void }) {
+  const [busy, setBusy] = useState(false)
+  const { startUpload } = useUploadThing('imageUploader', {
+    onClientUploadComplete: (res) => {
+      if (res?.[0]?.ufsUrl) onChange(res[0].ufsUrl)
+      setBusy(false)
+    },
+    onUploadError: () => { setBusy(false) },
+  })
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex gap-2 items-center">
+        {value && (
+          <img src={value} alt="logo" className="w-10 h-10 rounded-lg object-contain border" style={{ borderColor: '#E2EAF6' }} />
+        )}
+        <label className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold cursor-pointer transition-all hover:scale-105"
+          style={{ background: busy ? '#F1F5F9' : '#EFF6FF', color: busy ? '#94A3B8' : '#0D47A1', border: '1px solid #DBEAFE', pointerEvents: busy ? 'none' : 'auto' }}>
+          {busy ? '⏳ Mengupload...' : '📁 Upload Logo'}
+          <input type="file" accept="image/*" className="hidden"
+            onChange={async function(e) {
+              const f = e.target.files?.[0]
+              if (!f) return
+              setBusy(true)
+              await startUpload([f])
+              e.target.value = ''
+            }} disabled={busy} />
+        </label>
+        {value && (
+          <button type="button" onClick={function() { onChange('') }}
+            className="text-xs text-red-400 hover:text-red-600">Hapus</button>
+        )}
+      </div>
+      <input value={value} onChange={function(e) { onChange(e.target.value) }}
+        placeholder="atau paste URL logo..."
+        className="rounded-xl px-3 py-2 text-xs outline-none"
+        style={{ border: '1px solid #E2EAF6', background: '#F8FAFF', color: '#0A2342' }} />
     </div>
   )
 }
@@ -53,8 +94,6 @@ export default function DaftarAplikasiAdminPage() {
   return (
     <div className="flex flex-col gap-6">
       {toast && <Toast msg={toast.msg} type={toast.type} />}
-
-      {/* Header */}
       <div className="rounded-2xl p-6" style={{ background: 'white', border: '1px solid #E2EAF6' }}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -68,31 +107,31 @@ export default function DaftarAplikasiAdminPage() {
           </button>
         </div>
       </div>
-
-      {/* Tabel */}
       <div className="rounded-2xl overflow-hidden" style={{ background: 'white', border: '1px solid #E2EAF6' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
             <tr style={{ background: '#F8FAFF', borderBottom: '1px solid #E2EAF6' }}>
-              {['No', 'Nama', 'URL', 'Kategori', 'Status', 'Aksi'].map(function(h) {
+              {['No', 'Logo', 'Nama', 'URL', 'Kategori', 'Status', 'Aksi'].map(function(h) {
                 return <th key={h} style={{ padding: '12px 16px', textAlign: 'left', fontSize: 10, fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{h}</th>
               })}
             </tr>
           </thead>
           <tbody>
             {list.length === 0 ? (
-              <tr><td colSpan={6} style={{ padding: 48, textAlign: 'center', color: '#94A3B8', fontSize: 13 }}>Belum ada aplikasi. Klik Tambah Aplikasi.</td></tr>
+              <tr><td colSpan={7} style={{ padding: 48, textAlign: 'center', color: '#94A3B8', fontSize: 13 }}>Belum ada aplikasi.</td></tr>
             ) : list.map(function(a, i) {
               return (
                 <tr key={a.id} style={{ borderBottom: '1px solid #F0F4FF' }}>
                   <td style={{ padding: '12px 16px', fontSize: 12, color: '#64748B' }}>{i + 1}</td>
                   <td style={{ padding: '12px 16px' }}>
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: '#EFF6FF' }}>
-                        <Monitor className="w-4 h-4" style={{ color: '#0D47A1' }} />
-                      </div>
-                      <p style={{ fontSize: 12, fontWeight: 700, color: '#0A2342' }}>{a.nama}</p>
+                    <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: '#EFF6FF', border: '1px solid #DBEAFE' }}>
+                      {a.logo
+                        ? <img src={a.logo} alt={a.nama} className="w-8 h-8 object-contain rounded" />
+                        : <Monitor className="w-5 h-5" style={{ color: '#0D47A1' }} />}
                     </div>
+                  </td>
+                  <td style={{ padding: '12px 16px' }}>
+                    <p style={{ fontSize: 12, fontWeight: 700, color: '#0A2342' }}>{a.nama}</p>
                   </td>
                   <td style={{ padding: '12px 16px' }}>
                     <a href={a.href} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1" style={{ fontSize: 11, color: '#1565C0' }}>
@@ -123,8 +162,6 @@ export default function DaftarAplikasiAdminPage() {
           </tbody>
         </table>
       </div>
-
-      {/* Form */}
       {form !== null && (
         <div className="rounded-2xl overflow-hidden" style={{ background: 'white', border: '1px solid #E2EAF6' }}>
           <div className="px-6 py-4" style={{ borderBottom: '1px solid #EEF3FC', background: '#F8FAFF' }}>
@@ -135,7 +172,6 @@ export default function DaftarAplikasiAdminPage() {
               { label: 'Nama Aplikasi *', field: 'nama', placeholder: 'G-SINJAB' },
               { label: 'URL Aplikasi *', field: 'href', placeholder: 'https://...' },
               { label: 'Kategori', field: 'kategori', placeholder: 'Manajemen ASN' },
-              { label: 'URL Logo', field: 'logo', placeholder: 'https://... (opsional)' },
               { label: 'Urutan', field: 'urutan', placeholder: '0' },
             ].map(function(f) {
               return (
@@ -151,6 +187,10 @@ export default function DaftarAplikasiAdminPage() {
                 </div>
               )
             })}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[11px] font-bold uppercase tracking-wider" style={{ color: '#94A3B8' }}>Logo Aplikasi</label>
+              <LogoUpload value={form.logo ?? ''} onChange={function(url) { setForm(function(prev) { return { ...prev, logo: url } }) }} />
+            </div>
             <div className="flex flex-col gap-1.5 sm:col-span-2">
               <label className="text-[11px] font-bold uppercase tracking-wider" style={{ color: '#94A3B8' }}>Deskripsi</label>
               <textarea rows={3} value={form.deskripsi ?? ''}
