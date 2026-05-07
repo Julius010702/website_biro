@@ -3,7 +3,6 @@ import { useEffect, useState, useTransition } from 'react'
 import { Phone, Globe, Plus, Trash2, Save, Loader2, CheckCircle2, AlertCircle } from 'lucide-react'
 
 type InformasiKontak = { id: string; nama: string; nilai: string; ikon: string | null; tipe: string; urutan: number }
-type SitusTerkait = { id: string; label: string; href: string; aktif: boolean; urutan: number }
 type SosialMedia = { key: string; platform: string; url: string; aktif: boolean }
 
 function Toast({ msg, type }: { msg: string; type: 'ok' | 'err' }) {
@@ -62,7 +61,6 @@ export default function FooterAdminPage() {
 
   useEffect(function() {
     fetch('/api/admin/informasi-kontak').then(function(r) { return r.json() }).then(function(d) { setKontak(d) })
-    fetch('/api/admin/situs-terkait').then(function(r) { return r.json() }).then(function(d) { setSitus(d) })
     fetch('/api/admin/site-settings?prefix=sosmed_').then(function(r) { return r.json() }).then(function(d: Array<{ key: string; value: string }>) {
       setSosmed(d.map(function(s) {
         try { const v = JSON.parse(s.value); return { key: s.key, platform: v.platform, url: v.url, aktif: v.aktif } }
