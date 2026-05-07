@@ -222,7 +222,7 @@ export default function DaftarAplikasiSlider({ list }: { list: Aplikasi[] }) {
       {/* Dots */}
       {list.length > VISIBLE && (
         <div className="flex justify-center gap-2 mt-4">
-          {Array.from({ length: maxIdx + 1 }).map((_, i) => (
+          {Array.from({ length: maxIdx + 1 }).map((_item, i) => (
             <button
               key={i}
               onClick={() => { setIdx(i); resetAuto() }}
