@@ -125,7 +125,7 @@ export default function DaftarAplikasiSlider({ list }: { list: Aplikasi[] }) {
             onTouchMove={onTouchMove}
             onTouchEnd={onTouchEnd}
           >
-            {list.map((app, i) => (
+            {list.map((app) => (
               <a
                 key={app.id}
                 href={app.href}
