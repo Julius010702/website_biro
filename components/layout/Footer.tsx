@@ -22,7 +22,7 @@ function KontakIcon({ ikon }: { ikon: string | null }) {
 async function getFooterData() {
   const [kontakList, sosmedSettings] = await Promise.all([
     prisma.informasiKontak.findMany({ orderBy: { urutan: 'asc' } }),
-    prisma.situsTerkait.findMany({ where: { aktif: true }, orderBy: { urutan: 'asc' } }),
+    prisma.siteSettings.findMany({ where: { key: { startsWith: 'sosmed_' } } }),
     prisma.siteSettings.findMany({ where: { key: { startsWith: 'sosmed_' } } }),
   ])
   const sosmedList = sosmedSettings.map(function(s) {
