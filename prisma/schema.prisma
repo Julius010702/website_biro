@@ -63,6 +63,7 @@ model StrukturOrganisasi {
   id        String   @id @default(cuid())
   gambar    String
   deskripsi String?
+  tipe      String   @default("BIRO")
   aktif     Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -440,4 +441,18 @@ enum TipeInformasiPublik {
   GAMBAR
   DOKUMEN
   GAMBAR_DOKUMEN
+}
+
+// ========== DAFTAR APLIKASI ==========
+model DaftarAplikasi {
+  id        String   @id @default(cuid())
+  nama      String
+  deskripsi String?  @db.Text
+  href      String
+  kategori  String?
+  logo      String?
+  urutan    Int      @default(0)
+  aktif     Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
