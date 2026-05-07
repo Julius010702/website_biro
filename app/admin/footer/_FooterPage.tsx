@@ -49,10 +49,8 @@ const ikonOptions = [
 
 export default function FooterAdminPage() {
   const [kontak, setKontak] = useState<InformasiKontak[]>([])
-  const [situs, setSitus] = useState<SitusTerkait[]>([])
   const [sosmed, setSosmed] = useState<SosialMedia[]>([])
   const [loadingKontak, setLoadingKontak] = useState(false)
-  const [loadingSitus, setLoadingSitus] = useState(false)
   const [loadingSosmed, setLoadingSosmed] = useState(false)
   const [toast, setToast] = useState<{ msg: string; type: 'ok' | 'err' } | null>(null)
   const [, start] = useTransition()
@@ -102,34 +100,6 @@ export default function FooterAdminPage() {
     })
   }
 
-  function updateSitus(id: string, field: keyof SitusTerkait, val: string | boolean | number) {
-    setSitus(function(prev) { return prev.map(function(s) { return s.id === id ? { ...s, [field]: val } : s }) })
-  }
-  function addSitus() {
-    start(async function() {
-      const res = await fetch('/api/admin/situs-terkait', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ label: 'Situs Baru', href: 'https://', aktif: true, urutan: situs.length }) })
-      if (res.ok) { const d = await res.json() as SitusTerkait; setSitus(function(prev) { return [...prev, d] }) }
-    })
-  }
-  function removeSitus(id: string) {
-    start(async function() {
-      const res = await fetch('/api/admin/situs-terkait/' + id, { method: 'DELETE' })
-      if (res.ok) setSitus(function(prev) { return prev.filter(function(s) { return s.id !== id }) })
-      else showToast('Gagal menghapus.', 'err')
-    })
-  }
-  function saveSitus() {
-    setLoadingSitus(true)
-    start(async function() {
-      try {
-        await Promise.all(situs.map(function(s) {
-          return fetch('/api/admin/situs-terkait/' + s.id, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ label: s.label, href: s.href, aktif: s.aktif, urutan: s.urutan }) })
-        }))
-        showToast('Situs terkait berhasil disimpan!', 'ok')
-      } catch { showToast('Gagal menyimpan situs terkait.', 'err') }
-      finally { setLoadingSitus(false) }
-    })
-  }
 
   function updateSosmed(key: string, field: keyof SosialMedia, val: string | boolean) {
     setSosmed(function(prev) { return prev.map(function(s) { return s.key === key ? { ...s, [field]: val } : s }) })
