@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState, useTransition } from 'react'
-import { Plus, Trash2, Save, Loader2, CheckCircle2, AlertCircle, Pencil, ExternalLink, Monitor } from 'lucide-react'
+import { Plus, Trash2, Save, CheckCircle2, AlertCircle, Pencil, ExternalLink, Monitor } from 'lucide-react'
 
 type Aplikasi = { id: string; nama: string; deskripsi: string | null; href: string; kategori: string | null; logo: string | null; urutan: number; aktif: boolean }
 

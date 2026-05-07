@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { prisma } from '@/lib/prisma'
 import { ExternalLink, Monitor } from 'lucide-react'
+import NextImage from 'next/image'
 
 export const metadata: Metadata = {
   title: 'Daftar Aplikasi',
@@ -36,7 +37,7 @@ export default async function DaftarAplikasiPage() {
                 <div className="flex items-start justify-between">
                   <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0" style={{ background: '#EFF6FF' }}>
                     {app.logo
-                      ? <img src={app.logo} alt={app.nama} className="w-8 h-8 object-contain" />
+                      ? <NextImage src={app.logo} alt={app.nama} width={32} height={32} className="object-contain" />
                       : <Monitor className="w-6 h-6" style={{ color: '#0D47A1' }} />}
                   </div>
                   {app.kategori && (
