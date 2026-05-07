@@ -20,7 +20,7 @@ function KontakIcon({ ikon }: { ikon: string | null }) {
 }
 
 async function getFooterData() {
-  const [kontakList, situsList, sosmedSettings] = await Promise.all([
+  const [kontakList, sosmedSettings] = await Promise.all([
     prisma.informasiKontak.findMany({ orderBy: { urutan: 'asc' } }),
     prisma.situsTerkait.findMany({ where: { aktif: true }, orderBy: { urutan: 'asc' } }),
     prisma.siteSettings.findMany({ where: { key: { startsWith: 'sosmed_' } } }),
@@ -28,13 +28,13 @@ async function getFooterData() {
   const sosmedList = sosmedSettings.map(function(s) {
     try { return JSON.parse(s.value) as SosmedVal } catch { return null }
   }).filter(function(s): s is SosmedVal { return s !== null && s.aktif })
-  return { kontakList, situsList, sosmedList }
+  return { kontakList, sosmedList }
 }
 
 const values = ['Berorientasi Pelayanan', 'Akuntabel', 'Kompeten', 'Harmonis', 'Loyal', 'Adaptif', 'Kolaboratif']
 
 export default async function Footer() {
-  const { kontakList, situsList, sosmedList } = await getFooterData()
+  const { kontakList, sosmedList } = await getFooterData()
   const year = new Date().getFullYear()
   return (
     <footer className="footer-root">
@@ -77,21 +77,6 @@ export default async function Footer() {
           <div>
             <h3 className="text-white text-sm font-bold mb-5 flex items-center gap-2">
               <span className="inline-block w-1.5 h-4 rounded-full" style={{ backgroundColor: 'var(--color-ntt-hgold-400)' }} />
-              Situs Terkait
-            </h3>
-            <ul className="space-y-2.5 mb-8">
-              {situsList.length > 0 ? situsList.map(function(s) {
-                return (
-                  <li key={s.id}>
-                    <Link href={s.href} target={s.external ? '_blank' : undefined} rel={s.external ? 'noopener noreferrer' : undefined}
-                      className="footer-nav-link text-xs flex items-center gap-2 transition-colors group">
-                      <ExternalLink className="w-3 h-3 shrink-0 opacity-50 group-hover:opacity-100" />
-                      {s.label}
-                    </Link>
-                  </li>
-                )
-              }) : <li className="text-xs opacity-40 text-white">Belum ada situs terkait.</li>}
-            </ul>
             <h3 className="text-white text-sm font-bold mb-5 flex items-center gap-2">
               <span className="inline-block w-1.5 h-4 rounded-full" style={{ backgroundColor: 'var(--color-ntt-hgold-400)' }} />
               Kontak

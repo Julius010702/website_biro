@@ -54,11 +54,6 @@ const navItems: NavItem[] = [
     icon:  <Camera className="w-4 h-4" />,
   },
   {
-    label: 'Situs Terkait',
-    href:  '/admin/situs-terkait',
-    icon:  <ExternalLink className="w-4 h-4" />,
-  },
-  {
     label: 'PPID',
     icon:  <Shield className="w-4 h-4" />,
     children: [
