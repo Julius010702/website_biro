@@ -2,7 +2,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { prisma } from '@/lib/prisma'
-import { MapPin, Phone, Mail, Clock, Globe, ExternalLink, ArrowRight, Shield, Navigation } from 'lucide-react'
+import { MapPin, Phone, Mail, Clock, Globe, ArrowRight, Shield, Navigation } from 'lucide-react'
 import { footerLinks } from '@/lib/navigation'
 import FooterSocialButtons from './FooterSocialButtons'
 
