@@ -81,12 +81,8 @@ export const mainNav: NavItem[] = [
   },
   {
     label: 'Daftar Aplikasi',
-    children: [
-      {
-        label: 'G-SINJAB',
-        href: 'http://nusatenggaratimurprov3.5.sinjab.info/',
-        external: true,
-      },
+    href: '/daftar-aplikasi',
+  },
       {
         label: 'SiMBAGA NTT',
         href: 'https://simbagabiroorganisasi.nttprov.go.id/login',
