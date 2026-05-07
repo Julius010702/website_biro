@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation'
 import Link            from 'next/link'
 import Image           from 'next/image'
 import {
-  LayoutDashboard, Newspaper, MessageSquare,
+  LayoutDashboard, Newspaper, MessageSquare, LayoutGrid,
   Settings, ChevronDown,
   Building2, Shield,
   Camera, Globe, ExternalLink, Layout,
