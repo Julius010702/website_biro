@@ -119,18 +119,19 @@ export default function LoginPage() {
         .btn-submit:disabled { opacity: 0.55; cursor: not-allowed; }
       `}</style>
 
-      <div className="min-h-screen flex overflow-hidden" style={{ background: '#060F1E' }}>
+      <div className="min-h-screen flex overflow-hidden relative" style={{ background: '#060F1E' }}>
+        {/* Full Background Image */}
+        <div className="absolute inset-0 z-0">
+          <Image src="/bacground_login.png" alt="Background" fill className="object-cover" sizes="100vw" priority />
+          <div className="absolute inset-0" style={{ background: 'rgba(6,15,30,0.55)' }} />
+        </div>
 
         {/* LEFT PANEL */}
-        <div className="hidden lg:flex lg:w-[52%] relative flex-col items-center justify-center overflow-hidden">
+        <div className="hidden lg:flex lg:w-[52%] relative z-10 flex-col items-center justify-center overflow-hidden">
 
-          {/* Background Image */}
+          {/* SVG Pattern overlay */}
           <div className="absolute inset-0">
-            <Image src="/bacground_login.png" alt="Background Login" fill className="object-cover" sizes="52vw" priority />
-            <div className="absolute inset-0" style={{
-              background: 'linear-gradient(160deg, rgba(6,15,30,0.70) 0%, rgba(9,30,70,0.60) 50%, rgba(6,15,30,0.75) 100%)',
-            }} />
-            <svg className="absolute inset-0 w-full h-full" style={{ opacity: 0.03 }}>
+            <svg className="absolute inset-0 w-full h-full" style={{ opacity: 0.04 }}>
               <defs>
                 <pattern id="lp" x="0" y="0" width="50" height="50" patternUnits="userSpaceOnUse">
                   <line x1="0" y1="50" x2="50" y2="0" stroke="#F5A623" strokeWidth="0.7" />
@@ -205,8 +206,8 @@ export default function LoginPage() {
         </div>
 
         {/* RIGHT PANEL */}
-        <div className="flex-1 flex flex-col items-center justify-center px-6 py-12 relative"
-          style={{ background: '#F4F7FD' }}>
+        <div className="flex-1 flex flex-col items-center justify-center px-6 py-12 relative z-10"
+          style={{ background: 'rgba(244,247,253,0.92)', backdropFilter: 'blur(12px)' }}>
 
           {/* Top stripe */}
           <div className="absolute top-0 left-0 right-0 h-1"
