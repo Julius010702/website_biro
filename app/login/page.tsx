@@ -124,19 +124,12 @@ export default function LoginPage() {
         {/* ══ LEFT PANEL ══ */}
         <div className="hidden lg:flex lg:w-[52%] relative flex-col items-center justify-center overflow-hidden">
 
-          {/* Mosaic BG */}
+          {/* Background Image */}
           <div className="absolute inset-0">
-            <div className="absolute inset-0 grid grid-cols-2 grid-rows-3 opacity-[0.14]">
-              {[
-                '/images/hero/gedung-pemprov.jpeg',
-                '/images/hero/komodo-padar.jpeg',
-                '/images/hero/wae-rebo.jpeg',
-                '/images/hero/sumba-tarung.jpeg',
-                '/images/hero/geowisata-timor.jpeg',
-                '/images/hero/panorama-laut.jpeg',
-              ].map((src, i) => (
-                <div key={i} className="relative overflow-hidden">
-                  <Image src={src} alt="" fill className="object-cover" sizes="26vw" />
+            <Image src="/bacground_login.png" alt="Background Login" fill className="object-cover" sizes="52vw" priority />
+            <div className="absolute inset-0" style={{
+              background: 'linear-gradient(160deg, rgba(6,15,30,0.70) 0%, rgba(9,30,70,0.60) 50%, rgba(6,15,30,0.75) 100%)',
+            }} />
                 </div>
               ))}
             </div>
