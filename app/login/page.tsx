@@ -207,7 +207,7 @@ export default function LoginPage() {
 
         {/* RIGHT PANEL */}
         <div className="flex-1 flex flex-col items-center justify-center px-6 py-12 relative z-10"
-          style={{ background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(20px)' }}>
+          style={{ background: 'transparent' }}>
 
           {/* Top stripe */}
           <div className="absolute top-0 left-0 right-0 h-1"
