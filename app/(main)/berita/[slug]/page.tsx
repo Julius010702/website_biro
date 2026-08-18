@@ -12,6 +12,7 @@ import {
 } from 'lucide-react'
 import BeritaImage, { GambarPlaceholder } from '@/components/shared/BeritaImage'
 import ShareButton from '@/components/shared/ShareButton'
+import ShareButton from '@/components/shared/ShareButton'
 import VideoPlayer from '@/components/shared/VideoPlayer'
 export async function generateMetadata({
   params,
