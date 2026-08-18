@@ -8,9 +8,10 @@ import { format }        from 'date-fns'
 import { id as localeId } from 'date-fns/locale'
 import {
   Clock, Eye, Tag, ChevronRight,
-  ArrowLeft, Share2, Newspaper,
+  ArrowLeft, Newspaper,
 } from 'lucide-react'
 import BeritaImage, { GambarPlaceholder } from '@/components/shared/BeritaImage'
+import ShareButton from '@/components/shared/ShareButton'
 import VideoPlayer from '@/components/shared/VideoPlayer'
 export async function generateMetadata({
   params,
@@ -218,12 +219,7 @@ export default async function BeritaDetailPage({
               >
                 <ArrowLeft className="w-3.5 h-3.5" /> Semua Berita
               </Link>
-              <button
-                className="inline-flex items-center gap-2 text-xs font-semibold px-4 py-2 rounded-xl transition-all hover:scale-105"
-                style={{ background: 'white', color: '#64748B', border: '1px solid #E2E8F0' }}
-              >
-                <Share2 className="w-3.5 h-3.5" /> Bagikan
-              </button>
+              <ShareButton title={berita.judul} url={"/berita/"} />
             </div>
           </article>
 
