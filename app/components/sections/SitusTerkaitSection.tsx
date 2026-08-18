@@ -5,7 +5,7 @@ import Link            from 'next/link'
 import Image           from 'next/image'
 import { ExternalLink, Globe } from 'lucide-react'
 import { prisma }      from '@/lib/prisma'
-import SitusThumbnailSlide from '@/components/shared/SitusThumbnailSlide'
+import NextImage from 'next/image'
 
 const heroBg = [
   '/images/hero/gedung-pemprov.jpeg',
@@ -24,7 +24,7 @@ const cardAccents = [
 
 export default async function SitusTerkaitSection() {
   // ── Ambil data dari DB (hanya yang aktif, urut sesuai setting admin) ──────
-  const sites = await prisma.situsTerkait.findMany({
+  const sites = await prisma.daftarAplikasi.findMany({
     where:   { aktif: true },
     orderBy: [{ urutan: 'asc' }, { createdAt: 'asc' }],
   })
@@ -85,7 +85,7 @@ export default async function SitusTerkaitSection() {
         <div className="flex flex-wrap justify-center gap-4 sm:gap-5">
           {sites.map((site, i) => {
             const accent   = cardAccents[i % cardAccents.length]
-            const thumbs   = site.thumbnail ?? []
+                  images={site.logo ? [site.logo] : []}
 
             return (
               <Link
@@ -111,17 +111,17 @@ export default async function SitusTerkaitSection() {
                 <div className="relative w-full overflow-hidden" style={{ height: '96px' }}>
                   <SitusThumbnailSlide
                     images={thumbs}
-                    alt={site.label}
+                    alt={site.nama}
                     accent={accent}
-                    initials={site.label.slice(0, 2).toUpperCase()}
-                    label={site.label}
+                    initials={site.nama.slice(0, 2).toUpperCase()}
+                    label={site.nama}
                   />
                 </div>
 
                 {/* Card body */}
                 <div className="flex flex-col items-center gap-1.5 px-3 py-3">
                   <p className="text-[11px] font-bold leading-snug text-center transition-colors group-hover:text-white" style={{ color: 'rgba(255,255,255,0.75)' }}>
-                    {site.label}
+                    {site.nama}
                   </p>
                   {site.external && (
                     <div className="flex items-center gap-1 text-[10px] font-medium opacity-0 group-hover:opacity-100 transition-all duration-200 -translate-y-1 group-hover:translate-y-0" style={{ color: accent }}>
