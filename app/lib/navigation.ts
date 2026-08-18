@@ -73,10 +73,10 @@ export const mainNav: NavItem[] = [
         external: true,
       },
       {
-      {
         label: 'Informasi Serta Merta',
         href: '/ppid/serta-merta',
       },
+      {
         label: 'Daftar Informasi Dikecualikan',
         href: 'https://drive.google.com/drive/folders/1P7xUX6WNE7KjJw2Ju3ELcdJk2y2ejR2Y?usp=sharing',
         external: true,
