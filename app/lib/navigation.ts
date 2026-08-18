@@ -123,6 +123,7 @@ export const ppidMenu = [
   { label: 'Tugas dan Fungsi',             href: '/ppid/tugas-fungsi' },
   { label: 'Struktur Organisasi PPID',     href: '/ppid/struktur-organisasi' },
   { label: 'Maklumat Pelayanan',           href: '/ppid/maklumat' },
+  { label: 'Informasi Serta Merta',    href: '/ppid/serta-merta' },
   { label: 'Pelayanan Informasi Publik',   href: '/ppid/informasi-publik' },
   { label: 'Permohonan Informasi Online',  href: '/ppid/permohonan' },
 ]

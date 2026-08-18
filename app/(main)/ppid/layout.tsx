@@ -21,6 +21,7 @@ const menuIcons: Record<string, React.ReactNode> = {
   '/ppid/tugas-fungsi':     <FileText      className="w-4 h-4" />,
   '/ppid/struktur-organisasi': <Users      className="w-4 h-4" />,
   '/ppid/maklumat':         <Heart         className="w-4 h-4" />,
+  '/ppid/serta-merta':      <FileText      className="w-4 h-4" />,
   '/ppid/prosedur-bencana': <AlertTriangle className="w-4 h-4" />,
   '/ppid/sk-dikecualikan':  <Lock          className="w-4 h-4" />,
   '/ppid/daftar-informasi': <List          className="w-4 h-4" />,
