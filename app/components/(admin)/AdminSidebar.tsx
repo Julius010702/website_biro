@@ -64,6 +64,7 @@ const navItems: NavItem[] = [
       { label: 'Pelayanan Informasi', href: '/admin/ppid/pelayanan' },
       { label: 'Informasi Publik',    href: '/admin/ppid/informasi-publik' },
       { label: 'Permohonan Online',   href: '/admin/ppid/permohonan' },
+      { label: 'Serta Merta',          href: '/admin/serta-merta' },
     ],
   },
   {
