@@ -456,3 +456,18 @@ model DaftarAplikasi {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+// ========== INFORMASI SERTA MERTA ==========
+model InformasiSertaMerta {
+  id        String   @id @default(cuid())
+  judul     String
+  deskripsi String?  @db.Text
+  file      String?
+  gambar    String?
+  tipe      String   @default("DOKUMEN")
+  urlSosmed String?
+  aktif     Boolean  @default(true)
+  urutan    Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
