@@ -11,8 +11,9 @@ export const metadata: Metadata = {
   keywords: ['Biro Organisasi', 'NTT', 'Nusa Tenggara Timur', 'Pemerintah Provinsi'],
   authors: [{ name: 'Biro Organisasi Prov. NTT' }],
   icons: {
-    icon: '/logo-ntt.ico',
-    shortcut: '/logo-ntt.ico',
+    icon: [{ url: '/favicon.png', type: 'image/png' }],
+    shortcut: '/favicon.png',
+    apple: '/favicon.png',
   },
   openGraph: {
     type: 'website',
