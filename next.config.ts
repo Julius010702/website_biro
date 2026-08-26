@@ -21,6 +21,7 @@ const securityHeaders = [
   },
 ]
 const nextConfig = {
+  serverExternalPackages: ['jose'],
   async headers() {
     return [
       {
