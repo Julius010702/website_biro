@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 // components/admin/AdminSidebar.tsx
 import { usePathname } from 'next/navigation'
 import Link            from 'next/link'
@@ -57,14 +57,15 @@ const navItems: NavItem[] = [
     label: 'PPID',
     icon:  <Shield className="w-4 h-4" />,
     children: [
-      { label: 'Seputar PPID',        href: '/admin/ppid/seputar' },
-      { label: 'Tugas & Fungsi',      href: '/admin/ppid/tugas-fungsi' },
-      { label: 'Struktur Organisasi', href: '/admin/ppid/struktur-organisasi' },
-      { label: 'Maklumat Pelayanan',  href: '/admin/ppid/maklumat' },
-      { label: 'Pelayanan Informasi', href: '/admin/ppid/pelayanan' },
-      { label: 'Informasi Publik',    href: '/admin/ppid/informasi-publik' },
-      { label: 'Permohonan Online',   href: '/admin/ppid/permohonan' },
-      { label: 'Serta Merta',          href: '/admin/serta-merta' },
+      { label: 'Seputar PPID',             href: '/admin/ppid/seputar' },
+      { label: 'Tugas & Fungsi',           href: '/admin/ppid/tugas-fungsi' },
+      { label: 'Struktur Organisasi',      href: '/admin/ppid/struktur-organisasi' },
+      { label: 'Maklumat Pelayanan',       href: '/admin/ppid/maklumat' },
+      { label: 'Pelayanan Informasi',      href: '/admin/ppid/pelayanan' },
+      { label: 'Daftar Informasi',         href: '/admin/ppid/dokumen' },
+      { label: 'Permohonan Online',        href: '/admin/ppid/permohonan' },
+      { label: 'Keberatan',                href: '/admin/ppid/keberatan' },
+      { label: 'Prosedur Bencana',         href: '/admin/ppid/prosedur-bencana' },
     ],
   },
   {

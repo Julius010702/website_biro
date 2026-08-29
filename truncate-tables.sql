@@ -1,0 +1,1 @@
+﻿TRUNCATE "Bagian", "Berita", "DaftarAplikasi", "DokumenPPID", "Galeri", "InformasiKontak", "MaklumatPelayanan", "PermohonanInformasi", "SekapurSirih", "SiteSettings", "SitusTerkait", "SliderBeranda", "StandarPelayanan", "StatistikBeranda", "StrukturOrganisasi", "TugasPokokFungsi", "User" CASCADE;

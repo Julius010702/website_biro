@@ -64,6 +64,7 @@ const navItems: NavItem[] = [
       { label: 'Pelayanan Informasi',      href: '/admin/ppid/pelayanan' },
       { label: 'Daftar Informasi',         href: '/admin/ppid/dokumen' },
       { label: 'Permohonan Online',        href: '/admin/ppid/permohonan' },
+      { label: 'Keberatan',                href: '/admin/ppid/keberatan' },
       { label: 'Prosedur Bencana',         href: '/admin/ppid/prosedur-bencana' },
     ],
   },

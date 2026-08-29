@@ -385,6 +385,34 @@ model PermohonanInformasi {
   updatedAt        DateTime         @updatedAt
 }
 
+// ========== PPID - KEBERATAN ==========
+model Keberatan {
+  id               String           @id @default(cuid())
+  nomorTiket       String?          @unique
+  nomorPendaftaran String
+  tujuanPenggunaan String           @db.Text
+  namaLengkap      String
+  alamat           String?          @db.Text
+  pekerjaan        String?
+  email            String
+  telepon          String
+  kuasaNama        String?
+  kuasaAlamat      String?          @db.Text
+  kuasaTelepon     String?
+  alasanA          Boolean          @default(false)
+  alasanB          Boolean          @default(false)
+  alasanC          Boolean          @default(false)
+  alasanD          Boolean          @default(false)
+  alasanE          Boolean          @default(false)
+  alasanF          Boolean          @default(false)
+  alasanG          Boolean          @default(false)
+  kasusPosisi      String           @db.Text
+  tandaTangan      String           @db.Text
+  status           StatusPermohonan @default(PENDING)
+  keterangan       String?          @db.Text
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+}
 // ========== WBS ==========
 model Pengaduan {
   id         String          @id @default(cuid())

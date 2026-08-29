@@ -48,11 +48,12 @@ export const mainNav: NavItem[] = [
     label: 'PPID',
     children: [
       { label: 'Seputar PPID',                 href: '/ppid' },
+  { label: 'PPID Utama',                   href: 'https://ppid.nttprov.go.id/', external: true },
       { label: 'Tugas dan Fungsi',             href: '/ppid/tugas-fungsi' },
       { label: 'Struktur Organisasi PPID',     href: '/ppid/struktur-organisasi' },
       { label: 'Maklumat Pelayanan',           href: '/ppid/maklumat' },
       { label: 'Pelayanan Informasi Publik',   href: '/ppid/informasi-publik' },
-      { label: 'Permohonan Informasi Online',  href: '/ppid/permohonan' },
+      { label: 'Pengajuan Keberatan',  href: '/ppid/permohonan' },
     ],
   },
   {
@@ -120,12 +121,13 @@ export const footerLinks = {
 
 export const ppidMenu = [
   { label: 'Seputar PPID',                 href: '/ppid' },
+  { label: 'PPID Utama',                   href: 'https://ppid.nttprov.go.id/', external: true },
   { label: 'Tugas dan Fungsi',             href: '/ppid/tugas-fungsi' },
   { label: 'Struktur Organisasi PPID',     href: '/ppid/struktur-organisasi' },
   { label: 'Maklumat Pelayanan',           href: '/ppid/maklumat' },
   { label: 'Informasi Serta Merta',    href: '/ppid/serta-merta' },
   { label: 'Pelayanan Informasi Publik',   href: '/ppid/informasi-publik' },
-  { label: 'Permohonan Informasi Online',  href: '/ppid/permohonan' },
+  { label: 'Pengajuan Keberatan',  href: '/ppid/permohonan' },
 ]
 
 export const bagianSlugToPath: Record<string, string> = {
