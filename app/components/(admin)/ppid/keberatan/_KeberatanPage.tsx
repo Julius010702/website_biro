@@ -66,7 +66,10 @@ export default function KeberatanPage() {
 
   const load = useCallback(() => {
     const qs = filterStatus ? `?status=${filterStatus}` : ''
-    fetch(`/api/admin/ppid/keberatan${qs}`).then((r) => r.json()).then(setList)
+    fetch(`/api/admin/ppid/keberatan${qs}`)
+      .then((r) => r.json())
+      .then((data) => setList(Array.isArray(data) ? data : []))
+      .catch(() => setList([]))
   }, [filterStatus])
 
   useEffect(() => { load() }, [load])
