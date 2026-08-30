@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 // components/admin/AdminSidebar.tsx
 import { usePathname } from 'next/navigation'
 import Link            from 'next/link'
