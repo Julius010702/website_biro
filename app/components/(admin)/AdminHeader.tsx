@@ -8,7 +8,7 @@ interface AdminHeaderProps {
   user: SessionUser
 }
 
-const PPID_PERMOHONAN_URL = 'http://ppidutama.nttprov.go.id'
+const PPID_WEBSITE_URL = 'https://ppid.nttprov.go.id/'
 
 const pathTitles: Record<string, string> = {
   '/admin':                                   'Dashboard',
@@ -21,24 +21,25 @@ const pathTitles: Record<string, string> = {
   '/admin/berita':                            'Berita',
   '/admin/kegiatan':                          'Kegiatan',
   '/admin/galeri':                            'Galeri',
-  // ── PPID ──────────────────────────────────────────────────────────────────
+  // -- PPID --------------------------------------------------------------
   '/admin/ppid/seputar':                      'Seputar PPID',
   '/admin/ppid/tugas-fungsi':                 'Tugas & Fungsi PPID',
   '/admin/ppid/struktur-organisasi':          'Struktur Organisasi PPID',
   '/admin/ppid/maklumat':                     'Maklumat Pelayanan',
   '/admin/ppid/pelayanan':                    'Pelayanan Informasi',
   '/admin/ppid/informasi-publik':             'Informasi Publik',
-  '/admin/ppid/permohonan':                   'Permohonan Informasi',
-  
-  // ── Lainnya ───────────────────────────────────────────────────────────────
-  '/admin/kontak':                            'Pesan Kontak',
+  '/admin/ppid/dokumen':                      'Daftar Informasi',
+  '/admin/ppid/keberatan':                    'Pengajuan Keberatan',
+  // -- Lainnya -------------------------------------------------------------
+  '/admin/daftar-aplikasi':                   'Daftar Aplikasi',
+  '/admin/footer':                            'Footer',
   '/admin/pengaduan':                         'Pengaduan (WBS)',
   '/admin/pengaturan':                        'Pengaturan Situs',
 }
 
-/** Routes that should open an external URL instead of rendering a local page */
+/** Routes that should show a "Buka Website" external link button in the header */
 const externalRoutes: Record<string, string> = {
-  '/admin/ppid/permohonan': PPID_PERMOHONAN_URL,
+  '/admin/ppid/keberatan': PPID_WEBSITE_URL,
 }
 
 export default function AdminHeader({ user }: AdminHeaderProps) {
@@ -80,7 +81,6 @@ export default function AdminHeader({ user }: AdminHeaderProps) {
             {title}
           </h1>
 
-          {/* External link badge — shown only on pages mapped to an external URL */}
           {externalUrl && (
             <a
               href={externalUrl}
@@ -103,7 +103,6 @@ export default function AdminHeader({ user }: AdminHeaderProps) {
       </div>
 
       <div className="flex items-center gap-3">
-        {/* User chip */}
         <div
           className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl"
           style={{ background: '#F8FAFF', border: '1px solid #DBEAFE' }}

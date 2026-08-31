@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 // components/admin/AdminSidebar.tsx
 import { usePathname } from 'next/navigation'
 import Link            from 'next/link'
@@ -13,10 +13,11 @@ import { useState } from 'react'
 
 type NavChild = { label: string; href: string }
 type NavItem  = {
-  label:    string
-  href?:    string
-  icon:     React.ReactNode
+  label:     string
+  href?:     string
+  icon:      React.ReactNode
   children?: NavChild[]
+  external?: boolean
 }
 
 const navItems: NavItem[] = [
@@ -63,15 +64,8 @@ const navItems: NavItem[] = [
       { label: 'Maklumat Pelayanan',       href: '/admin/ppid/maklumat' },
       { label: 'Pelayanan Informasi',      href: '/admin/ppid/pelayanan' },
       { label: 'Daftar Informasi',         href: '/admin/ppid/dokumen' },
-      { label: 'Permohonan Online',        href: '/admin/ppid/permohonan' },
       { label: 'Keberatan',                href: '/admin/ppid/keberatan' },
-      { label: 'Prosedur Bencana',         href: '/admin/ppid/prosedur-bencana' },
     ],
-  },
-  {
-    label: 'Kontak',
-    href:  '/admin/kontak',
-    icon:  <MessageSquare className="w-4 h-4" />,
   },
   {
     label: 'Daftar Aplikasi',
@@ -119,7 +113,7 @@ export default function AdminSidebar() {
         borderRight: '1px solid rgba(255,255,255,0.06)',
       }}
     >
-      {/* ── Brand ── */}
+      {/* -- Brand -- */}
       <div
         className="flex items-center gap-3 px-4 py-4 shrink-0"
         style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}
@@ -144,9 +138,31 @@ export default function AdminSidebar() {
         </div>
       </div>
 
-      {/* ── Nav ── */}
+      {/* -- Nav -- */}
       <nav className="flex-1 overflow-y-auto py-3 px-2 flex flex-col gap-0.5">
         {navItems.map((item) => {
+          if (item.external) {
+            return (
+                <a
+                key={item.label}
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[12px] font-medium transition-all"
+                style={{
+                  background: 'transparent',
+                  color:      'rgba(255,255,255,0.5)',
+                  borderLeft: '2px solid transparent',
+                }}
+              >
+                <span style={{ color: 'rgba(255,255,255,0.35)' }}>
+                  {item.icon}
+                </span>
+                {item.label}
+              </a>
+            )
+          }
+
           if (!item.children) {
             const active = isActive(item.href!)
             return (
@@ -225,7 +241,7 @@ export default function AdminSidebar() {
         })}
       </nav>
 
-      {/* ── Footer sidebar ── */}
+      {/* -- Footer sidebar -- */}
       <div
         className="px-4 py-3 shrink-0"
         style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}

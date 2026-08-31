@@ -1,4 +1,4 @@
-// app/(public)/ppid/page.tsx
+﻿// app/(public)/ppid/page.tsx
 import { prisma }        from '@/lib/prisma'
 import type { Metadata } from 'next'
 import { Shield, FileText, Users, MessageSquare, ExternalLink } from 'lucide-react'
@@ -11,9 +11,9 @@ export const metadata: Metadata = {
 
 export default async function PPIDPage() {
   // Ambil total dokumen per kategori untuk statistik
-  const [totalDokumen, totalPermohonan, maklumat] = await Promise.all([
+  const [totalDokumen, totalKeberatan, maklumat] = await Promise.all([
     prisma.dokumenPPID.count({ where: { aktif: true } }),
-    prisma.permohonanInformasi.count(),
+    prisma.keberatan.count(),
     prisma.maklumatPelayanan.findFirst({ where: { aktif: true } }),
   ])
 
@@ -34,9 +34,9 @@ export default async function PPIDPage() {
     },
     {
       icon: <MessageSquare className="w-6 h-6" />,
-      label: 'Permohonan',
-      nilai: String(totalPermohonan),
-      sub: 'Permohonan masuk',
+      label: 'Keberatan',
+      nilai: String(totalKeberatan),
+      sub: 'Pengajuan keberatan masuk',
       color: '#7C3AED', bg: '#F5F3FF',
     },
     {
@@ -52,7 +52,7 @@ export default async function PPIDPage() {
     { label: 'Informasi yang Tersedia Setiap Saat', href: '/ppid/daftar-informasi', desc: 'Dokumen yang dapat diakses kapan saja tanpa permohonan khusus.' },
     { label: 'Informasi Berkala',                   href: '/ppid/daftar-informasi', desc: 'Informasi yang wajib disediakan dan diumumkan secara berkala.' },
     { label: 'Informasi Serta Merta',               href: '/ppid/daftar-informasi', desc: 'Informasi yang harus diumumkan segera karena menyangkut hajat orang banyak.' },
-    { label: 'Permohonan Informasi Online',         href: '/admin/ppid/permohonan',       desc: 'Ajukan permohonan informasi secara online melalui formulir digital.' },
+    { label: 'Pengajuan Keberatan',                 href: '/ppid/permohonan',             desc: 'Ajukan keberatan atas permohonan informasi yang tidak ditanggapi sesuai ketentuan.' },
   ]
 
   return (

@@ -27,7 +27,6 @@ const pathTitles: Record<string, string> = {
   '/admin/ppid/pelayanan':                    'Pelayanan Informasi',
   '/admin/ppid/dokumen':                      'Daftar Informasi',
   '/admin/ppid/permohonan':                   'Permohonan Informasi',
-  '/admin/ppid/prosedur-bencana':             'Prosedur Bencana',
   // ── Lainnya ───────────────────────────────────────────────────────────────
   '/admin/kontak':                            'Pesan Kontak',
   '/admin/pengaduan':                         'Pengaduan (WBS)',
