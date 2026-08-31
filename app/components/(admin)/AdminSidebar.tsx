@@ -1,10 +1,10 @@
-'use client'
+﻿'use client'
 // components/admin/AdminSidebar.tsx
 import { usePathname } from 'next/navigation'
 import Link            from 'next/link'
 import Image           from 'next/image'
 import {
-  LayoutDashboard, Newspaper, MessageSquare, LayoutGrid,
+  LayoutDashboard, Newspaper, LayoutGrid,
   Settings, ChevronDown,
   Building2, Shield,
   Camera, Globe, Layout,
