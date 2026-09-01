@@ -1,4 +1,4 @@
-// app/lib/navigation.ts
+﻿// app/lib/navigation.ts
 
 export type NavItem = {
   label: string
@@ -129,6 +129,18 @@ export const ppidMenu = [
   { label: 'Pelayanan Informasi Publik',   href: '/ppid/informasi-publik' },
   { label: 'Pengajuan Keberatan',  href: '/ppid/permohonan' },
 ]
+
+/** Daftar alasan pengajuan keberatan sesuai UU No. 14 Tahun 2008 Pasal 35 ayat (1).
+ *  Urutan array ini HARUS selaras dengan urutan field alasanA..alasanG di model Keberatan. */
+export const alasanKeberatanOptions = [
+  { code: 'a', label: 'Penolakan atas permintaan informasi berdasarkan alasan pengecualian' },
+  { code: 'b', label: 'Tidak disediakannya informasi berkala' },
+  { code: 'c', label: 'Tidak ditanggapinya permintaan informasi' },
+  { code: 'd', label: 'Permintaan informasi ditanggapi tidak sebagaimana yang diminta' },
+  { code: 'e', label: 'Tidak dipenuhinya permintaan informasi' },
+  { code: 'f', label: 'Pengenaan biaya yang tidak wajar' },
+  { code: 'g', label: 'Penyampaian informasi yang melebihi waktu yang diatur dalam undang-undang' },
+] as const
 
 export const bagianSlugToPath: Record<string, string> = {
   KELEMBAGAAN_ANALISIS_JABATAN:      '/unit-kerja/kelembagaan-analisis-jabatan',
