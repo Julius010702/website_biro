@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 // app/components/(admin)/GrafikAktivitas.tsx
 import { useEffect, useState } from 'react'
 import {
@@ -15,7 +15,20 @@ type AktivitasData = {
   total: number
 }
 
-function CustomTooltip({ active, payload, label }: any) {
+type TooltipPayloadItem = {
+  dataKey: string
+  name: string
+  value: number
+  color: string
+}
+
+function CustomTooltip({
+  active, payload, label,
+}: {
+  active?: boolean
+  payload?: TooltipPayloadItem[]
+  label?: string
+}) {
   if (!active || !payload || !payload.length) return null
   return (
     <div
@@ -23,7 +36,7 @@ function CustomTooltip({ active, payload, label }: any) {
       style={{ background: 'white', border: '1px solid #DBEAFE', boxShadow: '0 4px 16px rgba(13,71,161,0.12)' }}
     >
       <p className="font-bold mb-1" style={{ color: '#0A2342' }}>{label}</p>
-      {payload.map((p: any) => (
+      {payload.map((p) => (
         <p key={p.dataKey} className="flex items-center gap-1.5" style={{ color: p.color }}>
           <span className="w-2 h-2 rounded-full" style={{ background: p.color }} />
           <span style={{ color: '#64748B' }}>{p.name}:</span>
