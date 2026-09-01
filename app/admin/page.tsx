@@ -1,4 +1,4 @@
-// app/admin/page.tsx
+﻿// app/admin/page.tsx
 import { prisma }    from '@/lib/prisma'
 import Link          from 'next/link'
 import { format }    from 'date-fns'
@@ -17,7 +17,6 @@ export default async function AdminDashboard() {
     totalBerita,
     totalBeritaDraft,
     totalGaleri,
-    totalKontak,
     totalKeberatan,
     totalBagian,
     beritaTerbaru,
@@ -26,7 +25,6 @@ export default async function AdminDashboard() {
     prisma.berita.count({ where: { publish: true } }),
     prisma.berita.count({ where: { publish: false } }),
     prisma.galeri.count({ where: { aktif: true } }),
-    prisma.kontak.count({ where: { dibaca: false } }),
     prisma.keberatan.count({ where: { status: 'PENDING' } }),
     prisma.bagian.count(),
     prisma.berita.findMany({
