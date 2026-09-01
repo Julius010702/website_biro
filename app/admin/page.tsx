@@ -5,7 +5,7 @@ import { format }    from 'date-fns'
 import { id as localeId } from 'date-fns/locale'
 import type { Metadata } from 'next'
 import {
-  Newspaper, Images, MessageSquare,
+  Newspaper, Images,
   FileText, Eye, Clock, ChevronRight,
   Users, BarChart3,
 } from 'lucide-react'
@@ -59,14 +59,7 @@ export default async function AdminDashboard() {
       href:  '/admin/galeri',
       color: '#0891B2', bg: '#ECFEFF',
     },
-    {
-      label: 'Pesan Belum Dibaca',
-      value: totalKontak,
-      sub:   'perlu ditindaklanjuti',
-      icon:  <MessageSquare className="w-5 h-5" />,
-      href:  '/admin/kontak',
-      color: '#7C3AED', bg: '#F5F3FF',
-    },
+
     {
       label: 'Keberatan Pending',
       value: totalKeberatan,
