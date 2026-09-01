@@ -212,6 +212,14 @@ model Berita {
   shares    Int       @default(0)
 }
 
+model BeritaViewLog {
+  id        String   @id @default(cuid())
+  beritaId  String
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
+
 model Kegiatan {
   id             String    @id @default(cuid())
   judul          String

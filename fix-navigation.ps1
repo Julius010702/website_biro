@@ -1,0 +1,164 @@
+# ============================================================================
+# fix-navigation.ps1 - menambahkan export alasanKeberatanOptions yang hilang
+# Jalankan dari root project: D:\my-project\website_biro
+# ============================================================================
+
+$ErrorActionPreference = "Stop"
+Set-Content -LiteralPath "app/lib/navigation.ts" -Encoding UTF8 -Value @'
+// app/lib/navigation.ts
+
+export type NavItem = {
+  label: string
+  href?: string
+  external?: boolean
+  children?: NavItem[]
+}
+
+export type SitusTerkaitItem = {
+  label: string
+  href: string
+  external?: boolean
+  thumbnail?: string | string[]
+}
+
+export const mainNav: NavItem[] = [
+  {
+    label: 'Beranda',
+    href: '/',
+  },
+  {
+    label: 'Profil',
+    children: [
+      { label: 'Tentang Kami',          href: '/profil/sekapur-sirih' },
+      { label: 'Struktur Organisasi',   href: '/profil/struktur-organisasi' },
+      { label: 'Tugas Pokok dan Fungsi', href: '/profil/tugas-pokok-fungsi' },
+    ],
+  },
+  {
+    label: 'Unit Kerja',
+    children: [
+      {
+        label: 'Kelembagaan & Analisis Jabatan',
+        href: '/unit-kerja/kelembagaan-analisis-jabatan',
+      },
+      {
+        label: 'Reformasi Birokrasi & Akuntabilitas',
+        href: '/unit-kerja/reformasi-birokrasi-akuntabilitas',
+      },
+      {
+        label: 'Tatalaksana',
+        href: '/unit-kerja/tata-laksana',
+      },
+    ],
+  },
+  {
+    label: 'PPID',
+    children: [
+      { label: 'Seputar PPID',                 href: '/ppid' },
+  { label: 'PPID Utama',                   href: 'https://ppid.nttprov.go.id/', external: true },
+      { label: 'Tugas dan Fungsi',             href: '/ppid/tugas-fungsi' },
+      { label: 'Struktur Organisasi PPID',     href: '/ppid/struktur-organisasi' },
+      { label: 'Maklumat Pelayanan',           href: '/ppid/maklumat' },
+      { label: 'Pelayanan Informasi Publik',   href: '/ppid/informasi-publik' },
+      { label: 'Pengajuan Keberatan',  href: '/ppid/permohonan' },
+    ],
+  },
+  {
+    label: 'Berita',
+    href: '/berita',
+  },
+  {
+    label: 'Daftar Informasi',
+    children: [
+      {
+        label: 'Informasi Setiap Saat',
+        href: 'https://drive.google.com/drive/folders/1eCYfgChjlq-AyjPt1-KXx3-BWlxLVZo5?usp=sharing',
+        external: true,
+      },
+      {
+        label: 'Informasi Berkala',
+        href: 'https://drive.google.com/drive/folders/1P7xUX6WNE7KjJw2Ju3ELcdJk2y2ejR2Y?usp=sharing',
+        external: true,
+      },
+      {
+        label: 'Informasi Serta Merta',
+        href: '/ppid/serta-merta',
+      },
+      {
+        label: 'Daftar Informasi Dikecualikan',
+        href: 'https://drive.google.com/drive/folders/1P7xUX6WNE7KjJw2Ju3ELcdJk2y2ejR2Y?usp=sharing',
+        external: true,
+      },
+    ],
+  },
+  {
+    label: 'Daftar Aplikasi',
+    href: '/daftar-aplikasi',
+  },
+]
+
+export const footerLinks = {
+  profil: [
+    { label: 'Tentang Kami',              href: '/profil/sekapur-sirih' },
+    { label: 'Struktur Organisasi',       href: '/profil/struktur-organisasi' },
+    { label: 'Bagian Kelembagaan',        href: '/profil/bagian/kelembagaan-analisis-jabatan' },
+    { label: 'Bagian Reformasi Birokrasi', href: '/profil/bagian/reformasi-birokrasi-akuntabilitas' },
+    { label: 'Bagian Tatalaksana',        href: '/profil/bagian/tata-laksana' },
+  ],
+  unitKerja: [
+    { label: 'Kelembagaan & Analisis Jabatan',      href: '/unit-kerja/kelembagaan-analisis-jabatan' },
+    { label: 'Reformasi Birokrasi & Akuntabilitas', href: '/unit-kerja/reformasi-birokrasi-akuntabilitas' },
+    { label: 'Tatalaksana',                         href: '/unit-kerja/tata-laksana' },
+  ],
+  situsTerkait: [
+    {
+      label: 'G-SINJAB',
+      href: 'http://nusatenggaratimurprov3.5.sinjab.info/',
+      external: true,
+      thumbnail: ['/images/apps/gsinjab.jpeg'],
+    },
+    {
+      label: 'SiMBAGA NTT',
+      href: 'https://simbagabiroorganisasi.nttprov.go.id/login',
+      external: true,
+      thumbnail: '/images/apps/simbaga.jpeg',
+    },
+  ] satisfies SitusTerkaitItem[],
+}
+
+export const ppidMenu = [
+  { label: 'Seputar PPID',                 href: '/ppid' },
+  { label: 'PPID Utama',                   href: 'https://ppid.nttprov.go.id/', external: true },
+  { label: 'Tugas dan Fungsi',             href: '/ppid/tugas-fungsi' },
+  { label: 'Struktur Organisasi PPID',     href: '/ppid/struktur-organisasi' },
+  { label: 'Maklumat Pelayanan',           href: '/ppid/maklumat' },
+  { label: 'Informasi Serta Merta',    href: '/ppid/serta-merta' },
+  { label: 'Pelayanan Informasi Publik',   href: '/ppid/informasi-publik' },
+  { label: 'Pengajuan Keberatan',  href: '/ppid/permohonan' },
+]
+
+/** Daftar alasan pengajuan keberatan sesuai UU No. 14 Tahun 2008 Pasal 35 ayat (1).
+ *  Urutan array ini HARUS selaras dengan urutan field alasanA..alasanG di model Keberatan. */
+export const alasanKeberatanOptions = [
+  { code: 'a', label: 'Penolakan atas permintaan informasi berdasarkan alasan pengecualian' },
+  { code: 'b', label: 'Tidak disediakannya informasi berkala' },
+  { code: 'c', label: 'Tidak ditanggapinya permintaan informasi' },
+  { code: 'd', label: 'Permintaan informasi ditanggapi tidak sebagaimana yang diminta' },
+  { code: 'e', label: 'Tidak dipenuhinya permintaan informasi' },
+  { code: 'f', label: 'Pengenaan biaya yang tidak wajar' },
+  { code: 'g', label: 'Penyampaian informasi yang melebihi waktu yang diatur dalam undang-undang' },
+] as const
+
+export const bagianSlugToPath: Record<string, string> = {
+  KELEMBAGAAN_ANALISIS_JABATAN:      '/unit-kerja/kelembagaan-analisis-jabatan',
+  REFORMASI_BIROKRASI_AKUNTABILITAS: '/unit-kerja/reformasi-birokrasi-akuntabilitas',
+  TATA_LAKSANA:                      '/unit-kerja/tata-laksana',
+}
+
+export const pathToBagianSlug: Record<string, string> = {
+  'kelembagaan-analisis-jabatan':      'KELEMBAGAAN_ANALISIS_JABATAN',
+  'reformasi-birokrasi-akuntabilitas': 'REFORMASI_BIROKRASI_AKUNTABILITAS',
+  'tata-laksana':                      'TATA_LAKSANA',
+}
+'@
+Write-Host "==> navigation.ts diperbarui." -ForegroundColor Green

@@ -2,6 +2,7 @@
 import { prisma }    from '@/lib/prisma'
 import Link          from 'next/link'
 import { format }    from 'date-fns'
+import GrafikAktivitas from '@/components/(admin)/GrafikAktivitas'
 import { id as localeId } from 'date-fns/locale'
 import type { Metadata } from 'next'
 import {
@@ -261,6 +262,10 @@ export default async function AdminDashboard() {
           ))}
         </div>
       </div>
+
+
+      {/* -- Gelombang Aktivitas -- */}
+      <GrafikAktivitas />
 
     </div>
   )
