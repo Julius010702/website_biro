@@ -75,7 +75,7 @@ export default function GrafikAktivitas() {
           <h3 className="text-xs font-bold" style={{ color: '#0A2342' }}>Gelombang Aktivitas</h3>
         </div>
         <span className="text-[10px] font-semibold px-2 py-1 rounded-lg" style={{ background: '#EFF6FF', color: '#1565C0' }}>
-          7 hari terakhir - {totalMinggu} aktivitas
+          30 hari terakhir - {totalMinggu} aktivitas
         </span>
       </div>
 

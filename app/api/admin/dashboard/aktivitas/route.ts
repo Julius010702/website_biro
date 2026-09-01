@@ -1,10 +1,10 @@
-﻿// app/api/admin/dashboard/aktivitas/route.ts
+// app/api/admin/dashboard/aktivitas/route.ts
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
 export async function GET() {
   try {
-    const HARI = 7
+    const HARI = 30
     const now = new Date()
 
     // Bangun array 7 tanggal (mulai dari 6 hari lalu s/d hari ini)
@@ -17,7 +17,7 @@ export async function GET() {
       end.setDate(end.getDate() + 1)
       tanggalList.push({
         key:   start.toISOString().slice(0, 10),
-        label: start.toLocaleDateString('id-ID', { weekday: 'short', day: '2-digit', month: 'short' }),
+        label: start.toLocaleDateString('id-ID', { day: '2-digit', month: 'short' }),
         start,
         end,
       })
