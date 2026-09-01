@@ -1,7 +1,8 @@
-// app/actions/ppid.ts
+﻿// app/actions/ppid.ts
 'use server'
-import { prisma }   from '@/lib/prisma'
-import { redirect } from 'next/navigation'
+import { prisma }          from '@/lib/prisma'
+import { redirect }        from 'next/navigation'
+import { buatNotifikasi }  from '@/lib/notifikasi'
 
 export async function submitPermohonan(formData: FormData) {
   const namaPemohon      = formData.get('namaPemohon')      as string
@@ -44,6 +45,13 @@ export async function submitPermohonan(formData: FormData) {
       pesan:   `Informasi yang diminta:\n${informasiDiminta}\n\nTujuan penggunaan:\n${tujuanPenggunaan}\n\nCara penyampaian: ${caraPenyampaian}`,
       dibaca:  false,
     },
+  })
+
+  await buatNotifikasi({
+    tipe:  'PERMOHONAN',
+    judul: 'Permohonan Informasi Baru',
+    pesan: `${namaPemohon} mengajukan permohonan informasi publik (No. ${nomorRegister}).`,
+    link:  '/admin/ppid/permohonan',
   })
 
   redirect(`/ppid/permohonan?success=1&ref=${nomorRegister}`)
@@ -112,6 +120,13 @@ export async function submitKeberatan(formData: FormData) {
       pesan:   `Nomor Pendaftaran Permohonan: ${nomorPendaftaran}\n\nKasus Posisi:\n${kasusPosisi}`,
       dibaca:  false,
     },
+  })
+
+  await buatNotifikasi({
+    tipe:  'KEBERATAN',
+    judul: 'Pengajuan Keberatan Baru',
+    pesan: `${namaLengkap} mengajukan keberatan (No. ${nomorTiket}).`,
+    link:  '/admin/ppid/keberatan',
   })
 
   redirect(`/ppid/permohonan?success=1&ref=${nomorTiket}`)

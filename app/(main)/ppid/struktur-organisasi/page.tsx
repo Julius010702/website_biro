@@ -38,12 +38,13 @@ export default async function StrukturOrganisasiPPIDPage() {
       {/* -- Gambar struktur dari DB -- */}
       {struktur?.gambar && (
         <div className="rounded-2xl overflow-hidden" style={{ background: 'white', border: '1px solid #DBEAFE' }}>
-          <div className="relative w-full" style={{ minHeight: '300px' }}>
+          <div className="relative w-full flex justify-center py-4" style={{ maxHeight: '70vh', maxWidth: '420px', margin: '0 auto' }}>
             <Image
               src={toDirectImageUrl(struktur.gambar)}
               alt="Struktur Organisasi PPID"
-              fill
-              className="object-contain p-4"
+              width={800}
+              height={800}
+              className="w-auto h-auto max-w-full rounded-lg static"
               sizes="(max-width: 1024px) 100vw, 75vw"
             />
           </div>

@@ -1,14 +1,15 @@
-'use client'
+﻿'use client'
 // components/admin/AdminHeader.tsx
 import { usePathname, useRouter } from 'next/navigation'
-import { LogOut, Bell, ExternalLink } from 'lucide-react'
+import { LogOut, ExternalLink } from 'lucide-react'
 import type { SessionUser } from '@/lib/auth'
+import NotificationBell from './NotificationBell'
 
 interface AdminHeaderProps {
   user: SessionUser
 }
 
-const PPID_WEBSITE_URL = 'https://ppid.nttprov.go.id/'
+const PPID_PERMOHONAN_URL = 'http://ppidutama.nttprov.go.id'
 
 const pathTitles: Record<string, string> = {
   '/admin':                                   'Dashboard',
@@ -21,25 +22,24 @@ const pathTitles: Record<string, string> = {
   '/admin/berita':                            'Berita',
   '/admin/kegiatan':                          'Kegiatan',
   '/admin/galeri':                            'Galeri',
-  // -- PPID --------------------------------------------------------------
+  // ── PPID ──────────────────────────────────────────────────────────────────
   '/admin/ppid/seputar':                      'Seputar PPID',
   '/admin/ppid/tugas-fungsi':                 'Tugas & Fungsi PPID',
   '/admin/ppid/struktur-organisasi':          'Struktur Organisasi PPID',
   '/admin/ppid/maklumat':                     'Maklumat Pelayanan',
   '/admin/ppid/pelayanan':                    'Pelayanan Informasi',
-  '/admin/ppid/informasi-publik':             'Informasi Publik',
   '/admin/ppid/dokumen':                      'Daftar Informasi',
-  '/admin/ppid/keberatan':                    'Pengajuan Keberatan',
-  // -- Lainnya -------------------------------------------------------------
-  '/admin/daftar-aplikasi':                   'Daftar Aplikasi',
-  '/admin/footer':                            'Footer',
+  '/admin/ppid/permohonan':                   'Permohonan Informasi',
+  '/admin/ppid/prosedur-bencana':             'Prosedur Bencana',
+  // ── Lainnya ───────────────────────────────────────────────────────────────
+  '/admin/kontak':                            'Pesan Kontak',
   '/admin/pengaduan':                         'Pengaduan (WBS)',
   '/admin/pengaturan':                        'Pengaturan Situs',
 }
 
-/** Routes that should show a "Buka Website" external link button in the header */
+/** Routes that should open an external URL instead of rendering a local page */
 const externalRoutes: Record<string, string> = {
-  '/admin/ppid/keberatan': PPID_WEBSITE_URL,
+  '/admin/ppid/permohonan': PPID_PERMOHONAN_URL,
 }
 
 export default function AdminHeader({ user }: AdminHeaderProps) {
@@ -81,6 +81,7 @@ export default function AdminHeader({ user }: AdminHeaderProps) {
             {title}
           </h1>
 
+          {/* External link badge — shown only on pages mapped to an external URL */}
           {externalUrl && (
             <a
               href={externalUrl}
@@ -103,6 +104,7 @@ export default function AdminHeader({ user }: AdminHeaderProps) {
       </div>
 
       <div className="flex items-center gap-3">
+        {/* User chip */}
         <div
           className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl"
           style={{ background: '#F8FAFF', border: '1px solid #DBEAFE' }}
@@ -123,12 +125,7 @@ export default function AdminHeader({ user }: AdminHeaderProps) {
           </div>
         </div>
 
-        <button
-          className="w-9 h-9 rounded-xl flex items-center justify-center transition-colors hover:bg-blue-50"
-          style={{ border: '1px solid #DBEAFE', color: '#64748B' }}
-        >
-          <Bell className="w-4 h-4" />
-        </button>
+        <NotificationBell />
 
         <button
           onClick={handleLogout}

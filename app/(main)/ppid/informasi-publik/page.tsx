@@ -71,12 +71,12 @@ export default async function InformasiPublikPage() {
 
                 {/* Gambar */}
                 {item.tipe === 'GAMBAR' && item.url && (
-                  <div className="relative w-full" style={{ minHeight: '260px' }}>
+                  <div className="relative w-full flex justify-center py-4" style={{ maxHeight: '70vh', maxWidth: '420px', margin: '0 auto' }}>
                     <Image
                       src={item.url}
                       alt={item.judul}
-                      fill
-                      className="object-contain p-4"
+                      width={800} height={800}
+                      className="w-auto h-auto max-w-full rounded-lg"
                       sizes="(max-width: 1024px) 100vw, 75vw"
                     />
                   </div>
@@ -103,12 +103,12 @@ export default async function InformasiPublikPage() {
                 {item.tipe === 'GAMBAR_DOKUMEN' && (
                   <>
                     {item.url && (
-                      <div className="relative w-full" style={{ minHeight: '260px' }}>
+                      <div className="relative w-full flex justify-center py-4" style={{ maxHeight: '70vh', maxWidth: '420px', margin: '0 auto' }}>
                         <Image
                           src={item.url}
                           alt={item.judul}
-                          fill
-                          className="object-contain p-4"
+                          width={800} height={800}
+                          className="w-auto h-auto max-w-full rounded-lg"
                           sizes="(max-width: 1024px) 100vw, 75vw"
                         />
                       </div>

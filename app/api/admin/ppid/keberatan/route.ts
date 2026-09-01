@@ -1,4 +1,4 @@
-// app/api/admin/ppid/keberatan/route.ts
+﻿// app/api/admin/ppid/keberatan/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { StatusPermohonan } from '@prisma/client'
@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
   try {
     const status = req.nextUrl.searchParams.get('status') as StatusPermohonan | null
     const data = await prisma.keberatan.findMany({
-      where: status ? { status } : undefined,
+      where:   status ? { status } : undefined,
       orderBy: { createdAt: 'desc' },
     })
     return NextResponse.json(data)
@@ -21,7 +21,7 @@ export async function PUT(req: NextRequest) {
     const { id, status, keterangan } = await req.json()
     const data = await prisma.keberatan.update({
       where: { id },
-      data: { status, keterangan },
+      data:  { status, keterangan },
     })
     return NextResponse.json(data)
   } catch {

@@ -1,12 +1,14 @@
-'use client'
+﻿'use client'
 // app/components/(admin)/ppid/keberatan/_KeberatanPage.tsx
 import { useCallback, useEffect, useState, useTransition } from 'react'
+import Image from 'next/image'
 
 import {
   AdminCard, AdminCardHeader, AdminTable, AdminTr, AdminTd,
   BtnPrimary, BtnSecondary, FormField, Textarea, Select,
   EmptyState, useToast,
 } from '@/components/admin/AdminUI'
+import { alasanKeberatanOptions } from '@/lib/navigation'
 
 type StatusPermohonan = 'PENDING' | 'DIPROSES' | 'SELESAI' | 'DITOLAK'
 
@@ -44,14 +46,12 @@ const STATUS_COLOR: Record<StatusPermohonan, { color: string; bg: string; label:
   DITOLAK:  { color: '#DC2626', bg: '#FFF1F2', label: 'Ditolak' },
 }
 
-const ALASAN_LABEL: Record<string, string> = {
-  alasanA: 'a. Permohonan Informasi di tolak',
-  alasanB: 'b. Informasi berkala tidak disediakan',
-  alasanC: 'c. Permintaan informasi tidak ditanggapi',
-  alasanD: 'd. Permintaan informasi ditanggapi tidak sebagaimana yang diminta',
-  alasanE: 'e. Permintaan informasi tidak dipenuhi',
-  alasanF: 'f. Biaya yang dikenakan tidak wajar',
-  alasanG: 'g. Informasi disampaikan melebihi jangka waktu yang ditentukan',
+const ALASAN_KEYS = ['alasanA', 'alasanB', 'alasanC', 'alasanD', 'alasanE', 'alasanF', 'alasanG'] as const
+
+function alasanTerpilihLabel(d: Keberatan) {
+  return alasanKeberatanOptions
+    .filter((opt, i) => d[ALASAN_KEYS[i]])
+    .map((opt) => opt.label)
 }
 
 export default function KeberatanPage() {
@@ -66,18 +66,15 @@ export default function KeberatanPage() {
 
   const load = useCallback(() => {
     const qs = filterStatus ? `?status=${filterStatus}` : ''
-    fetch(`/api/admin/ppid/keberatan${qs}`)
-      .then((r) => r.json())
-      .then((data) => setList(Array.isArray(data) ? data : []))
-      .catch(() => setList([]))
+    fetch(`/api/admin/ppid/keberatan${qs}`).then((r) => r.json()).then(setList)
   }, [filterStatus])
 
   useEffect(() => { load() }, [load])
 
-  function openDetail(d: Keberatan) {
-    setDetail(d)
-    setEditStatus(d.status)
-    setEditKet(d.keterangan ?? '')
+  function openDetail(p: Keberatan) {
+    setDetail(p)
+    setEditStatus(p.status)
+    setEditKet(p.keterangan ?? '')
   }
 
   function handleUpdate() {
@@ -85,13 +82,9 @@ export default function KeberatanPage() {
     start(async () => {
       try {
         await fetch('/api/admin/ppid/keberatan', {
-          method: 'PUT',
+          method:  'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            id: detail.id,
-            status: editStatus,
-            keterangan: editKet,
-          }),
+          body:    JSON.stringify({ id: detail.id, status: editStatus, keterangan: editKet }),
         })
         show('Status keberatan diperbarui')
         setDetail(null); load()
@@ -107,9 +100,6 @@ export default function KeberatanPage() {
       </span>
     )
   }
-
-  const alasanTerpilih = (d: Keberatan) =>
-    (Object.keys(ALASAN_LABEL) as (keyof typeof ALASAN_LABEL)[]).filter((k) => d[k as keyof Keberatan])
 
   return (
     <div className="flex flex-col gap-6">
@@ -135,7 +125,7 @@ export default function KeberatanPage() {
 
       <AdminCard>
         <AdminCardHeader title="Pengajuan Keberatan" />
-        <AdminTable headers={['No. Tiket', 'Pemohon', 'No. Pendaftaran', 'Tanggal', 'Status', 'Aksi']}>
+        <AdminTable headers={['No. Tiket', 'Pemohon', 'Alasan', 'Tanggal', 'Status', 'Aksi']}>
           {list.length === 0
             ? <tr><td colSpan={6}><EmptyState label="Belum ada pengajuan keberatan" /></td></tr>
             : list.map((d) => (
@@ -147,10 +137,12 @@ export default function KeberatanPage() {
                 </AdminTd>
                 <AdminTd>
                   <p className="font-semibold text-sm" style={{ color: '#0A2342' }}>{d.namaLengkap}</p>
-                  <p className="text-[11px] text-slate-400">{d.email}</p>
+                  {d.email && <p className="text-[11px] text-slate-400">{d.email}</p>}
                 </AdminTd>
                 <AdminTd>
-                  <span className="text-xs text-slate-600 font-mono">{d.nomorPendaftaran}</span>
+                  <p className="text-xs text-slate-600 line-clamp-2 max-w-xs">
+                    {alasanTerpilihLabel(d).join('; ')}
+                  </p>
                 </AdminTd>
                 <AdminTd>
                   <span className="text-xs text-slate-500">
@@ -177,44 +169,42 @@ export default function KeberatanPage() {
           <AdminCardHeader title={`Kelola Keberatan — ${detail.namaLengkap}`} />
           <div className="p-5 grid sm:grid-cols-2 gap-5">
             <div className="flex flex-col gap-3">
-              <p className="text-xs font-bold uppercase tracking-wider" style={{ color: '#94A3B8' }}>Informasi Pengaju</p>
-              <InfoRow label="No. Pendaftaran" value={detail.nomorPendaftaran} />
-              <InfoRow label="Tujuan"           value={detail.tujuanPenggunaan} />
-              <p className="text-xs font-bold uppercase tracking-wider mt-2" style={{ color: '#94A3B8' }}>Identitas Pemohon</p>
-              <InfoRow label="Nama"     value={detail.namaLengkap} />
-              <InfoRow label="Email"    value={detail.email} />
-              <InfoRow label="Telepon"  value={detail.telepon} />
-              <InfoRow label="Alamat"   value={detail.alamat} />
-              <InfoRow label="Pekerjaan" value={detail.pekerjaan} />
-              {(detail.kuasaNama || detail.kuasaTelepon || detail.kuasaAlamat) && (
+              <p className="text-xs font-bold uppercase tracking-wider" style={{ color: '#94A3B8' }}>Data Pemohon</p>
+              <InfoRow label="No. Tiket"  value={detail.nomorTiket} />
+              <InfoRow label="No. Daftar" value={detail.nomorPendaftaran} />
+              <InfoRow label="Nama"       value={detail.namaLengkap} />
+              <InfoRow label="Alamat"     value={detail.alamat} />
+              <InfoRow label="Pekerjaan"  value={detail.pekerjaan} />
+              <InfoRow label="Email"      value={detail.email} />
+              <InfoRow label="Telepon"    value={detail.telepon} />
+
+              {(detail.kuasaNama || detail.kuasaAlamat || detail.kuasaTelepon) && (
                 <>
                   <p className="text-xs font-bold uppercase tracking-wider mt-2" style={{ color: '#94A3B8' }}>Kuasa Pemohon</p>
                   <InfoRow label="Nama"    value={detail.kuasaNama} />
-                  <InfoRow label="Telepon" value={detail.kuasaTelepon} />
                   <InfoRow label="Alamat"  value={detail.kuasaAlamat} />
+                  <InfoRow label="Telepon" value={detail.kuasaTelepon} />
                 </>
               )}
             </div>
             <div className="flex flex-col gap-3">
+              <div>
+                <p className="text-[10px] font-bold text-slate-400 mb-0.5">Tujuan Penggunaan</p>
+                <p className="text-xs text-slate-700 leading-relaxed whitespace-pre-wrap">{detail.tujuanPenggunaan}</p>
+              </div>
               <p className="text-xs font-bold uppercase tracking-wider" style={{ color: '#94A3B8' }}>Alasan Keberatan</p>
-              <ul className="flex flex-col gap-1">
-                {alasanTerpilih(detail).map((k) => (
-                  <li key={k} className="text-xs text-slate-700 leading-relaxed">• {ALASAN_LABEL[k]}</li>
-                ))}
+              <ul className="text-xs text-slate-700 leading-relaxed list-disc pl-4">
+                {alasanTerpilihLabel(detail).map((l) => <li key={l}>{l}</li>)}
               </ul>
               <div>
                 <p className="text-[10px] font-bold text-slate-400 mb-0.5">Kasus Posisi</p>
-                <p className="text-xs text-slate-700 leading-relaxed whitespace-pre-line">{detail.kasusPosisi}</p>
+                <p className="text-xs text-slate-700 leading-relaxed whitespace-pre-wrap">{detail.kasusPosisi}</p>
               </div>
               <div>
                 <p className="text-[10px] font-bold text-slate-400 mb-1">Tanda Tangan</p>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={detail.tandaTangan}
-                  alt="Tanda tangan pemohon"
-                  className="rounded-lg border border-slate-200 bg-white"
-                  style={{ maxWidth: '260px' }}
-                />
+                <div className="rounded-lg p-2" style={{ background: '#F8FAFF', border: '1px solid #E2E8F0' }}>
+                  <Image src={detail.tandaTangan} alt="Tanda tangan pemohon" width={280} height={100} unoptimized />
+                </div>
               </div>
             </div>
 
@@ -231,7 +221,7 @@ export default function KeberatanPage() {
                 </FormField>
                 <div className="sm:col-span-2">
                   <FormField label="Keterangan / Catatan">
-                    <Textarea rows={3} value={editKet} onChange={(e) => setEditKet(e.target.value)} placeholder="Catatan untuk pemohon…" />
+                    <Textarea rows={3} value={editKet} onChange={(e) => setEditKet(e.target.value)} placeholder="Catatan tanggapan untuk pemohon…" />
                   </FormField>
                 </div>
               </div>
@@ -250,7 +240,7 @@ export default function KeberatanPage() {
 function InfoRow({ label, value }: { label: string; value: string | null | undefined }) {
   return (
     <div className="flex gap-2">
-      <span className="text-[10px] font-bold w-24 shrink-0 pt-0.5" style={{ color: '#94A3B8' }}>{label}</span>
+      <span className="text-[10px] font-bold w-20 shrink-0 pt-0.5" style={{ color: '#94A3B8' }}>{label}</span>
       <span className="text-xs text-slate-700">{value ?? '-'}</span>
     </div>
   )

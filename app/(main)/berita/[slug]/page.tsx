@@ -1,4 +1,4 @@
-// app/(public)/berita/[slug]/page.tsx
+﻿// app/(public)/berita/[slug]/page.tsx
 import { prisma }        from '@/lib/prisma'
 import { notFound }      from 'next/navigation'
 import Link              from 'next/link'
@@ -8,7 +8,7 @@ import { format }        from 'date-fns'
 import { id as localeId } from 'date-fns/locale'
 import {
   Clock, Eye, Tag, ChevronRight,
-  ArrowLeft, Newspaper,
+  ArrowLeft, Newspaper, Share2,
 } from 'lucide-react'
 import BeritaImage, { GambarPlaceholder } from '@/components/shared/BeritaImage'
 import ShareButton from '@/components/shared/ShareButton'
@@ -147,6 +147,10 @@ export default async function BeritaDetailPage({
                 <Eye className="w-3.5 h-3.5" />
                 {(berita.views + 1).toLocaleString()} kali dibaca
               </span>
+              <span className="flex items-center gap-1.5">
+                <Share2 className="w-3.5 h-3.5" />
+                {berita.shares.toLocaleString()} kali dibagikan
+              </span>
               {berita.penulis && (
                 <span className="flex items-center gap-1.5">
                   <span className="w-1 h-1 rounded-full bg-slate-300" />
@@ -219,7 +223,7 @@ export default async function BeritaDetailPage({
               >
                 <ArrowLeft className="w-3.5 h-3.5" /> Semua Berita
               </Link>
-              <ShareButton title={berita.judul} url={"/berita/"} />
+              <ShareButton title={berita.judul} url={`/berita/${berita.slug}`} slug={berita.slug} />
             </div>
           </article>
 

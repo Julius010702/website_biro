@@ -1,7 +1,8 @@
-// app/api/ppid/permohonan/route.ts
+﻿// app/api/ppid/permohonan/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { generateRegisterNumber } from '@/lib/utils'
+import { buatNotifikasi } from '@/lib/notifikasi'
 
 export async function POST(req: NextRequest) {
   try {
@@ -34,6 +35,13 @@ export async function POST(req: NextRequest) {
         pesan:   `Informasi yang diminta:\n${body.informasiDiminta}\n\nTujuan penggunaan:\n${body.tujuanPenggunaan}\n\nCara penyampaian: ${body.caraPenyampaian}`,
         dibaca:  false,
       },
+    })
+
+    await buatNotifikasi({
+      tipe:  'PERMOHONAN',
+      judul: 'Permohonan Informasi Baru',
+      pesan: `${body.namaPemohon} mengajukan permohonan informasi publik (No. ${nomorRegister}).`,
+      link:  '/admin/ppid/permohonan',
     })
 
     return NextResponse.json({ nomorRegister: permohonan.nomorRegister })

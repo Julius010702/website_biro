@@ -64,6 +64,7 @@ const navItems: NavItem[] = [
       { label: 'Maklumat Pelayanan',       href: '/admin/ppid/maklumat' },
       { label: 'Pelayanan Informasi',      href: '/admin/ppid/pelayanan' },
       { label: 'Daftar Informasi',         href: '/admin/ppid/dokumen' },
+      { label: 'Informasi Publik',        href: '/admin/ppid/informasi-publik' },
       { label: 'Keberatan',                href: '/admin/ppid/keberatan' },
     ],
   },
