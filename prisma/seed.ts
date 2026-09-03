@@ -8,11 +8,11 @@ async function main() {
 
   const hashedPassword = await bcrypt.hash('Admin@NTT2024', 12)
   await prisma.user.upsert({
-    where: { email: 'admin@biroorganisasi.nttprov.go.id' },
+    where: { email: 'juliusbungadjami@gmail.com' },
     update: {},
     create: {
       name: 'Super Admin',
-      email: 'admin@biroorganisasi.nttprov.go.id',
+      email: 'juliusbungadjami@gmail.com',
       password: hashedPassword,
       role: 'SUPERADMIN',
     },
@@ -24,7 +24,7 @@ async function main() {
     { key: 'site_description', value: 'Website resmi Biro Organisasi Sekretariat Daerah Provinsi Nusa Tenggara Timur', label: 'Deskripsi' },
     { key: 'alamat', value: 'Jl. El Tari No. 1, Kupang, Nusa Tenggara Timur 85111', label: 'Alamat' },
     { key: 'telepon', value: '(0380) 831021', label: 'Telepon' },
-    { key: 'email', value: 'biroorganisasi@nttprov.go.id', label: 'Email' },
+    { key: 'email', value: 'juliusbungadjami@gmail.com', label: 'Email' },
     { key: 'jam_kerja', value: 'Senin - Jumat: 08.00 - 16.00 WITA', label: 'Jam Kerja' },
     { key: 'instagram', value: 'https://instagram.com/biroorganisasi_ntt', label: 'Instagram' },
     { key: 'whatsapp', value: 'https://wa.me/62380831021', label: 'WhatsApp' },
