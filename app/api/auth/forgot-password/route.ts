@@ -1,7 +1,7 @@
 // app/api/auth/forgot-password/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { resend, EMAIL_FROM } from '@/lib/resend'
+import { getResend, EMAIL_FROM } from '@/lib/resend'
 import bcrypt from 'bcryptjs'
 
 const requestLimiter = new Map<string, { count: number; resetAt: number }>()
@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
     })
 
     try {
-      await resend.emails.send({
+      await getResend().emails.send({
         from: EMAIL_FROM,
         to: user.email,
         subject: 'Kode OTP Reset Password - Panel Admin Biro Organisasi',
