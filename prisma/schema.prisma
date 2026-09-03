@@ -8,13 +8,18 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  name      String
-  email     String   @unique
-  password  String
-  role      Role     @default(ADMIN)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id             String    @id @default(cuid())
+  name           String
+  email          String    @unique
+  password       String
+  role           Role      @default(ADMIN)
+  resetOtpHash   String?
+  resetOtpExpiry DateTime?
+  resetAttempts  Int       @default(0)
+  resetToken     String?   @unique
+  resetTokenExpiry DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 }
 
 model SliderBeranda {

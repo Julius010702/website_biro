@@ -2,6 +2,7 @@
 import { prisma }        from '@/lib/prisma'
 import type { Metadata } from 'next'
 import { Shield, FileText, Users, MessageSquare, ExternalLink } from 'lucide-react'
+import Image from 'next/image'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
@@ -71,7 +72,7 @@ export default async function PPIDPage() {
           </defs>
           <rect width="100%" height="100%" fill="url(#ppid-dot)" />
         </svg>
-        <div className="relative">
+        <div className="relative max-w-2xl">
           <span
             className="inline-flex items-center gap-2 text-[10px] font-bold tracking-[0.18em] uppercase px-3 py-1.5 rounded-full mb-4"
             style={{ background: 'rgba(245,166,35,0.2)', border: '1px solid rgba(245,166,35,0.35)', color: '#FCD34D' }}
@@ -81,7 +82,7 @@ export default async function PPIDPage() {
           <h1 className="text-2xl sm:text-3xl font-bold text-white mb-3" style={{ fontFamily: 'var(--font-heading)' }}>
             PPID Biro Organisasi
           </h1>
-          <p className="text-sm text-white/60 leading-relaxed max-w-2xl">
+          <p className="text-sm text-white/60 leading-relaxed">
             Pejabat Pengelola Informasi dan Dokumentasi (PPID) Biro Organisasi Sekretariat Daerah Provinsi Nusa Tenggara Timur berkomitmen memberikan pelayanan informasi publik yang transparan, akuntabel, dan mudah diakses oleh seluruh masyarakat.
           </p>
           <div className="flex items-center gap-1.5 mt-5">
@@ -89,6 +90,16 @@ export default async function PPIDPage() {
             <div className="w-4 h-0.75 rounded-full bg-yellow-400" />
           </div>
         </div>
+
+        {/* -- Logo dekoratif Buka Informasi Publik -- */}
+        <Image
+          src="/images/logo-buka-informasi-publik.png"
+          alt="Buka Informasi Publik"
+          width={280}
+          height={280}
+          className="hidden lg:block absolute pointer-events-none select-none"
+          style={{ right: '2rem', top: '50%', transform: 'translateY(-50%)', width: '150px', height: 'auto', opacity: 0.95 }}
+        />
       </div>
 
       {/* ── Stat cards ── */}

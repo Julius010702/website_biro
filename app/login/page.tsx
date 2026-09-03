@@ -397,9 +397,17 @@ export default function LoginPage() {
                 </button>
               </form>
 
-              {/* ── Lupa Akses → buka modal ── */}
+              {/* ── Lupa Password → halaman reset OTP ── */}
               <p className="lr-card-foot">
-                Lupa akses?{" "}
+                Lupa kata sandi?{" "}
+                <Link href="/lupa-password" className="lr-lupa-btn" style={{ textDecoration: "none", display: "inline-block" }}>
+                  Reset di sini
+                </Link>
+              </p>
+
+              {/* ── Lupa Akses (email/lainnya) → buka modal ── */}
+              <p className="lr-card-foot" style={{ marginTop: 6 }}>
+                Lupa akses lainnya?{" "}
                 <button className="lr-lupa-btn" onClick={() => setShowContact(true)}>
                   Hubungi Administrator
                 </button>
