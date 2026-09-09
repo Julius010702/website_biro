@@ -23,7 +23,7 @@ export default async function PPIDPage() {
     { label: 'Informasi yang Tersedia Setiap Saat', href: '/ppid/daftar-informasi', desc: 'Dokumen yang dapat diakses kapan saja tanpa permohonan khusus.' },
     { label: 'Informasi Berkala',                   href: '/ppid/daftar-informasi', desc: 'Informasi yang wajib disediakan dan diumumkan secara berkala.' },
     { label: 'Informasi Serta Merta',               href: '/ppid/daftar-informasi', desc: 'Informasi yang harus diumumkan segera karena menyangkut hajat orang banyak.' },
-    { label: 'Pengajuan Keberatan',                 href: '/ppid/permohonan',             desc: 'Ajukan keberatan atas permohonan informasi yang tidak ditanggapi sesuai ketentuan.' },
+    { label: 'Daftar Informasi Dikecualikan',       href: '/ppid/informasi-dikecualikan', desc: 'Informasi yang tidak dapat diakses sesuai ketentuan UU KIP.' },
   ]
 
   return (

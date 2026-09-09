@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import { FileText, ExternalLink } from 'lucide-react'
 
 export const metadata: Metadata = {
@@ -20,6 +20,13 @@ const daftarInformasi = [
     deskripsi: 'Informasi yang wajib diumumkan secara berkala.',
     color: '#065F46',
     bg: '#ECFDF5',
+  },
+  {
+    label: 'Informasi Serta Merta',
+    href: 'https://drive.google.com/drive/folders/1PFMmeAs_L0uQKIIEC-TFX2pm3jwGVB9r?usp=sharing',
+    deskripsi: 'Informasi yang harus diumumkan segera karena menyangkut hajat orang banyak.',
+    color: '#B45309',
+    bg: '#FFFBEB',
   },
   {
     label: 'Daftar Informasi Dikecualikan',

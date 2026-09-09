@@ -1,6 +1,7 @@
-// app/(main)/ppid/struktur-organisasi/page.tsx
+﻿// app/(main)/ppid/struktur-organisasi/page.tsx
 import { prisma }        from '@/lib/prisma'
 import Image             from 'next/image'
+import ZoomableImage     from '@/components/common/ZoomableImage'
 import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Struktur Organisasi PPID',
@@ -38,8 +39,8 @@ export default async function StrukturOrganisasiPPIDPage() {
       {/* -- Gambar struktur dari DB -- */}
       {struktur?.gambar && (
         <div className="rounded-2xl overflow-hidden" style={{ background: 'white', border: '1px solid #DBEAFE' }}>
-          <div className="relative w-full flex justify-center py-4" style={{ maxHeight: '70vh', maxWidth: '420px', margin: '0 auto' }}>
-            <Image
+          <div className="relative w-full flex justify-center py-4" style={{ maxHeight: '85vh' }}>
+            <ZoomableImage
               src={toDirectImageUrl(struktur.gambar)}
               alt="Struktur Organisasi PPID"
               width={800}

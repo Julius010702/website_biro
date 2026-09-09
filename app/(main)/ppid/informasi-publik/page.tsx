@@ -1,6 +1,7 @@
-// app/(main)/ppid/informasi-publik/page.tsx
+﻿// app/(main)/ppid/informasi-publik/page.tsx
 import { prisma }        from '@/lib/prisma'
 import Image             from 'next/image'
+import ZoomableImage     from '@/components/common/ZoomableImage'
 import type { Metadata } from 'next'
 import { FileText, Download, ExternalLink } from 'lucide-react'
 
@@ -72,7 +73,7 @@ export default async function InformasiPublikPage() {
                 {/* Gambar */}
                 {item.tipe === 'GAMBAR' && item.url && (
                   <div className="relative w-full flex justify-center py-4" style={{ maxHeight: '70vh', maxWidth: '420px', margin: '0 auto' }}>
-                    <Image
+                    <ZoomableImage
                       src={item.url}
                       alt={item.judul}
                       width={800} height={800}
@@ -104,7 +105,7 @@ export default async function InformasiPublikPage() {
                   <>
                     {item.url && (
                       <div className="relative w-full flex justify-center py-4" style={{ maxHeight: '70vh', maxWidth: '420px', margin: '0 auto' }}>
-                        <Image
+                        <ZoomableImage
                           src={item.url}
                           alt={item.judul}
                           width={800} height={800}

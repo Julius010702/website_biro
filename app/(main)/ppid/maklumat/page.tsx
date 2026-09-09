@@ -1,6 +1,7 @@
-// app/(public)/ppid/maklumat/page.tsx
+﻿// app/(public)/ppid/maklumat/page.tsx
 import { prisma }        from '@/lib/prisma'
 import Image             from 'next/image'
+import ZoomableImage     from '@/components/common/ZoomableImage'
 import type { Metadata } from 'next'
 import { Heart, Shield } from 'lucide-react'
 
@@ -40,11 +41,11 @@ export default async function MaklumatPelayananPage() {
               style={{ background: 'white', border: '1px solid #DBEAFE' }}
             >
               <div className="relative w-full" style={{ minHeight: '280px' }}>
-                <Image
+                <ZoomableImage
                   src={maklumat.gambar}
                   alt="Maklumat Pelayanan"
-                  fill
-                  className="object-contain p-4"
+                  width={800} height={800}
+                  className="w-auto h-auto max-w-full rounded-lg"
                   sizes="(max-width: 1024px) 100vw, 75vw"
                 />
               </div>
