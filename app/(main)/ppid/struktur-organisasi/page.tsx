@@ -1,6 +1,5 @@
 ﻿// app/(main)/ppid/struktur-organisasi/page.tsx
 import { prisma }        from '@/lib/prisma'
-import Image             from 'next/image'
 import ZoomableImage     from '@/components/common/ZoomableImage'
 import type { Metadata } from 'next'
 export const metadata: Metadata = {
