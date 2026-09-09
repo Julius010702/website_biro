@@ -1,4 +1,4 @@
-// app/lib/navigation.ts
+﻿// app/lib/navigation.ts
 
 export type NavItem = {
   label: string
@@ -126,7 +126,6 @@ export const ppidMenu = [
   { label: 'Tugas dan Fungsi',             href: '/ppid/tugas-fungsi' },
   { label: 'Struktur Organisasi PPID',     href: '/ppid/struktur-organisasi' },
   { label: 'Maklumat Pelayanan',           href: '/ppid/maklumat' },
-  { label: 'Informasi Serta Merta',    href: 'https://drive.google.com/drive/folders/1PFMmeAs_L0uQKIIEC-TFX2pm3jwGVB9r?usp=sharing', external: true },
   { label: 'Pelayanan Informasi Publik',   href: '/ppid/informasi-publik' },
   { label: 'Pengajuan Keberatan',  href: '/ppid/permohonan' },
 ]
