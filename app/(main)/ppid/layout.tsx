@@ -1,4 +1,4 @@
-// app/(public)/ppid/layout.tsx
+﻿// app/(public)/ppid/layout.tsx
 import type { Metadata } from 'next'
 import Link             from 'next/link'
 import { ppidMenu }     from '@/lib/navigation'
@@ -21,7 +21,6 @@ const menuIcons: Record<string, React.ReactNode> = {
   '/ppid/tugas-fungsi':     <FileText      className="w-4 h-4" />,
   '/ppid/struktur-organisasi': <Users      className="w-4 h-4" />,
   '/ppid/maklumat':         <Heart         className="w-4 h-4" />,
-  '/ppid/serta-merta':      <FileText      className="w-4 h-4" />,
   '/ppid/prosedur-bencana': <AlertTriangle className="w-4 h-4" />,
   '/ppid/sk-dikecualikan':  <Lock          className="w-4 h-4" />,
   '/ppid/daftar-informasi': <List          className="w-4 h-4" />,
@@ -89,7 +88,7 @@ export default function PPIDLayout({ children }: { children: React.ReactNode }) 
             <div className="mx-4 mb-4 p-3 rounded-xl" style={{ background: '#FFF7ED', border: '1px solid #FED7AA' }}>
               <p className="text-[10px] font-bold text-orange-700 mb-1">Butuh Bantuan?</p>
               <p className="text-[10px] text-orange-600 leading-snug">
-                Hubungi kami di jam kerja<br />Sen-Kam: 08.00-16.00 (ist. 12.00-13.00) | Jum: 08.00-16.30 (ist. 11.30-13.20) WITA
+                Hubungi kami di jam kerja<br />Sen-Kam: 08.00-16.00 (ist. 12.00-13.00) | Jum: 08.00-16.30 (ist. 11.30-13.30) WITA
               </p>
             </div>
           </div>

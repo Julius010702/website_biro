@@ -1,7 +1,7 @@
 ﻿// app/(public)/ppid/page.tsx
 import { prisma }        from '@/lib/prisma'
 import type { Metadata } from 'next'
-import { Shield, FileText, Users, MessageSquare, ExternalLink } from 'lucide-react'
+import { Shield, ExternalLink } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -12,42 +12,12 @@ export const metadata: Metadata = {
 
 export default async function PPIDPage() {
   // Ambil total dokumen per kategori untuk statistik
-  const [totalDokumen, totalKeberatan, maklumat] = await Promise.all([
+  const [, , maklumat] = await Promise.all([
     prisma.dokumenPPID.count({ where: { aktif: true } }),
     prisma.keberatan.count(),
     prisma.maklumatPelayanan.findFirst({ where: { aktif: true } }),
   ])
 
-  const infoCards = [
-    {
-      icon: <Shield       className="w-6 h-6" />,
-      label: 'Dasar Hukum',
-      nilai: 'UU 14/2008',
-      sub: 'Keterbukaan Informasi Publik',
-      color: '#0D47A1', bg: '#EFF6FF',
-    },
-    {
-      icon: <FileText     className="w-6 h-6" />,
-      label: 'Total Dokumen',
-      nilai: String(totalDokumen),
-      sub: 'Dokumen tersedia',
-      color: '#065F46', bg: '#ECFDF5',
-    },
-    {
-      icon: <MessageSquare className="w-6 h-6" />,
-      label: 'Keberatan',
-      nilai: String(totalKeberatan),
-      sub: 'Pengajuan keberatan masuk',
-      color: '#7C3AED', bg: '#F5F3FF',
-    },
-    {
-      icon: <Users        className="w-6 h-6" />,
-      label: 'Atasan PPID',
-      nilai: 'Kepala Biro',
-      sub: 'Biro Organisasi Setda NTT',
-      color: '#B45309', bg: '#FFFBEB',
-    },
-  ]
 
   const layananList = [
     { label: 'Informasi yang Tersedia Setiap Saat', href: '/ppid/daftar-informasi', desc: 'Dokumen yang dapat diakses kapan saja tanpa permohonan khusus.' },
@@ -100,22 +70,6 @@ export default async function PPIDPage() {
           className="hidden lg:block absolute pointer-events-none select-none"
           style={{ right: '2rem', top: '50%', transform: 'translateY(-50%)', width: '150px', height: 'auto', opacity: 0.95 }}
         />
-      </div>
-
-      {/* ── Stat cards ── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        {infoCards.map((c) => (
-          <div
-            key={c.label}
-            className="rounded-2xl p-4"
-            style={{ background: c.bg, border: `1px solid ${c.color}18` }}
-          >
-            <div className="mb-2" style={{ color: c.color }}>{c.icon}</div>
-            <div className="text-xl font-bold mb-0.5" style={{ color: c.color, fontFamily: 'var(--font-heading)' }}>{c.nilai}</div>
-            <div className="text-[10px] font-bold" style={{ color: c.color }}>{c.label}</div>
-            <div className="text-[10px] mt-0.5" style={{ color: `${c.color}99` }}>{c.sub}</div>
-          </div>
-        ))}
       </div>
 
       {/* ── Tentang PPID ── */}
