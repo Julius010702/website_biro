@@ -404,14 +404,6 @@ export default function LoginPage() {
                   Reset di sini
                 </Link>
               </p>
-
-              {/* ── Lupa Akses (email/lainnya) → buka modal ── */}
-              <p className="lr-card-foot" style={{ marginTop: 6 }}>
-                Lupa akses lainnya?{" "}
-                <button className="lr-lupa-btn" onClick={() => setShowContact(true)}>
-                  Hubungi Administrator
-                </button>
-              </p>
             </div>
           </div>
 
