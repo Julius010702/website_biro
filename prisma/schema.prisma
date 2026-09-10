@@ -109,6 +109,7 @@ model NilaiSKM {
 
 model MaklumatPelayanan {
   id        String   @id @default(cuid())
+  deskripsi String   @default("Sesuai Pasal 47 PERKI Nomor 1 Tahun 2021 Tentang Standar Layanan Informasi Publik") @db.Text
   konten    String
   gambar    String?
   aktif     Boolean  @default(true)

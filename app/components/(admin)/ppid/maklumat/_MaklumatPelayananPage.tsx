@@ -9,7 +9,7 @@ import {
   FormField, Input, Textarea, StatusBadge, EmptyState, useToast,
 } from '@/components/admin/AdminUI'
 
-type Maklumat = { id: string; konten: string; gambar: string | null; aktif: boolean }
+type Maklumat = { id: string; deskripsi: string; konten: string; gambar: string | null; aktif: boolean }
 
 function ImageUploadField({
   value, onChange,
@@ -99,6 +99,7 @@ export default function MaklumatPelayananPage() {
 
   function handleSave() {
     if (!form?.konten) return show('Konten wajib diisi', 'error')
+    if (!form?.deskripsi) return show('Deskripsi singkat wajib diisi', 'error')
     start(async () => {
       try {
         const method = form.id ? 'PUT' : 'POST'
@@ -167,6 +168,14 @@ export default function MaklumatPelayananPage() {
         <AdminCard>
           <AdminCardHeader title={form.id ? 'Edit Maklumat' : 'Tambah Maklumat Pelayanan'} />
           <div className="p-5 flex flex-col gap-4">
+            <FormField label="Deskripsi Singkat" required hint="Teks singkat yang tampil di header putih halaman publik">
+              <Textarea
+                rows={2}
+                value={form.deskripsi ?? ''}
+                onChange={(e) => setForm({ ...form, deskripsi: e.target.value })}
+                placeholder="Contoh: Sesuai Pasal 47 PERKI Nomor 1 Tahun 2021 Tentang Standar Layanan Informasi Publik"
+              />
+            </FormField>
             <FormField label="Konten Maklumat" required>
               <Textarea
                 rows={8}

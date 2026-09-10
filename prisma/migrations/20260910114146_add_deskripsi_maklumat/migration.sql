@@ -1,0 +1,1 @@
+ALTER TABLE "MaklumatPelayanan" ADD COLUMN "deskripsi" TEXT NOT NULL DEFAULT 'Sesuai Pasal 47 PERKI Nomor 1 Tahun 2021 Tentang Standar Layanan Informasi Publik';
