@@ -1,4 +1,4 @@
-﻿// app/(main)/ppid/informasi-dikecualikan/page.tsx
+// app/(main)/ppid/informasi-dikecualikan/page.tsx
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Lock, ExternalLink } from 'lucide-react'
@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description: 'Daftar Informasi Dikecualikan PPID Biro Organisasi Setda Provinsi NTT',
 }
 
-const DRIVE_URL = 'https://drive.google.com/drive/folders/1P7xUX6WNE7KjJw2Ju3ELcdJk2y2ejR2Y'
+const DRIVE_URL = 'https://drive.google.com/drive/folders/1cbk8OksYXx6FFFeTCDGDfD-AlUySITBH?usp=sharing'
 
 export default function InformasiDikecualikanPage() {
   return (

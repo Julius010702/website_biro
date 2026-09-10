@@ -30,7 +30,7 @@ const daftarInformasi = [
   },
   {
     label: 'Daftar Informasi Dikecualikan',
-    href: 'https://drive.google.com/drive/folders/1P7xUX6WNE7KjJw2Ju3ELcdJk2y2ejR2Y?usp=sharing',
+    href: 'https://drive.google.com/drive/folders/1cbk8OksYXx6FFFeTCDGDfD-AlUySITBH?usp=sharing',
     deskripsi: 'Informasi yang dikecualikan sesuai ketentuan UU KIP.',
     color: '#9D174D',
     bg: '#FFF1F2',
