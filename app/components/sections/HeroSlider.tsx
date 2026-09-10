@@ -200,8 +200,8 @@ export default function HeroSlider({ slides, stats, tagline }: HeroSliderProps) 
               {stats.length > 0 && (
                 <div className="grid grid-cols-2 gap-2.5 w-full">
                   {stats.slice(0, 4).map((s) => (
-                    <div key={s.id} className="rounded-2xl p-4 text-center transition-transform duration-200 hover:scale-105"
-                      style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.20)' }}>
+                    <div key={s.id} className="p-4 text-center transition-transform duration-200 hover:scale-105"
+                      style={{ background: 'transparent' }}>
                       <div className="flex justify-center mb-2" style={{ color: accent, transition: 'color 0.6s' }}>
                         {iconMap[s.ikon ?? ''] ?? <Shield className="w-4 h-4" />}
                       </div>
@@ -227,8 +227,8 @@ export default function HeroSlider({ slides, stats, tagline }: HeroSliderProps) 
         <div className="lg:hidden relative w-full px-4 pb-6" style={{ zIndex: 5 }}>
           <div className="grid grid-cols-2 gap-2">
             {stats.slice(0, 4).map((s) => (
-              <div key={s.id} className="rounded-xl p-3 flex items-center gap-2.5"
-                style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.20)' }}>
+              <div key={s.id} className="p-3 flex items-center gap-2.5"
+                style={{ background: 'transparent' }}>
                 <div className="shrink-0" style={{ color: accent }}>
                   {iconMap[s.ikon ?? ''] ?? <Shield className="w-4 h-4" />}
                 </div>
