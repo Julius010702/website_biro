@@ -402,17 +402,13 @@
      BerAKHLAK BADGE
   ═══════════════════════════════════════════════════════════ */
   .header-badge {
-    background-color: rgba(212, 160, 23, 0.1);
-    border: 1px solid rgba(212, 160, 23, 0.28);
-    @apply hidden md:flex items-center gap-1.5 rounded-full px-3 py-1.5;
+    background-color: #ffffff;
+    border: 1px solid rgba(212, 160, 23, 0.45);
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.18);
+    @apply hidden md:flex items-center rounded-lg px-2.5 py-1;
   }
-  .header-badge-dot {
-    background-color: var(--color-ntt-hgold-400);
-    @apply w-1.5 h-1.5 rounded-full;
-  }
-  .header-badge-text {
-    color: var(--color-ntt-hgold-300);
-    @apply text-[11px] font-bold tracking-widest;
+  .header-badge-logo {
+    @apply h-7 w-auto;
   }
 
   /* ═══════════════════════════════════════════════════════════

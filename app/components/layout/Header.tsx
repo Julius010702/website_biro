@@ -147,8 +147,13 @@ export default function Header() {
             {/* Right Area */}
             <div className="header-nav-right-area">
               <div className="header-badge">
-                <div className="header-badge-dot" />
-                <span className="header-badge-text">BerAKHLAK</span>
+                <Image
+                  src="/images/logo-berakhlak.png"
+                  alt="BerAKHLAK - Bangga Melayani Bangsa"
+                  width={866}
+                  height={160}
+                  className="header-badge-logo"
+                />
               </div>
               <Link href="/login" className="header-btn-login hidden md:flex">
                 <LogIn className="w-3.5 h-3.5" />
