@@ -31,6 +31,8 @@ const nextConfig = {
     ]
   },
   images: {
+    // Tampilkan gambar persis seperti yang diupload (tanpa kompresi/resize ulang)
+    unoptimized: true,
     remotePatterns: [
       // Yahoo Images
       {
