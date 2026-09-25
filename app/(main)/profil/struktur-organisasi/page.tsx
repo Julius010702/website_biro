@@ -2,6 +2,7 @@
 import { prisma }   from '@/lib/prisma'
 import Image        from 'next/image'
 import Link         from 'next/link'
+import KontakInfoCard from '@/components/shared/KontakInfoCard'
 import { Building2, ZoomIn, ChevronRight, User, FileText, Users } from 'lucide-react'
 import type { Metadata } from 'next'
 
@@ -168,24 +169,8 @@ export default async function StrukturOrganisasiPage() {
               </nav>
             </div>
 
-            {/* Info card */}
-            <div className="rounded-2xl p-4 reveal reveal-right reveal-delay-2"
-              style={{ background: 'linear-gradient(135deg, #0A2342, #0D47A1)', border: '1px solid #0D47A1' }}>
-              <p className="text-[10px] font-black tracking-widest uppercase text-white/40 mb-2">Biro Organisasi</p>
-              <p className="text-sm font-bold text-white leading-snug mb-3">Setda Provinsi Nusa Tenggara Timur</p>
-              <div className="space-y-1.5">
-                {[
-                  { label: 'Lantai 3 Kantor Gubernur NTT', icon: '📍' },
-                  { label: 'Sen-Kam: 08.00-16.00 (ist. 12.00-13.00) | Jum: 08.00-16.30 (ist. 11.30-13.30) WITA', icon: '🕐' },
-                  { label: '(0380) 831021', icon: '📞' },
-                ].map((info) => (
-                  <div key={info.label} className="flex items-start gap-2">
-                    <span className="text-xs mt-0.5">{info.icon}</span>
-                    <p className="text-[11px] text-white/60 leading-snug">{info.label}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
+            {/* Info card — data sama dengan footer */}
+            <KontakInfoCard />
 
           </aside>
         </div>

@@ -1,5 +1,6 @@
-﻿import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { revalidatePath } from 'next/cache'
 
 export async function GET() {
   try {
@@ -15,6 +16,7 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
     const data = await prisma.informasiKontak.create({ data: body })
+    revalidatePath('/', 'layout')
     return NextResponse.json(data)
   } catch (e) {
     console.error('[POST /api/admin/informasi-kontak]', e)

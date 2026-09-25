@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { revalidatePath } from 'next/cache'
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params
     const body = await req.json()
     const data = await prisma.informasiKontak.update({ where: { id }, data: body })
+    revalidatePath('/', 'layout')
     return NextResponse.json(data)
   } catch (e) {
     console.error('[PUT informasi-kontak/[id]]', e)
@@ -17,6 +19,7 @@ export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id:
   try {
     const { id } = await params
     await prisma.informasiKontak.delete({ where: { id } })
+    revalidatePath('/', 'layout')
     return NextResponse.json({ ok: true })
   } catch (e) {
     console.error('[DELETE informasi-kontak/[id]]', e)
