@@ -207,7 +207,9 @@
   ═══════════════════════════════════════════════════════════ */
   .header-topbar {
     width: 100%;
-    background-color: var(--color-ntt-blue-900);
+    background-color: color-mix(in srgb, var(--color-ntt-blue-900) 82%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border-bottom: 2px solid var(--color-ntt-hgold-400);
   }
 
@@ -232,10 +234,12 @@
     width: 100%;
     background: linear-gradient(
       135deg,
-      var(--color-ntt-blue-900) 0%,
-      var(--color-ntt-blue-800) 45%,
-      var(--color-ntt-blue-700) 100%
+      color-mix(in srgb, var(--color-ntt-blue-900) 82%, transparent) 0%,
+      color-mix(in srgb, var(--color-ntt-blue-800) 78%, transparent) 45%,
+      color-mix(in srgb, var(--color-ntt-blue-700) 75%, transparent) 100%
     );
+    backdrop-filter: blur(12px) saturate(140%);
+    -webkit-backdrop-filter: blur(12px) saturate(140%);
     border-bottom: 3px solid var(--color-ntt-hgold-400);
     box-shadow: 0 4px 24px rgba(2, 20, 41, 0.45);
     overflow: visible;

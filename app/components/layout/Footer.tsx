@@ -2,7 +2,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { prisma } from '@/lib/prisma'
-import { MapPin, Phone, Mail, Clock, Globe, ExternalLink, ArrowRight, Shield, Navigation } from 'lucide-react'
+import { MapPin, Phone, Mail, Clock, Globe, ExternalLink, ArrowRight, Navigation } from 'lucide-react'
 import { footerLinks } from '@/lib/navigation'
 import FooterSocialButtons from './FooterSocialButtons'
 
@@ -129,9 +129,14 @@ export default async function Footer() {
       <div style={{ borderTop: '1px solid rgba(255,255,255,0.07)', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex flex-wrap items-center gap-x-1 gap-y-2">
-            <div className="flex items-center gap-1.5 mr-3">
-              <Shield className="w-3.5 h-3.5" style={{ color: 'var(--color-ntt-hgold-400)' }} />
-              <span className="text-[10px] font-bold tracking-widest text-white">BerAKHLAK</span>
+            <div className="flex items-center mr-3">
+              <Image
+                src="/images/logo-berakhlak.png"
+                alt="BerAKHLAK - Bangga Melayani Bangsa"
+                width={866}
+                height={160}
+                className="h-7 w-auto"
+              />
             </div>
             {values.map(function(v, i) {
               return (
